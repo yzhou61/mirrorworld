@@ -35,6 +35,6 @@ private:
     bool            m_bQuit;
     // Mouse State
     bool            m_bRMouseDown, m_bLMouseDown;
-};
+}; // End of StageGameState
 
 #endif
