@@ -4,6 +4,22 @@
 #include <OgreWindowEventUtilities.h>
 #include "GameState.h"
 
+template<> GameStateManager* Ogre::Singleton<GameStateManager>::ms_Singleton = NULL;
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+GameState::GameState()
+{
+    m_pStateManager = GameStateManager::getSingletonPtr();
+    if (!m_pStateManager)
+    {
+        GameFramework::getSingletonPtr()->m_pLog->logMessage("Empty Pointer to GameStateManager");
+        throw Ogre::Exception(Ogre::Exception::ERR_INTERNAL_ERROR, 
+            "Empty pointer to GameStateManager\n", "GameStateManager.cpp");
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////

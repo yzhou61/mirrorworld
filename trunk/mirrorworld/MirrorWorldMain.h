@@ -21,7 +21,6 @@ public:
 
     void start();
 private:
-    GameStateManager*   m_pGameStateManager;
     bool                m_bShutdown;
 }; // End if MirrorWorld
 

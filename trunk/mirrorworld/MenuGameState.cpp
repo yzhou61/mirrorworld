@@ -7,10 +7,10 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
-void MenuGameState::create(GameStateManager* manager, const Ogre::String name)
+void MenuGameState::create(const Ogre::String name)
 {
-    MenuGameState* menuGameState = new MenuGameState(manager);
-    manager->addGameState(name, menuGameState);
+    MenuGameState* menuGameState = new MenuGameState();
+    GameStateManager::getSingletonPtr()->addGameState(name, menuGameState);
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -13,16 +13,17 @@ MirrorWorld::~MirrorWorld()
 
 void MirrorWorld::start()
 {
-    new GameFramework();
+    GameFramework::create();
     if (!GameFramework::getSingletonPtr()->initOgre("MirrorWorld", NULL, NULL))
         return;
 
     GameFramework::getSingletonPtr()->m_pLog->logMessage("Mirror World initialized!");
 
-    m_pGameStateManager = new GameStateManager();
+    GameStateManager::create();
 
-    MenuGameState::create(m_pGameStateManager, "MenuState");
-    StageGameState::create(m_pGameStateManager, "StageState");
+    MenuGameState::create("MenuState");
+    StageGameState::create("StageState");
 
-    m_pGameStateManager->start(m_pGameStateManager->findByName("MenuState"));
+    GameFramework::getSingletonPtr()->m_pLog->logMessage("Mirror World initialized!");
+    GameStateManager::getSingletonPtr()->start(GameStateManager::getSingletonPtr()->findByName("MenuState"));
 }
