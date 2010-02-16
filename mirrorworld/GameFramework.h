@@ -33,7 +33,7 @@
 class GameFramework : public Ogre::Singleton<GameFramework>, OIS::KeyListener, OIS::MouseListener
 {
 public:
-    GameFramework();
+    static void create() { if (!getSingletonPtr()) new GameFramework(); }
     ~GameFramework();
 
     bool initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListener = NULL, OIS::MouseListener *pMouseListener = NULL);
@@ -60,6 +60,8 @@ public:
     CEGUI::OgreRenderer*	    m_pGUIRenderer;
 
 private:
+    GameFramework();
+    // TO DO:?
     GameFramework(const GameFramework&);
     GameFramework& operator= (const GameFramework&);
 

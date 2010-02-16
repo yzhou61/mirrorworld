@@ -9,7 +9,7 @@
 class MenuGameState : public GameState
 {
 public:
-    static void create(GameStateManager* manager, const Ogre::String name);
+    static void create(const Ogre::String name);
     void enter();
     void exit();
     bool pause();
@@ -28,7 +28,7 @@ public:
     bool onExitButton(const CEGUI::EventArgs &args);
     bool onEnterButton(const CEGUI::EventArgs &args);
 private:
-    MenuGameState(GameStateManager* manager) : GameState(manager) {}
+    MenuGameState() : GameState() {}
     bool    m_bQuit;
 }; // End of MenuGameState
 

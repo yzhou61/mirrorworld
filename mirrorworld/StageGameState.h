@@ -11,7 +11,7 @@
 class StageGameState : public GameState
 {
 public:
-    static void create(GameStateManager* manager, const Ogre::String name);
+    static void create(const Ogre::String name);
     void enter();
     void createScene();
     void exit();
@@ -31,7 +31,7 @@ public:
     void handleInput();
 
 private:
-    StageGameState(GameStateManager* manager) : GameState(manager) {}
+    StageGameState() : GameState() {}
     bool            m_bQuit;
     // Mouse State
     bool            m_bRMouseDown, m_bLMouseDown;
