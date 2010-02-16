@@ -78,7 +78,6 @@ bool MenuGameState::pause()
     CEGUI::System::getSingletonPtr()->setGUISheet(NULL);
 
     return true;
-
 }
 
 //////////////////////////////////////////////////////////////////////////

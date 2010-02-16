@@ -11,6 +11,7 @@
 
 using Ogre::Vector3;
 using Ogre::Real;
+using Ogre::Degree;
 
 class GameStateManager;
 //////////////////////////////////////////////////////////////////////////

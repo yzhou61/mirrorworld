@@ -22,8 +22,7 @@ void MirrorWorld::start()
     m_pGameStateManager = new GameStateManager();
 
     MenuGameState::create(m_pGameStateManager, "MenuState");
-//    GameState::create(m_pGameStateManager, "GamingState");
+    StageGameState::create(m_pGameStateManager, "StageState");
 
     m_pGameStateManager->start(m_pGameStateManager->findByName("MenuState"));
-
 }

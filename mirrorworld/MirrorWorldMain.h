@@ -8,6 +8,7 @@
 
 #include "GameFramework.h"
 #include "MenuGameState.h"
+#include "StageGameState.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Definition of Class MirrorWorld
