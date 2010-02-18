@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Program Files (x86)\CEGUI\cegui\include;C:\Program Files (x86)\CEGUI\cegui\include\RendererModules\Ogre;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;"
+				AdditionalIncludeDirectories="$(CEGUI_HOME)\cegui\include;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -67,7 +67,7 @@
 				AdditionalDependencies="OgreMain_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\Program Files (x86)\CEGUI\lib;&quot;$(OGRE_HOME)\lib\debug&quot;"
+				AdditionalLibraryDirectories="$(CEGUI_HOME)\lib;&quot;$(OGRE_HOME)\lib\debug&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mirrorworld.pdb"
 				SubSystem="2"
@@ -93,7 +93,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copying exe to samples bin directory ..."
+				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -127,7 +127,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;"
+				AdditionalIncludeDirectories="$(CEGUI_HOME)\cegui\include;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -155,7 +155,7 @@
 				AdditionalDependencies="OgreMain.lib OIS.lib  CEGUIBase.lib CEGUIOgreRenderer.lib CEGUIExpatParser.lib CEGUIFalagardWRBase.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;C:\Program Files (x86)\CEGUI\lib&quot;;&quot;$(OGRE_HOME)\lib\release&quot;"
+				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\release&quot;"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -182,8 +182,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copying exe to samples bin directory ..."
-				CommandLine="copy &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OGRE_HOME)\Bin\$(ConfigurationName)&quot;"
+				Description=""
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -196,19 +196,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\GameFramework.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GameState.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\main.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MenuGameState.cpp"
 				>
 			</File>
 			<File
@@ -216,9 +204,33 @@
 				>
 			</File>
 			<File
-				RelativePath=".\StageGameState.cpp"
+				RelativePath=".\MWGameFramework.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\MWGameState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MWMenuGameState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MWStageGameState.cpp"
+				>
+			</File>
+			<Filter
+				Name="Objects"
+				>
+				<File
+					RelativePath=".\Objects\MWObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWObjectFactory.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -226,25 +238,37 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\GameFramework.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GameState.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MenuGameState.h"
-				>
-			</File>
-			<File
 				RelativePath=".\MirrorWorldMain.h"
 				>
 			</File>
 			<File
-				RelativePath=".\StageGameState.h"
+				RelativePath=".\MWGameFramework.h"
 				>
 			</File>
+			<File
+				RelativePath=".\MWGameState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MWMenuGameState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MWStageGameState.h"
+				>
+			</File>
+			<Filter
+				Name="Objects"
+				>
+				<File
+					RelativePath=".\Objects\MWObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWObjectFactory.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

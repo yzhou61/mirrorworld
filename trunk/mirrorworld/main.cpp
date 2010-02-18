@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
     try
     {
-        MirrorWorld mirrorWorld;
+        MirrorWorldMain mirrorWorld;
         mirrorWorld.start();
     }
     catch(std::exception& e)
