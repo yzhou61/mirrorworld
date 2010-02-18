@@ -6,18 +6,19 @@
 #ifndef _MIRROR_WORLD_H_
 #define _MIRROR_WORLD_H_
 
-#include "GameFramework.h"
-#include "MenuGameState.h"
-#include "StageGameState.h"
+#include "MWGameFramework.h"
+#include "MWMenuGameState.h"
+#include "MWStageGameState.h"
 
+using namespace MirrorWorld;
 //////////////////////////////////////////////////////////////////////////
 // Definition of Class MirrorWorld
 //////////////////////////////////////////////////////////////////////////
-class MirrorWorld
+class MirrorWorldMain
 {
 public:
-    MirrorWorld():m_bShutdown(false) {}
-    ~MirrorWorld();
+    MirrorWorldMain():m_bShutdown(false) {}
+    ~MirrorWorldMain();
 
     void start();
 private:
