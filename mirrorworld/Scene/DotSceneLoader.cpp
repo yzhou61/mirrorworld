@@ -450,10 +450,13 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
 	if(sValue != "directional")
 	{
 		// Process lightRange (?)
-		pElement = XMLNode->first_node("lightRange");
-		if(pElement)
-			processLightRange(pElement, pLight);
-
+        if (sValue == "spot")
+        {
+            pElement = XMLNode->first_node("lightRange");
+            if(pElement)
+                processLightRange(pElement, pLight);
+        }
+		
 		// Process lightAttenuation (?)
 		pElement = XMLNode->first_node("lightAttenuation");
 		if(pElement)
@@ -483,7 +486,7 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 
 	// Set the field-of-view
 	//! @todo Is this always in degrees?
-	//pCamera->setFOVy(Ogre::Degree(fov));
+//	pCamera->setFOVy(Ogre::Degree(fov));
 
 	// Set the aspect ratio
 	//pCamera->setAspectRatio(aspectRatio);
@@ -518,9 +521,9 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 		pCamera->setOrientation(parseQuaternion(pElement));
 
 	// Process normal (?)
-	pElement = XMLNode->first_node("normal");
+/*	pElement = XMLNode->first_node("normal");
 	if(pElement)
-		;//!< @todo What to do with this element?
+		;//!< @todo What to do with this element?*/
 
 	// Process lookTarget (?)
 	pElement = XMLNode->first_node("lookTarget");
@@ -628,12 +631,12 @@ void DotSceneLoader::processNode(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode 
 	}
 
 	// Process light (*)
-	//pElement = XMLNode->first_node("light");
-	//while(pElement)
-	//{
-	//	processLight(pElement, pNode);
-	//	pElement = pElement->next_sibling("light");
-	//}
+	pElement = XMLNode->first_node("light");
+	while(pElement)
+	{
+	    processLight(pElement, pNode);
+	    pElement = pElement->next_sibling("light");
+	}
 
 	// Process camera (*)
 	pElement = XMLNode->first_node("camera");
@@ -830,7 +833,54 @@ void DotSceneLoader::processBillboardSet(rapidxml::xml_node<>* XMLNode, Ogre::Sc
 
 void DotSceneLoader::processPlane(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
 {
-	//! @todo Implement this
+    Ogre::String name = getAttrib(XMLNode, "name");
+    Ogre::Real distance  = getAttribReal(XMLNode, "distance");
+    Ogre::Real width = getAttribReal(XMLNode, "width");
+    Ogre::Real height = getAttribReal(XMLNode, "height");
+
+    int xSegments = (int)getAttribReal(XMLNode, "xSegments");
+    int ySegments = (int)getAttribReal(XMLNode, "ySegments");
+    int numTexCoordSets = (int)getAttribReal(XMLNode, "numTexCoordSets");
+    Ogre::Real uTile = getAttribReal(XMLNode, "uTile", 1.0);
+    Ogre::Real vTile = getAttribReal(XMLNode, "vTile", 1.0);
+    Ogre::String material = getAttrib(XMLNode, "material");
+    bool hasNormals = getAttribBool(XMLNode, "hasNormals");
+    bool castShadows = getAttribBool(XMLNode, "castShadows", false);
+    bool receiveShadows = getAttribBool(XMLNode, "receiveShadows", true);
+
+    rapidxml::xml_node<>* pElement;
+    
+    Ogre::Plane plane;
+
+    pElement = XMLNode->first_node("normal");
+    if (pElement)
+        plane.normal = parseVector3(pElement);
+    else
+        plane.normal = Ogre::Vector3::ZERO;
+    plane.d = distance;
+
+    Ogre::Vector3 upVector = Ogre::Vector3::UNIT_Y;
+    pElement = XMLNode->first_node("upVector");
+    if (pElement)
+        upVector = parseVector3(pElement);
+
+    Ogre::Entity* pEntity = NULL;
+    try {
+        Ogre::MeshManager::getSingleton().createPlane(name, m_sGroupName, 
+            plane, width, height, xSegments, ySegments, hasNormals, numTexCoordSets, uTile, vTile, upVector);
+        pEntity = mSceneMgr->createEntity(name, name);
+        pEntity->setMaterialName(material);
+
+        // Attach the plane to a scene node
+        pParent->attachObject(pEntity);
+    } catch(Ogre::Exception& /*e*/)
+    {
+        Ogre::LogManager::getSingleton().logMessage("[DotSceneLoader] Error loading an plane!");
+    }
+    // Process userDataReference (?)
+    pElement = XMLNode->first_node("userDataReference");
+    if(pElement)
+        processUserDataReference(pElement, pEntity);
 }
 
 void DotSceneLoader::processFog(rapidxml::xml_node<>* XMLNode)
