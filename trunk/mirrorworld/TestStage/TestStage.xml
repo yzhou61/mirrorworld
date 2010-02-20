@@ -25,35 +25,31 @@
         </viewport>
         <camera name="intViewCamera1" viewMode="0" polyMode="3" fov="1">
             <clipping near="1" far="1000" />
-            <position x="11.1482" y="48.4363" z="183.717" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <position x="135.812" y="160.105" z="124.313" />
+            <rotation qw="0.799919" qx="-0.239796" qy="0.526948" qz="0.157967" />
         </camera>
     </environment>
     <nodes>
         <node name="Barrel0" id="286080512">
-            <position x="20" y="9" z="0" />
+            <position x="10" y="9" z="-20" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="3" y="3" z="3" />
             <entity name="Barrel0" meshFile="Barrel.mesh" castShadows="true" />
+        </node>
+        <node name="Buttom" id="425153344">
+            <position x="0" y="0" z="0" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="10" y="1" z="10" />
+            <plane name="Buttom" distance="0" width="10" height="10" xSegments="2" ySegments="2" numTexCoordSets="1" uTile="2" vTile="2" material="Examples/Robot" hasNormals="true">
+                <normal x="0" y="1" z="0" />
+                <upVector x="0" y="0" z="1" />
+            </plane>
         </node>
         <node name="robot0" id="743736064">
             <position x="-10" y="0" z="-20" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
             <entity name="robot0" meshFile="robot.mesh" castShadows="false" />
-        </node>
-        <node name="Light0" id="600238016">
-            <position x="17.9857" y="50.5801" z="158.528" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <light name="Light0" id="600238016" type="point" castShadows="true">
-                <position x="17.9857" y="50.5801" z="158.528" />
-                <directionVector x="0" y="0" z="1" />
-                <colourDiffuse r="1" g="1" b="1" a="1" />
-                <colourSpecular r="0" g="0" b="0" a="1" />
-                <lightRange inner="15" outer="30" falloff="1" />
-                <lightAttenuation range="100" constant="1" linear="0.5" quadratic="0" />
-            </light>
         </node>
     </nodes>
 </scene>
