@@ -7,6 +7,7 @@
 #define _MW_STATE_GAME_STATE_H_
 
 #include "MWGameState.h"
+#include "Scene/DotSceneLoader.h"
 
 namespace MirrorWorld{
 
@@ -33,10 +34,13 @@ public:
     void handleInput();
 
 private:
-    StageGameState() : GameState() {}
+    StageGameState() : GameState(), m_SceneFile("TestStage.xml") {}
+    ~StageGameState() { delete m_pSceneLoader; }
     bool            m_bQuit;
     // Mouse State
     bool            m_bRMouseDown, m_bLMouseDown;
+    Ogre::String    m_SceneFile;
+    DotSceneLoader* m_pSceneLoader;
 }; // End of StageGameState
 
 } // End of namespace

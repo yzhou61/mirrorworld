@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib"
+				AdditionalDependencies="OgreMain_d.lib OgreTerrain_d.lib OgreRTShaderSystem_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(CEGUI_HOME)\lib;&quot;$(OGRE_HOME)\lib\debug&quot;"
@@ -93,7 +93,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -152,7 +151,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OIS.lib  CEGUIBase.lib CEGUIOgreRenderer.lib CEGUIExpatParser.lib CEGUIFalagardWRBase.lib"
+				AdditionalDependencies="OgreMain.lib OgreTerrain.lib OIS.lib OgreRTShaderSystem.lib CEGUIBase.lib CEGUIOgreRenderer.lib CEGUIExpatParser.lib CEGUIFalagardWRBase.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\release&quot;"
@@ -182,7 +181,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
@@ -231,6 +229,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Scene"
+				>
+				<File
+					RelativePath=".\Scene\DotSceneLoader.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -266,6 +272,18 @@
 				</File>
 				<File
 					RelativePath=".\Objects\MWObjectFactory.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Scene"
+				>
+				<File
+					RelativePath=".\Scene\DotSceneLoader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene\rapidxml.hpp"
 					>
 				</File>
 			</Filter>

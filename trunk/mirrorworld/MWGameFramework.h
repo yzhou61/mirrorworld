@@ -63,8 +63,6 @@ public:
 private:
     GameFramework();
     // TO DO:?
-    GameFramework(const GameFramework&);
-    GameFramework& operator= (const GameFramework&);
 
     Ogre::Overlay*			    m_pDebugOverlay;
     Ogre::Overlay*			    m_pInfoOverlay;

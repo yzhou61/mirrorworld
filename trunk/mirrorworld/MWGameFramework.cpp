@@ -36,11 +36,7 @@ GameFramework::GameFramework()
 GameFramework::~GameFramework()
 {
     if(m_pInputMgr)
-    {
-//        delete m_pKeyboard;
-//        delete m_pMouse;
         OIS::InputManager::destroyInputSystem(m_pInputMgr);
-    }
 
     delete m_pRoot;
 }
