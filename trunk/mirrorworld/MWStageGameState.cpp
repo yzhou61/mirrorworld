@@ -5,6 +5,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "MWStageGameState.h"
+#include "Objects/MWObjectFactory.h"
+#include "Objects/MWTestObj.h"
 
 namespace MirrorWorld{
 //////////////////////////////////////////////////////////////////////////
@@ -98,8 +100,10 @@ void StageGameState::resume()
 //////////////////////////////////////////////////////////////////////////
 void StageGameState::createScene()
 {
-    m_pSceneLoader = new DotSceneLoader();
-    m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr);
+/*    m_pSceneLoader = new DotSceneLoader();
+    m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr);*/
+    TestObj* obj = static_cast<TestObj*>(ObjectFactory::getSingleton().createObj("TestObj"));
+
 }
 
 //////////////////////////////////////////////////////////////////////////

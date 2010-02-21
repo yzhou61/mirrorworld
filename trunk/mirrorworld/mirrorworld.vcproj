@@ -228,6 +228,10 @@
 					RelativePath=".\Objects\MWObjectFactory.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Objects\MWTestObj.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Scene"
@@ -272,6 +276,10 @@
 				</File>
 				<File
 					RelativePath=".\Objects\MWObjectFactory.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWTestObj.h"
 					>
 				</File>
 			</Filter>

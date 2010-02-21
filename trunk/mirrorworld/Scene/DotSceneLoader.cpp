@@ -520,11 +520,6 @@ void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 	if(pElement)
 		pCamera->setOrientation(parseQuaternion(pElement));
 
-	// Process normal (?)
-/*	pElement = XMLNode->first_node("normal");
-	if(pElement)
-		;//!< @todo What to do with this element?*/
-
 	// Process lookTarget (?)
 	pElement = XMLNode->first_node("lookTarget");
 	if(pElement)
@@ -803,8 +798,6 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 	pElement = XMLNode->first_node("userDataReference");
 	if(pElement)
 		processUserDataReference(pElement, pEntity);
-
-	
 }
 
 void DotSceneLoader::processParticleSystem(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
@@ -845,8 +838,6 @@ void DotSceneLoader::processPlane(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
     Ogre::Real vTile = getAttribReal(XMLNode, "vTile", 1.0);
     Ogre::String material = getAttrib(XMLNode, "material");
     bool hasNormals = getAttribBool(XMLNode, "hasNormals");
-    bool castShadows = getAttribBool(XMLNode, "castShadows", false);
-    bool receiveShadows = getAttribBool(XMLNode, "receiveShadows", true);
 
     rapidxml::xml_node<>* pElement;
     
@@ -1129,6 +1120,7 @@ Ogre::String DotSceneLoader::getProperty(const Ogre::String &ndNm, const Ogre::S
 
 void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogre::Entity *pEntity)
 {
-	Ogre::String str = XMLNode->first_attribute("id")->value();
+	Ogre::String str = XMLNode->first_attribute("type")->value();
+    Ogre::LogManager::getSingleton().stream()<<"Create "<<str;
 	pEntity->setUserAny(Ogre::Any(str));
 }
