@@ -19,6 +19,7 @@ public:
     Object():m_Entity(NULL){}
     virtual ~Object(){}
     virtual Ogre::String name() = 0;
+    void setEntity(Ogre::Entity* entity) { m_Entity = entity; }
 private:
     Ogre::Entity* m_Entity;
 }; // End of MWObject
