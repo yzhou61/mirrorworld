@@ -8,6 +8,7 @@
 
 #include "MWGameState.h"
 #include "Scene/DotSceneLoader.h"
+#include "Objects/FPSCamera.h"
 
 namespace MirrorWorld{
 
@@ -30,17 +31,20 @@ public:
     bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id); 
     bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
-    void moveCamera();
     void handleInput();
-
 private:
-    StageGameState() : GameState(), m_SceneFile("TestStage.xml") {}
+    StageGameState() : GameState(), m_SceneFile("TestStage.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
-    bool            m_bQuit;
+    bool                m_bQuit;
     // Mouse State
-    bool            m_bRMouseDown, m_bLMouseDown;
-    Ogre::String    m_SceneFile;
-    DotSceneLoader* m_pSceneLoader;
+    bool                m_bRMouseDown, m_bLMouseDown;
+    Ogre::String        m_SceneFile;
+    DotSceneLoader*     m_pSceneLoader;
+    OgreNewt::World*    m_pPhyWorld;
+    OgreNewt::Debugger* m_pPhyWorldDebugger;
+    bool                m_bShowphyDebugger;
+    FPSCamera*          m_pFPSCamera;
+    OgreNewt::Body* bod;
 }; // End of StageGameState
 
 } // End of namespace

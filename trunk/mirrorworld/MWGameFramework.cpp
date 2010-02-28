@@ -48,10 +48,10 @@ bool GameFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListen
 {
     Ogre::LogManager* logMgr = new Ogre::LogManager();
 
-    m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
-    m_pLog->setDebugOutputEnabled(true);
-
+    m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, false, false);
+    
 #if defined(_DEBUG)
+    m_pLog->setDebugOutputEnabled(true);
     m_pRoot = new Ogre::Root("plugins_d.cfg");
 #else
     m_pRoot = new Ogre::Root("plugins.cfg");

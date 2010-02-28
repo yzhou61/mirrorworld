@@ -8,7 +8,6 @@
 #define _MW_OBJECT_FACTORY_H_
 
 #include <OgreString.h>
-#include <map>
 #include "MWObject.h"
 
 namespace MirrorWorld{
@@ -27,6 +26,6 @@ private:
     HashMap<Ogre::String, ObjectMaker*, Ogre::_StringHash> m_MakerMap;
 }; // End of ObjectFactory
 
-}
+} // End of MirrorWorld
 
 #endif

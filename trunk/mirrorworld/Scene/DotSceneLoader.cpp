@@ -16,10 +16,12 @@ DotSceneLoader::~DotSceneLoader()
 	}
 }
 
-void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, Ogre::SceneManager *yourSceneMgr, Ogre::SceneNode *pAttachNode, const Ogre::String &sPrependNode)
+void DotSceneLoader::parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, Ogre::SceneManager *yourSceneMgr, 
+                                   OgreNewt::World* world, Ogre::SceneNode *pAttachNode, const Ogre::String &sPrependNode)
 {
 	// set up shared object values
 	m_sGroupName = groupName;
+    mWorld = world;
 	mSceneMgr = yourSceneMgr;
 	m_sPrependNode = sPrependNode;
 	staticObjects.clear();
@@ -786,6 +788,13 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 		pEntity->setCastShadows(castShadows);
 		pParent->attachObject(pEntity);
 		
+        // Test, Need to be removed later
+        OgreNewt::CollisionPtr colPtr(new OgreNewt::CollisionPrimitives::TreeCollision(mWorld, pEntity, true, 1));
+        
+        OgreNewt::Body* body = new OgreNewt::Body(mWorld, colPtr);
+        body->setPositionOrientation(pParent->getPosition(), Ogre::Quaternion::IDENTITY);
+        body->attachNode(pParent);
+        
 		if(!materialFile.empty())
 			pEntity->setMaterialName(materialFile);
 	}
@@ -1122,5 +1131,5 @@ void DotSceneLoader::processUserDataReference(rapidxml::xml_node<>* XMLNode, Ogr
 {
 	Ogre::String str = XMLNode->first_attribute("type")->value();
     Ogre::LogManager::getSingleton().stream()<<"Create "<<str;
-	pEntity->setUserAny(Ogre::Any(str));
+//	pEntity->setUserAny(Ogre::Any(str));
 }
