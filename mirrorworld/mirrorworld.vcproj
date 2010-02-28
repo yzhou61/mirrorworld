@@ -236,6 +236,14 @@
 					RelativePath=".\Objects\MWPlayer.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Objects\MWStaticObject.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWWall.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Scene"
@@ -291,7 +299,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\MWWall.h"
+					RelativePath=".\Objects\MWStaticObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWWall.h"
 					>
 				</File>
 			</Filter>

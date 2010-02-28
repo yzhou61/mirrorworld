@@ -17,23 +17,9 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
-#include <dVector.h>
-#include <CustomUpVector.h>
-
 using Ogre::Real;
 using Ogre::Vector3;
 using Ogre::Quaternion;
-
-class UpVector : public OgreNewt::Joint
-{
-public:
-    UpVector(const OgreNewt::Body* body, const Vector3& pin );
-    ~UpVector();
-    void setPin( const Vector3& pin );
-    const Vector3& getPin() const;
-private:
-    Vector3 m_pin;
-};
 
 class FPSCamera
 {
@@ -51,12 +37,12 @@ public:
     void rightRelease();
     void update();
     void jump();
-    OgreNewt::MaterialID* getPhyMat() { return m_PhyMat; }
+    OgreNewt::MaterialID* getPhyMaterial() { return m_PhyMatID; }
 private:
     void cameraForceCallback(OgreNewt::Body *body, float timeStep, int threadIndex);
     Ogre::SceneManager*     m_SceneMgr;
     OgreNewt::World*        m_World;
-    OgreNewt::MaterialID*   m_PhyMat;
+    OgreNewt::MaterialID*   m_PhyMatID;
     Ogre::Camera*       m_Camera;
     Ogre::SceneNode*    m_CameraNode;
     Ogre::SceneNode*    m_CameraViewNode;
