@@ -29,6 +29,7 @@ void MirrorWorldMain::start()
     StageGameState::create("StageState");
 
     ObjectFactory::create();
+    ObjectFactory::getSingleton().registerObjType(new WallMaker(), "Wall");
 
     GameFramework::getSingletonPtr()->m_pLog->logMessage("Mirror World initialized!");
     GameStateManager::getSingletonPtr()->start(GameStateManager::getSingletonPtr()->findByName("MenuState"));

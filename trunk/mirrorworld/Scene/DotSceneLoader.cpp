@@ -1,3 +1,4 @@
+#include "../Objects/MWObjectFactory.h"
 #include "DotSceneLoader.h"
 #include <Ogre.h>
 #include <Terrain/OgreTerrain.h>
@@ -788,12 +789,10 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 		pEntity->setCastShadows(castShadows);
 		pParent->attachObject(pEntity);
 		
-        // Test, Need to be removed later
-        OgreNewt::CollisionPtr colPtr(new OgreNewt::CollisionPrimitives::TreeCollision(mWorld, pEntity, true, 1));
-        
-        OgreNewt::Body* body = new OgreNewt::Body(mWorld, colPtr);
-        body->setPositionOrientation(pParent->getPosition(), Ogre::Quaternion::IDENTITY);
-        body->attachNode(pParent);
+        // Modify
+        MirrorWorld::Object* obj = MirrorWorld::ObjectFactory::getSingleton().createObj("Wall");
+        Ogre::LogManager::getSingleton().stream()<<"Create "<<"Wall";
+        obj->setEntity(mSceneMgr, mWorld, pParent, pEntity);
         
 		if(!materialFile.empty())
 			pEntity->setMaterialName(materialFile);

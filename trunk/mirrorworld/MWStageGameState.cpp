@@ -103,11 +103,28 @@ void StageGameState::createScene()
     m_pSceneLoader = new DotSceneLoader();
     m_pPhyWorld = new OgreNewt::World();
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-10000, -10000, -10000, 10000, 10000, 10000));
+    ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
-
     m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);
+    setupPhyMaterialPairs();
+
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
+void StageGameState::setupPhyMaterialPairs()
+{
+    OgreNewt::MaterialID* matWall = ObjectFactory::getSingleton().getPhyMaterial("Wall");
+    OgreNewt::MaterialID* matCam = m_pFPSCamera->getPhyMaterial();
+    OgreNewt::MaterialPair* materialPairCamWall = new OgreNewt::MaterialPair(m_pPhyWorld, matCam, matWall);
+
+    materialPairCamWall->setDefaultFriction(0.0f, 0.0f);
+    materialPairCamWall->setDefaultSoftness(1);
+    materialPairCamWall->setDefaultElasticity(0);
+    materialPairCamWall->setContinuousCollisionMode(0);
 }
 
 //////////////////////////////////////////////////////////////////////////

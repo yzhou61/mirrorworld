@@ -17,7 +17,6 @@ class StageGameState : public GameState
 public:
     static void create(const Ogre::String name);
     void enter();
-    void createScene();
     void exit();
     bool pause();
     void resume();
@@ -35,6 +34,8 @@ public:
 private:
     StageGameState() : GameState(), m_SceneFile("TestStage.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
+    void                createScene();
+    void                setupPhyMaterialPairs();
     bool                m_bQuit;
     // Mouse State
     bool                m_bRMouseDown, m_bLMouseDown;

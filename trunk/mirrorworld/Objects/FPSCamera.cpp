@@ -3,30 +3,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "FPSCamera.h"
 
-UpVector::UpVector(const OgreNewt::Body* body, const Vector3& pin):Joint(), m_pin(pin.normalisedCopy())
-{
-    dVector dPin(m_pin.x, m_pin.y, m_pin.z, 1.0f);
-    CustomUpVector* support_joint = new CustomUpVector(dPin, body->getNewtonBody());
-    SetSupportJoint(support_joint);
-}
-
-UpVector::~UpVector()
-{
-}
-
-void UpVector::setPin(const Vector3& pin)
-{
-    CustomUpVector* up_vector = static_cast<CustomUpVector*>(m_joint);
-    m_pin = pin.normalisedCopy();
-    dVector dPin(m_pin.x, m_pin.y, m_pin.z, 1.0f);
-    up_vector->SetPinDir(dPin);
-}
-
-const Vector3& UpVector::getPin() const
-{
-    return m_pin;
-}
-
 FPSCamera::FPSCamera(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Camera* camera)
 {
     if((m_SceneMgr = sceneMgr) == NULL)
@@ -57,7 +33,7 @@ FPSCamera::FPSCamera(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre:
     m_CameraNode->setPosition(Vector3(0,30,0));
 
     OgreNewt::ConvexCollisionPtr camCollision(
-        new OgreNewt::CollisionPrimitives::Box(m_World, m_Size, 0));
+        new OgreNewt::CollisionPrimitives::Ellipsoid(m_World, m_Size, 0));
     m_CamBody = new OgreNewt::Body(m_World, camCollision);
     
     Vector3 inertia, offset;
@@ -72,14 +48,12 @@ FPSCamera::FPSCamera(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre:
     m_CamBody->setCustomForceAndTorqueCallback<FPSCamera>(&FPSCamera::cameraForceCallback, this);
     m_CamBody->setPositionOrientation(m_CameraNode->getPosition(), Ogre::Quaternion::IDENTITY);
     m_CamBody->attachNode(m_CameraNode);
-
-//    UpVector* upVector = new UpVector(m_CamBody, Vector3::UNIT_Y);
     
     m_CameraViewNode = m_CameraNode->createChildSceneNode(Vector3(0, 5, 0));
     m_CameraViewNode->attachObject(m_Camera);
 
-//    m_PhyMat = new OgreNewt::MaterialID(m_World);
-//    m_CamBody->setMaterialGroupID(m_PhyMat);
+    m_PhyMatID = new OgreNewt::MaterialID(m_World);
+    m_CamBody->setMaterialGroupID(m_PhyMatID);
 }
 
 FPSCamera::~FPSCamera()
