@@ -6,7 +6,6 @@
 
 #include "MWStageGameState.h"
 #include "Objects/MWObjectFactory.h"
-#include "Objects/MWTestObj.h"
 
 namespace MirrorWorld{
 //////////////////////////////////////////////////////////////////////////
@@ -29,8 +28,8 @@ void StageGameState::enter()
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));		
 
     m_pCamera = m_pSceneMgr->createCamera("GameCam");
-    m_pCamera->setPosition(Vector3(5, 60, 60));
-    m_pCamera->lookAt(Vector3(5, 20, 0));
+//    m_pCamera->setPosition(Vector3(5, 60, 60));
+//    m_pCamera->lookAt(Vector3(0, 0, 0));
     m_pCamera->setNearClipDistance(5);
 
     m_pCamera->setAspectRatio(Real(GameFramework::getSingletonPtr()->m_pViewport->getActualWidth()) / 
@@ -70,6 +69,7 @@ void StageGameState::exit()
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         GameFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
+    delete m_pPhyWorld;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -100,10 +100,14 @@ void StageGameState::resume()
 //////////////////////////////////////////////////////////////////////////
 void StageGameState::createScene()
 {
-/*    m_pSceneLoader = new DotSceneLoader();
-    m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr);*/
-    TestObj* obj = static_cast<TestObj*>(ObjectFactory::getSingleton().createObj("TestObj"));
+    m_pSceneLoader = new DotSceneLoader();
+    m_pPhyWorld = new OgreNewt::World();
+    m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-10000, -10000, -10000, 10000, 10000, 10000));
+    m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
 
+    m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);
+    m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
+    m_pPhyWorldDebugger->init(m_pSceneMgr);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -118,7 +122,20 @@ void StageGameState::update(double timeSinceLastFrame)
     }
 
     handleInput();
-    moveCamera();
+    m_pFPSCamera->update();
+    m_pPhyWorld->update(static_cast<Ogre::Real>(timeSinceLastFrame));
+    if (m_bShowphyDebugger)
+    {
+        m_pPhyWorldDebugger->startRaycastRecording();
+        m_pPhyWorldDebugger->clearRaycastsRecorded();
+        m_pPhyWorldDebugger->showDebugInformation();
+    }
+    else
+    {
+        m_pPhyWorldDebugger->clearRaycastsRecorded();
+        m_pPhyWorldDebugger->stopRaycastRecording();
+        m_pPhyWorldDebugger->hideDebugInformation();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,7 +149,32 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
         return true;
     }
 
-    GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
+    switch (keyEventRef.key)
+    {
+    case OIS::KC_W:
+        m_pFPSCamera->up();
+    	break;
+    case OIS::KC_S:
+        m_pFPSCamera->down();
+        break;
+    case OIS::KC_A:
+        m_pFPSCamera->left();
+        break;
+    case OIS::KC_D:
+        m_pFPSCamera->right();
+        break;
+    case OIS::KC_SPACE:
+        m_pFPSCamera->jump();
+        break;
+    case OIS::KC_F3:
+        if (m_pPhyWorldDebugger)
+            m_bShowphyDebugger = !m_bShowphyDebugger;
+        break;
+    default:
+        GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
+        break;
+    }
+
     return true;
 }
 
@@ -141,7 +183,25 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
 //////////////////////////////////////////////////////////////////////////
 bool StageGameState::keyReleased(const OIS::KeyEvent &keyEventRef)
 {
-    GameFramework::getSingletonPtr()->keyReleased(keyEventRef);
+    switch (keyEventRef.key)
+    {
+    case OIS::KC_W:
+        m_pFPSCamera->upRelease();
+        break;
+    case OIS::KC_S:
+        m_pFPSCamera->downRelease();
+        break;
+    case OIS::KC_A:
+        m_pFPSCamera->leftRelease();
+        break;
+    case OIS::KC_D:
+        m_pFPSCamera->rightRelease();
+        break;
+    default:
+        GameFramework::getSingletonPtr()->keyReleased(keyEventRef);
+        break;
+    }
+    
     return true;
 }
 
@@ -153,11 +213,7 @@ bool StageGameState::mouseMoved(const OIS::MouseEvent &evt)
     CEGUI::System::getSingletonPtr()->injectMouseWheelChange((float)evt.state.Z.rel);
     CEGUI::System::getSingletonPtr()->injectMouseMove((float)evt.state.X.rel, (float)evt.state.Y.rel);
 
-    if (m_bRMouseDown)
-    {
-        m_pCamera->yaw(Degree(evt.state.X.rel * -0.1f));
-        m_pCamera->pitch(Degree(evt.state.Y.rel * -0.1f));
-    }
+    m_pFPSCamera->moveCamera(evt.state.X.rel, evt.state.Y.rel);
 
     return true;
 }
@@ -169,7 +225,6 @@ bool StageGameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
 {
     if (id == OIS::MB_Left)
     {
-
         m_bLMouseDown = true;
         CEGUI::System::getSingletonPtr()->injectMouseButtonDown(CEGUI::LeftButton);
     } 
@@ -197,14 +252,6 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
     }
 
     return true;
-}
-
-//////////////////////////////////////////////////////////////////////////
-//
-//////////////////////////////////////////////////////////////////////////
-void StageGameState::moveCamera()
-{
-
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(CEGUI_HOME)\cegui\include;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(NEWTON_HOME)\OgreNewt\include&quot;;&quot;$(NEWTON_HOME)\include&quot;;&quot;$(CEGUI_HOME)\cegui\include&quot;;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;;C:\Users\cxyzs7\Downloads\boost_1_42_0\boost_1_42_0"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -64,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OgreTerrain_d.lib OgreRTShaderSystem_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib"
+				AdditionalDependencies="OgreMain_d.lib OgreTerrain_d.lib OgreRTShaderSystem_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib newton.lib JointLibrary_d.lib dMath_d.lib OgreNewt_d.lib "
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(CEGUI_HOME)\lib;&quot;$(OGRE_HOME)\lib\debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\debug&quot;;&quot;$(NEWTON_HOME)\OgreNewt\lib&quot;;&quot;$(NEWTON_HOME)\lib\x32&quot;;&quot;$(NEWTON_HOME)\lib\x32\dll_vs9&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mirrorworld.pdb"
 				SubSystem="2"
@@ -126,7 +126,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="$(CEGUI_HOME)\cegui\include;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(NEWTON_HOME)\OgreNewt\include&quot;;&quot;$(NEWTON_HOME)\include&quot;;&quot;$(CEGUI_HOME)\cegui\include&quot;;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;;C:\Users\cxyzs7\Downloads\boost_1_42_0\boost_1_42_0"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -151,10 +151,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OgreTerrain.lib OIS.lib OgreRTShaderSystem.lib CEGUIBase.lib CEGUIOgreRenderer.lib CEGUIExpatParser.lib CEGUIFalagardWRBase.lib"
+				AdditionalDependencies="OgreMain.lib OgreTerrain.lib OIS.lib OgreRTShaderSystem.lib CEGUIBase.lib CEGUIOgreRenderer.lib CEGUIExpatParser.lib CEGUIFalagardWRBase.lib newton.lib OgreNewt.lib JointLibrary.lib dMath.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\release&quot;"
+				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\release&quot;;&quot;$(NEWTON_HOME)\OgreNewt\lib&quot;;&quot;$(NEWTON_HOME)\lib\x32&quot;;&quot;$(NEWTON_HOME)\lib\x32\dll_vs9&quot;"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -221,6 +221,10 @@
 				Name="Objects"
 				>
 				<File
+					RelativePath=".\Objects\FPSCamera.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Objects\MWObject.cpp"
 					>
 				</File>
@@ -229,7 +233,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Objects\MWTestObj.cpp"
+					RelativePath=".\Objects\MWPlayer.cpp"
 					>
 				</File>
 			</Filter>
@@ -271,6 +275,10 @@
 				Name="Objects"
 				>
 				<File
+					RelativePath=".\Objects\FPSCamera.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Objects\MWObject.h"
 					>
 				</File>
@@ -279,7 +287,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Objects\MWTestObj.h"
+					RelativePath=".\Objects\MWPlayer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MWWall.h"
 					>
 				</File>
 			</Filter>

@@ -20,7 +20,7 @@
     </RESOURCEDIRECTORIES>
   <CAMERASPEED value="11"></CAMERASPEED>
   <CAMERAPOSITIONS count="0">
-    <OPTION id="0" position="135.812 160.105 124.313" orientation="0.799919 -0.239796 0.526948 0.157967"></OPTION>
+    <OPTION id="0" position="107.675 232.071 328.501" orientation="0.946952 -0.301983 0.104752 0.0334071"></OPTION>
   </CAMERAPOSITIONS>
     <LAYERS>
       <LAYER id="0" name="Layer 0" visible="true"></LAYER>
@@ -94,9 +94,9 @@
   <OBJECT object_id="275887296" name="Viewport1" typename="Viewport Object">
     <PROPERTY id="camera::clipdistance" type="8" value="1 1000"></PROPERTY>
     <PROPERTY id="camera::fov" type="6" value="1"></PROPERTY>
-    <PROPERTY id="camera::orientation" type="13" value="0.799919 -0.239796 0.526948 0.157967"></PROPERTY>
+    <PROPERTY id="camera::orientation" type="13" value="0.946954 -0.301983 0.104752 0.0334071"></PROPERTY>
     <PROPERTY id="camera::polymode" type="2" value="3"></PROPERTY>
-    <PROPERTY id="camera::position" type="9" value="135.812 160.105 124.313"></PROPERTY>
+    <PROPERTY id="camera::position" type="9" value="107.675 232.071 328.501"></PROPERTY>
     <PROPERTY id="camera::viewmode" type="2" value="0"></PROPERTY>
     <PROPERTY id="colour" type="11" value="0 0 0 1"></PROPERTY>
     <PROPERTY id="compositorcount" type="2" value="0"></PROPERTY>
@@ -107,6 +107,40 @@
     <PROPERTY id="placement" type="10" value="0 0 1 1"></PROPERTY>
     <PROPERTY id="shadows" type="12" value="true"></PROPERTY>
     <PROPERTY id="skies" type="12" value="true"></PROPERTY>
+    <CUSTOMPROPERTIES>
+    </CUSTOMPROPERTIES>
+  </OBJECT>
+
+  <OBJECT object_id="951719680" name="Bottom" typename="Entity Object" parentnode="SceneManager">
+    <PROPERTY id="autotracktarget" type="7" value="None"></PROPERTY>
+    <PROPERTY id="castshadows" type="12" value="false"></PROPERTY>
+    <PROPERTY id="layer" type="2" value="0"></PROPERTY>
+    <PROPERTY id="locked" type="12" value="false"></PROPERTY>
+    <PROPERTY id="meshfile" type="7" value="box.mesh"></PROPERTY>
+    <PROPERTY id="orientation" type="13" value="1 0 0 0"></PROPERTY>
+    <PROPERTY id="position" type="9" value="0 0 0"></PROPERTY>
+    <PROPERTY id="renderingdistance" type="6" value="5000"></PROPERTY>
+    <PROPERTY id="scale" type="9" value="1000 0.5 1000"></PROPERTY>
+    <PROPERTY id="subentity0::material" type="7" value="RustyBarrel"></PROPERTY>
+    <PROPERTY id="subentity0::visible" type="12" value="true"></PROPERTY>
+    <PROPERTY id="subentitycount" type="2" value="1"></PROPERTY>
+    <CUSTOMPROPERTIES>
+    </CUSTOMPROPERTIES>
+  </OBJECT>
+
+  <OBJECT object_id="471724608" name="Wall1" typename="Entity Object" parentnode="SceneManager">
+    <PROPERTY id="autotracktarget" type="7" value="None"></PROPERTY>
+    <PROPERTY id="castshadows" type="12" value="false"></PROPERTY>
+    <PROPERTY id="layer" type="2" value="0"></PROPERTY>
+    <PROPERTY id="locked" type="12" value="false"></PROPERTY>
+    <PROPERTY id="meshfile" type="7" value="box.mesh"></PROPERTY>
+    <PROPERTY id="orientation" type="13" value="1 0 0 0"></PROPERTY>
+    <PROPERTY id="position" type="9" value="-500 500 0"></PROPERTY>
+    <PROPERTY id="renderingdistance" type="6" value="5000"></PROPERTY>
+    <PROPERTY id="scale" type="9" value="0.5 1000 1000"></PROPERTY>
+    <PROPERTY id="subentity0::material" type="7" value="RustyBarrel"></PROPERTY>
+    <PROPERTY id="subentity0::visible" type="12" value="true"></PROPERTY>
+    <PROPERTY id="subentitycount" type="2" value="1"></PROPERTY>
     <CUSTOMPROPERTIES>
     </CUSTOMPROPERTIES>
   </OBJECT>
@@ -128,42 +162,36 @@
     </CUSTOMPROPERTIES>
   </OBJECT>
 
-  <OBJECT object_id="743736064" name="robot0" typename="Entity Object" parentnode="SceneManager">
+  <OBJECT object_id="382366432" name="Wall2" typename="Entity Object" parentnode="SceneManager">
     <PROPERTY id="autotracktarget" type="7" value="None"></PROPERTY>
     <PROPERTY id="castshadows" type="12" value="false"></PROPERTY>
     <PROPERTY id="layer" type="2" value="0"></PROPERTY>
     <PROPERTY id="locked" type="12" value="false"></PROPERTY>
-    <PROPERTY id="meshfile" type="7" value="robot.mesh"></PROPERTY>
+    <PROPERTY id="meshfile" type="7" value="box.mesh"></PROPERTY>
     <PROPERTY id="orientation" type="13" value="1 0 0 0"></PROPERTY>
-    <PROPERTY id="position" type="9" value="-10 0 -20"></PROPERTY>
+    <PROPERTY id="position" type="9" value="500 500 0"></PROPERTY>
     <PROPERTY id="renderingdistance" type="6" value="5000"></PROPERTY>
-    <PROPERTY id="scale" type="9" value="1 1 1"></PROPERTY>
-    <PROPERTY id="subentity0::material" type="7" value="Examples/Robot"></PROPERTY>
+    <PROPERTY id="scale" type="9" value="0.5 1000 1000"></PROPERTY>
+    <PROPERTY id="subentity0::material" type="7" value="RustyBarrel"></PROPERTY>
     <PROPERTY id="subentity0::visible" type="12" value="true"></PROPERTY>
     <PROPERTY id="subentitycount" type="2" value="1"></PROPERTY>
     <CUSTOMPROPERTIES>
     </CUSTOMPROPERTIES>
   </OBJECT>
 
-  <OBJECT object_id="425153344" name="Buttom" typename="Plane Object" parentnode="SceneManager">
+  <OBJECT object_id="611987648" name="Wall4" typename="Entity Object" parentnode="SceneManager">
     <PROPERTY id="autotracktarget" type="7" value="None"></PROPERTY>
     <PROPERTY id="castshadows" type="12" value="false"></PROPERTY>
-    <PROPERTY id="distance" type="6" value="0"></PROPERTY>
-    <PROPERTY id="hasnormals" type="12" value="true"></PROPERTY>
-    <PROPERTY id="height" type="6" value="10"></PROPERTY>
     <PROPERTY id="layer" type="2" value="0"></PROPERTY>
     <PROPERTY id="locked" type="12" value="false"></PROPERTY>
-    <PROPERTY id="material" type="7" value="Examples/Robot"></PROPERTY>
-    <PROPERTY id="normal" type="9" value="0 1 0"></PROPERTY>
-    <PROPERTY id="numcoordsets" type="2" value="1"></PROPERTY>
+    <PROPERTY id="meshfile" type="7" value="box.mesh"></PROPERTY>
     <PROPERTY id="orientation" type="13" value="1 0 0 0"></PROPERTY>
-    <PROPERTY id="position" type="9" value="0 0 0"></PROPERTY>
-    <PROPERTY id="scale" type="9" value="10 1 10"></PROPERTY>
-    <PROPERTY id="utile" type="2" value="2"></PROPERTY>
-    <PROPERTY id="vtile" type="2" value="2"></PROPERTY>
-    <PROPERTY id="width" type="6" value="10"></PROPERTY>
-    <PROPERTY id="xsegments" type="2" value="2"></PROPERTY>
-    <PROPERTY id="ysegments" type="2" value="2"></PROPERTY>
+    <PROPERTY id="position" type="9" value="0 500 -500"></PROPERTY>
+    <PROPERTY id="renderingdistance" type="6" value="5000"></PROPERTY>
+    <PROPERTY id="scale" type="9" value="1000 1000 0.5"></PROPERTY>
+    <PROPERTY id="subentity0::material" type="7" value="RustyBarrel"></PROPERTY>
+    <PROPERTY id="subentity0::visible" type="12" value="true"></PROPERTY>
+    <PROPERTY id="subentitycount" type="2" value="1"></PROPERTY>
     <CUSTOMPROPERTIES>
     </CUSTOMPROPERTIES>
   </OBJECT>

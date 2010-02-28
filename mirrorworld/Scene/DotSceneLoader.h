@@ -7,6 +7,7 @@
 #include <OgreQuaternion.h>
 #include <OgreResourceGroupManager.h>
 #include <vector>
+#include <OgreNewt.h>
 
 #include "rapidxml.hpp"
 
@@ -36,7 +37,8 @@
 		DotSceneLoader() : mSceneMgr(0), mTerrainGroup(0) {}
 		virtual ~DotSceneLoader();
 
-		void parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, Ogre::SceneManager *yourSceneMgr, Ogre::SceneNode *pAttachNode = NULL, const Ogre::String &sPrependNode = "");
+		void parseDotScene(const Ogre::String &SceneName, const Ogre::String &groupName, Ogre::SceneManager *yourSceneMgr, 
+            OgreNewt::World* world, Ogre::SceneNode *pAttachNode = NULL, const Ogre::String &sPrependNode = "");
 		Ogre::String getProperty(const Ogre::String &ndNm, const Ogre::String &prop);
 
 		Ogre::TerrainGroup* getTerrainGroup() { return mTerrainGroup; }
@@ -85,7 +87,7 @@
 		Ogre::Quaternion parseQuaternion(rapidxml::xml_node<>* XMLNode);
 		Ogre::ColourValue parseColour(rapidxml::xml_node<>* XMLNode);
 		
-
+        OgreNewt::World* mWorld;
 		Ogre::SceneManager *mSceneMgr;
 		Ogre::SceneNode *mAttachNode;
 		Ogre::String m_sGroupName;
