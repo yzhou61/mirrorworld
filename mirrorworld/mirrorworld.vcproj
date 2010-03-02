@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				InlineFunctionExpansion="1"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
@@ -210,7 +210,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MWLogicManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MWMenuGameState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Objects\MWMirrorBall.cpp"
 				>
 			</File>
 			<File
@@ -222,6 +230,14 @@
 				>
 				<File
 					RelativePath=".\Objects\FPSCamera.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWLaser.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWMirror.cpp"
 					>
 				</File>
 				<File
@@ -272,6 +288,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MWLogicManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MWMenuGameState.h"
 				>
 			</File>
@@ -284,6 +304,18 @@
 				>
 				<File
 					RelativePath=".\Objects\FPSCamera.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWLaser.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWMirror.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWMirrorBall.h"
 					>
 				</File>
 				<File

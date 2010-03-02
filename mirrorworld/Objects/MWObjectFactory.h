@@ -11,6 +11,10 @@
 #include <vector>
 #include "MWObject.h"
 #include "MWWall.h"
+#include "MWLaser.h"
+#include "MWPlayer.h"
+#include "MWMirror.h"
+#include "MWMirrorBall.h"
 
 namespace MirrorWorld{
 //////////////////////////////////////////////////////////////////////////
@@ -27,6 +31,7 @@ public:
     OgreNewt::MaterialID* getPhyMaterial(Ogre::String type);
 private:
     ObjectFactory();
+    unsigned int        m_ObjCount;
     HashMap<Ogre::String, ObjectMaker*, Ogre::_StringHash> m_MakerMap;
     std::vector<Object*> m_ObjectList;
 }; // End of ObjectFactory

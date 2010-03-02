@@ -25,7 +25,9 @@ void StageGameState::enter()
     GameFramework::getSingletonPtr()->m_pLog->logMessage("Entering GameState...");
 
     m_pSceneMgr = GameFramework::getSingletonPtr()->m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));		
+    Ogre::AxisAlignedBox worldBox(-1e6, -1e6, -1e6, 1e6, 1e6, 1e6);
+    m_pSceneMgr->setOption("Size", &worldBox);
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
 
     m_pCamera = m_pSceneMgr->createCamera("GameCam");
 //    m_pCamera->setPosition(Vector3(5, 60, 60));
@@ -102,7 +104,7 @@ void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
     m_pPhyWorld = new OgreNewt::World();
-    m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-10000, -10000, -10000, 10000, 10000, 10000));
+    m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-1e6, -1e6, -1e6, 1e6, 1e6, 1e6));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
     m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);

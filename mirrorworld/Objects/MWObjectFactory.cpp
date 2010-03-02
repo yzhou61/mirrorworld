@@ -9,7 +9,7 @@
 template<> MirrorWorld::ObjectFactory* Ogre::Singleton<MirrorWorld::ObjectFactory>::ms_Singleton = NULL;
 
 namespace MirrorWorld {
-ObjectFactory::ObjectFactory()
+    ObjectFactory::ObjectFactory():m_ObjCount(NULL)
 {
 }
 
@@ -23,7 +23,7 @@ Object* ObjectFactory::createObj(Ogre::String type)
     ObjectMaker* objMaker = m_MakerMap[type];
     if (objMaker)
     {
-        Object* obj = objMaker->create();
+        Object* obj = objMaker->create(m_ObjCount++);
         m_ObjectList.push_back(obj);
         return obj;
     }

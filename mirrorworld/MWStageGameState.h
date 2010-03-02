@@ -34,6 +34,7 @@ public:
 private:
     StageGameState() : GameState(), m_SceneFile("TestStage.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
+private:
     void                createScene();
     void                setupPhyMaterialPairs();
     bool                m_bQuit;
