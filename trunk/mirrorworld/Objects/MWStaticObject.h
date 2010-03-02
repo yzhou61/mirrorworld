@@ -10,9 +10,10 @@ namespace MirrorWorld {
 class StaticObject : public Object
 {
 public:
-    StaticObject():m_pPhyBody(NULL), m_pPhyMatID(NULL) {}
+    StaticObject(unsigned int id, bool attachable = true, bool reflective = false):Object(id, attachable, reflective), 
+        m_pPhyBody(NULL), m_pPhyMatID(NULL) {}
     virtual ~StaticObject() {}
-    virtual Ogre::String name() = 0;
+    virtual Ogre::String name() const = 0;
     void setPhyMaterial(OgreNewt::MaterialID* matID) { m_pPhyMatID = matID; }
     virtual void setEntity(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::SceneNode* node, Ogre::Entity* entity);
 private:

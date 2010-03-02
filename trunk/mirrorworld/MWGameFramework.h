@@ -62,10 +62,8 @@ public:
 
 private:
     GameFramework();
-    // TO DO:?
-
+private:
     Ogre::Overlay*			    m_pDebugOverlay;
-    Ogre::Overlay*			    m_pInfoOverlay;
     int				            m_iNumScreenShots;
 }; // End of GameFramework
 

@@ -7,7 +7,8 @@ namespace MirrorWorld {
 
 void StaticObject::setEntity(Ogre::SceneManager *sceneMgr, OgreNewt::World *world, Ogre::SceneNode *node, Ogre::Entity *entity)
 {
-    m_Entity = entity; m_Entity->setUserAny(Ogre::Any(this));
+    m_Entity = entity; 
+    m_Entity->setUserAny(Ogre::Any(this));
 
     OgreNewt::CollisionPtr colPtr(new OgreNewt::CollisionPrimitives::TreeCollision(world, entity, true, 0));
     m_pPhyBody = new OgreNewt::Body(world, colPtr);

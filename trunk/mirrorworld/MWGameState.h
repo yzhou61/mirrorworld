@@ -32,7 +32,7 @@ public:
 protected:
     GameState();
     virtual ~GameState() {}
-
+protected:
     GameStateManager*       m_pStateManager;
     Ogre::Camera*           m_pCamera;
     Ogre::SceneManager*		m_pSceneMgr;

@@ -10,9 +10,9 @@ namespace MirrorWorld {
 class Wall : public StaticObject
 {
 public:
-    Wall() {}
+    Wall(unsigned int id) : StaticObject(id) { }
     ~Wall() {}
-    Ogre::String name() { return "Wall"; }
+    Ogre::String name() const { return "Wall"; }
 }; // End of Wall
 
 class WallMaker : public ObjectMaker
@@ -20,7 +20,8 @@ class WallMaker : public ObjectMaker
 public:
     WallMaker(){}
     ~WallMaker(){}
-    Wall* create() const { Wall* wall = new Wall(); wall->setPhyMaterial(m_pPhyMatID); return wall; };
+    Wall* create(unsigned int id) const 
+    { Wall* wall = new Wall(id); wall->setPhyMaterial(m_pPhyMatID); return wall; }
     void setupEngine(Ogre::SceneManager* sceneMgr, OgreNewt::World* world = NULL);
 }; // End of WallMaker
 

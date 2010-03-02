@@ -27,7 +27,6 @@ GameFramework::GameFramework()
     m_pMouse = NULL;
 
     m_pDebugOverlay = NULL;
-    m_pInfoOverlay = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////
