@@ -34,7 +34,7 @@ public:
 
 	void reflectReal();
 
-    void setEntity(Ogre::Entity* entity) { m_Entity = entity; }
+    void setEntity(Ogre::Entity* entity) { m_pEntity = entity; }
     void setSceneNode(Ogre::SceneNode *node) { m_Node = node; }
     void setPosition(Ogre::Vector3 p) { m_Node->setPosition(p); }
 

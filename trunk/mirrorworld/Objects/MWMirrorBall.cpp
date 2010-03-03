@@ -2,11 +2,3 @@
 //
 //////////////////////////////////////////////////////////////////////////
 #include "MWMirrorBall.h"
-
-namespace MirrorWorld
-{
-void MirrorBall::update(double timeElasped)
-{
-
-}
-}

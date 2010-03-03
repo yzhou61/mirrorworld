@@ -2,11 +2,3 @@
 //
 //////////////////////////////////////////////////////////////////////////
 #include "MWLaser.h"
-
-namespace MirrorWorld{
-void Laser::update(double timeElasped)
-{
-
-}
-
-}

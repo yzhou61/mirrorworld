@@ -168,3 +168,13 @@ void FPSCamera::update()
     m_xRotation = 0;
     m_yRotation = 0;
 }
+
+Vector3 FPSCamera::getPosition()
+{
+    
+}
+
+Vector3 FPSCamera::getDirection()
+{
+
+}
