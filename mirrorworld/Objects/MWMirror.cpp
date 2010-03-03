@@ -16,9 +16,9 @@ void Mirror::init(SceneManager *mgr, Vector3 normal, Real distance, size_t width
 	MeshManager::getSingleton().createPlane("mirror" + m_Identity,
 	  ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, *plane, 
       static_cast<Real>(width), static_cast<Real>(height), 20, 20, true, 1, 5, 5);
-	m_Entity = m_SceneMgr->createEntity("mirrorEnt" + m_Identity, "mirror" + m_Identity);
+	m_pEntity = m_SceneMgr->createEntity("mirrorEnt" + m_Identity, "mirror" + m_Identity);
 	m_Node = m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_Node->attachObject(m_Entity);
+	m_Node->attachObject(m_pEntity);
 	m_Node->attachObject(plane);
 	m_Node->translate(0, static_cast<Real>(height/2.0), 0);
 
@@ -38,14 +38,14 @@ void Mirror::update() {
 	Ogre::RenderTexture *renderTexture = textures.at(index)->getBuffer()->getRenderTarget();
 	renderTexture->setAutoUpdated(false);
 
-	m_Entity->setVisible(false);
+	m_pEntity->setVisible(false);
 	eyes.at(index)->enableReflection(plane);
 	eyes.at(index)->enableCustomNearClipPlane(plane);
 	renderTexture->update();
-	m_Entity->setMaterialName("RttMat" + name);
+	m_pEntity->setMaterialName("RttMat" + name);
 	eyes.at(index)->disableReflection();
 	eyes.at(index)->disableCustomNearClipPlane();
-	m_Entity->setVisible(true);
+	m_pEntity->setVisible(true);
 
 	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << name;
 }
@@ -72,7 +72,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Real 
 		plane->normal * 2 * plane->getDistance(eyes.at(index)->getPosition());
 	eyeDirections.at(index) = 2 * plane->projectVector(eyes.at(index)->getDirection()) - eyes.at(index)->getDirection();
 
-	AxisAlignedBox aab = m_Entity->getWorldBoundingBox();
+	AxisAlignedBox aab = m_pEntity->getWorldBoundingBox();
 	
 	Real omLeft, omRight, omTop, omBottom;
 	omLeft = 100;
@@ -221,7 +221,7 @@ size_t Mirror::getNewResourceIndex() {
 }
 
 Ogre::AxisAlignedBox Mirror::getBound() {
-	return m_Entity->getWorldBoundingBox();
+	return m_pEntity->getWorldBoundingBox();
 }
 
 Ogre::MovablePlane *Mirror::getPlane() {
@@ -235,10 +235,10 @@ void Mirror::reflectReal() {
 		std::stringstream ss;
 		ss << m_Identity << "-" << index;
 		String name = ss.str();
-		m_Entity->setMaterialName("RttMat" + name);
+		m_pEntity->setMaterialName("RttMat" + name);
 		GameFramework::getSingletonPtr()->m_pLog->stream() << "real " << name;
 	} else {
-		m_Entity->setMaterialName("Examples/Rockwall");
+		m_pEntity->setMaterialName("Examples/Rockwall");
 		GameFramework::getSingletonPtr()->m_pLog->stream() << "real mirror";
 	}
 }

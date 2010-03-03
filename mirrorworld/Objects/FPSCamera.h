@@ -38,6 +38,8 @@ public:
     void update();
     void jump();
     OgreNewt::MaterialID* getPhyMaterial() { return m_PhyMatID; }
+    Vector3 getPosition();
+    Vector3 getDirection();
 private:
     void cameraForceCallback(OgreNewt::Body *body, float timeStep, int threadIndex);
     Ogre::SceneManager*     m_SceneMgr;

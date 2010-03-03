@@ -7,6 +7,8 @@
 #include "MWStageGameState.h"
 #include "Objects/MWObjectFactory.h"
 
+float MirrorWorld::StageGameState::m_WorldSize = 1e6;
+
 namespace MirrorWorld{
 //////////////////////////////////////////////////////////////////////////
 //
@@ -25,7 +27,7 @@ void StageGameState::enter()
     GameFramework::getSingletonPtr()->m_pLog->logMessage("Entering GameState...");
 
     m_pSceneMgr = GameFramework::getSingletonPtr()->m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
-    Ogre::AxisAlignedBox worldBox(-1e6, -1e6, -1e6, 1e6, 1e6, 1e6);
+    Ogre::AxisAlignedBox worldBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize);
     m_pSceneMgr->setOption("Size", &worldBox);
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
 
@@ -104,7 +106,7 @@ void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
     m_pPhyWorld = new OgreNewt::World();
-    m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-1e6, -1e6, -1e6, 1e6, 1e6, 1e6));
+    m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
     m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);
@@ -112,6 +114,9 @@ void StageGameState::createScene()
 
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
+
+    m_pLogicMgr = new LogicManager();
+    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, 3, m_pCamera);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,6 +148,7 @@ void StageGameState::update(double timeSinceLastFrame)
     handleInput();
     m_pFPSCamera->update();
     m_pPhyWorld->update(static_cast<Ogre::Real>(timeSinceLastFrame));
+    m_pLogicMgr->update(timeSinceLastFrame);
     if (m_bShowphyDebugger)
     {
         m_pPhyWorldDebugger->startRaycastRecording();
@@ -246,6 +252,7 @@ bool StageGameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
     {
         m_bLMouseDown = true;
         CEGUI::System::getSingletonPtr()->injectMouseButtonDown(CEGUI::LeftButton);
+        m_pLogicMgr->triggerLaser();
     } 
     else if (id == OIS::MB_Right)
     {
@@ -264,6 +271,7 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
     {
         m_bLMouseDown = false;
         CEGUI::System::getSingletonPtr()->injectMouseButtonUp(CEGUI::LeftButton);
+        m_pLogicMgr->triggerLaser();
     } 
     else if (id == OIS::MB_Right)
     {

@@ -7,6 +7,7 @@
 #define _MW_STATE_GAME_STATE_H_
 
 #include "MWGameState.h"
+#include "MWLogicManager.h"
 #include "Scene/DotSceneLoader.h"
 #include "Objects/FPSCamera.h"
 
@@ -37,6 +38,8 @@ private:
 private:
     void                createScene();
     void                setupPhyMaterialPairs();
+private:
+    static float        m_WorldSize;
     bool                m_bQuit;
     // Mouse State
     bool                m_bRMouseDown, m_bLMouseDown;
@@ -46,7 +49,7 @@ private:
     OgreNewt::Debugger* m_pPhyWorldDebugger;
     bool                m_bShowphyDebugger;
     FPSCamera*          m_pFPSCamera;
-    OgreNewt::Body* bod;
+    LogicManager*       m_pLogicMgr;
 }; // End of StageGameState
 
 } // End of namespace

@@ -31,9 +31,9 @@ public:
     OgreNewt::MaterialID* getPhyMaterial(Ogre::String type);
 private:
     ObjectFactory();
-    unsigned int        m_ObjCount;
-    HashMap<Ogre::String, ObjectMaker*, Ogre::_StringHash> m_MakerMap;
-    std::vector<Object*> m_ObjectList;
+    unsigned int                                            m_ObjCount;
+    HashMap<Ogre::String, ObjectMaker*, Ogre::_StringHash>  m_MakerMap;
+    std::vector<Object*>                                    m_ObjectList;
 }; // End of ObjectFactory
 
 } // End of MirrorWorld

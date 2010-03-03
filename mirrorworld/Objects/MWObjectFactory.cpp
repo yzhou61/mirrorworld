@@ -24,9 +24,11 @@ Object* ObjectFactory::createObj(Ogre::String type)
     if (objMaker)
     {
         Object* obj = objMaker->create(m_ObjCount++);
-        m_ObjectList.push_back(obj);
+        if (!obj->isRemovable())
+            m_ObjectList.push_back(obj);
         return obj;
     }
+    Ogre::LogManager::getSingleton().stream()<<"Failed to create "<<type;
     return NULL;
 }
 
