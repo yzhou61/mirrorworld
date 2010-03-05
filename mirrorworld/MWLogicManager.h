@@ -9,6 +9,7 @@
 #include <queue>
 #include "Objects/FPSCamera.h"
 #include "Objects/MWObjectFactory.h"
+#include "Scene/MWLaserModel.h"
 
 namespace MirrorWorld {
 class LogicManager 
@@ -29,6 +30,7 @@ private:
     void updateMirrorBalls(double timeElasped);
 private:
     static const int            MAX_MIRROR = 10;
+    static float                m_RaycastDistance;
     Ogre::SceneManager*         m_pSceneMgr;
     OgreNewt::World*            m_pWorld;
     bool                        m_bLaserOn;
@@ -42,6 +44,7 @@ private:
 
     // Temporary, should switch to player later
     Ogre::Camera*               m_pCamera;
+    LaserModel*                 m_pLaserModel;
 
     // Probably switch to OgreNewt RayCast
 //    Ogre::RaySceneQuery*        m_TestRayQuery;

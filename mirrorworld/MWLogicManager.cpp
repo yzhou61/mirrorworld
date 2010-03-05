@@ -6,6 +6,8 @@
 using Ogre::Real;
 using Ogre::Vector3;
 
+float MirrorWorld::LogicManager::m_RaycastDistance = 5000;
+
 namespace MirrorWorld
 {
 void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, int maxMirror, Ogre::Camera* camera)
@@ -27,11 +29,8 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, in
 
     m_MirrorBallVelocity = 20.0;
     m_MaxMirror = maxMirror;
-    // Setup RayQuery
-/*    m_TestRayQuery = m_pSceneMgr->createRayQuery(m_TestRay);
-    m_TestRayQuery->setQueryTypeMask(Ogre::SceneManager::ENTITY_TYPE_MASK);
-    m_TestRayQuery->setSortByDistance(true);
-    m_TestRayQuery->setWorldFragmentType(Ogre::SceneQuery::WFT_SINGLE_INTERSECTION);*/
+
+    m_pLaserModel = new LaserModel(m_pSceneMgr, "Laserbeam");
 }
 
 void LogicManager::update(double timeElapsed)
@@ -50,6 +49,10 @@ int LogicManager::mirrorSize()
 void LogicManager::triggerLaser()
 {
     m_bLaserOn = !m_bLaserOn;
+    if (m_bLaserOn)
+        m_pLaserModel->active();
+    else
+        m_pLaserModel->deactive();
 }
 
 void LogicManager::createMirrorBall()
@@ -72,47 +75,56 @@ void LogicManager::calcLaserPath()
     if (!m_bLaserOn)
         return;
 
-    Ogre::Ray firstRay = m_pCamera->getCameraToViewportRay(0.5, 0.5);
-    Vector3 sp = firstRay.getOrigin();
-    Vector3 dir = firstRay.getDirection();
+//    Ogre::Ray firstRay = m_pCamera->getCameraToViewportRay(0.5, 0.5);
+    Vector3 sp = m_pCamera->getRealPosition();
+    Vector3 dir = m_pCamera->getRealDirection();
     m_pLaser->reset();
     m_pLaser->contactPoints().push_back(sp);
-    for ( ; ; )
+    for (int i = 0;i < LaserModel::MAX_LASERBEAM; i++)
     {
         dir.normalise();
-        OgreNewt::BasicRaycast testRay(m_pWorld, sp, sp+dir*20000, true);
+/*        Ogre::LogManager::getSingleton().stream()<<"Laser"<<i<<" sp"<<sp;
+        Ogre::LogManager::getSingleton().stream()<<"Laser"<<i<<" dir"<<dir;*/
+        OgreNewt::BasicRaycast testRay(m_pWorld, sp, sp+dir*m_RaycastDistance, true);
         if (testRay.getHitCount() > 0)
         {
             OgreNewt::BasicRaycast::BasicRaycastInfo result = testRay.getFirstHit();
             Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
             if (hitobj)
             {
-                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
-                Ogre::LogManager::getSingleton().stream()<<"Laser"<<sp;
-                Ogre::LogManager::getSingleton().stream()<<"Laser"<<dir;
+                Vector3 ep = sp + dir * (result.mDistance * m_RaycastDistance - 0.01f);
+/*                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
+                Ogre::LogManager::getSingleton().stream()<<"Laser ep normal"<<ep<<result.mNormal;*/
                 if (hitobj->isReflective())
                 {
-                    sp = sp + dir * result.mDistance;
-                    dir = (-dir).reflect(result.mNormal);
-                    m_pLaser->contactPoints().push_back(sp);
+                    sp = ep;
+                    dir = dir.reflect(result.mNormal);
+                    m_pLaser->contactPoints().push_back(ep);
                 }
                 else
                 {
-                    m_pLaser->contactPoints().push_back(sp = sp + dir * result.mDistance);
+                    m_pLaser->contactPoints().push_back(ep);
                     break;
                 }
             }
             else
             {
-                Ogre::LogManager::getSingleton().logMessage("Laser hit nothing case1, wired");
+                m_pLaser->contactPoints().push_back(sp = sp + dir * m_RaycastDistance);
+//                Ogre::LogManager::getSingleton().logMessage("Laser hit nothing case1, wired");
                 break;
             }
         }
         else
         {
-            Ogre::LogManager::getSingleton().logMessage("Laser hit nothing case2, wired");
+            m_pLaser->contactPoints().push_back(sp = sp + dir * m_RaycastDistance);
+//            Ogre::LogManager::getSingleton().logMessage("Laser hit nothing case2, wired");
             break;
         }
+    }
+    if (m_pLaser->contactPoints().size() > 1)
+    {
+        m_pLaser->contactPoints()[0] -= Vector3(0, 10, 0);
+        m_pLaserModel->update(m_pLaser->contactPoints());
     }
 }
 
@@ -135,6 +147,7 @@ void LogicManager::updateMirrorBalls(double timeElasped)
 void LogicManager::updateMirrorBall(MirrorBall* ball, double timeElasped)
 {
     Vector3 sp = ball->position();
+    // Notice: dir should be normalized before
     Vector3 dir = ball->direction();
     Real travelDistance = static_cast<Real>(m_MirrorBallVelocity*timeElasped);
     Vector3 ep = sp + dir * travelDistance;
@@ -150,10 +163,10 @@ void LogicManager::updateMirrorBall(MirrorBall* ball, double timeElasped)
         // Change position and dir
         if (hitobj->isReflective())
         {
-            Vector3 hitPoint = sp + dir * result.mDistance;
-            dir = (-dir).reflect(result.mNormal);
+            Vector3 hitPoint = sp + dir * result.mDistance * travelDistance;
+            dir = dir.reflect(result.mNormal);
             dir.normalise();
-            sp = hitPoint + dir * (travelDistance - result.mDistance);
+            sp = hitPoint + dir * (1.0f - result.mDistance) * travelDistance;
         }
         // Attach 
         else if (hitobj->isAttachable())

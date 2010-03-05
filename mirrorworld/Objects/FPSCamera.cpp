@@ -30,7 +30,7 @@ FPSCamera::FPSCamera(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre:
     
     m_CameraNode = m_SceneMgr->getRootSceneNode()->createChildSceneNode();
     m_CameraNode->setScale(m_Size);
-    m_CameraNode->setPosition(Vector3(0,30,0));
+    m_CameraNode->setPosition(Vector3(40,30,40));
 
     OgreNewt::ConvexCollisionPtr camCollision(
         new OgreNewt::CollisionPrimitives::Ellipsoid(m_World, m_Size, 0));

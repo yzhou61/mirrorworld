@@ -1,0 +1,19 @@
+
+material Laserbeam
+{
+	technique
+	{
+		pass
+		{
+			ambient 1.0 1.0 1.0 1
+			diffuse 0.7 0.7 0.7 1
+
+			texture_unit
+			{
+				texture Laserbeam.jpg
+			}
+		}
+
+	}
+
+}
