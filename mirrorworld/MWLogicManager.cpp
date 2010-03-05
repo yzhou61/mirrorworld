@@ -30,6 +30,8 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, in
     m_MirrorBallVelocity = 20.0;
     m_MaxMirror = maxMirror;
 
+    m_ShootMode = LASER;
+
     m_pLaserModel = new LaserModel(m_pSceneMgr, "Laserbeam");
 }
 
@@ -50,19 +52,20 @@ void LogicManager::triggerLaser()
 {
     m_bLaserOn = !m_bLaserOn;
     if (m_bLaserOn)
-        m_pLaserModel->active();
+        calcLaserPath();
     else
         m_pLaserModel->deactive();
 }
 
-void LogicManager::createMirrorBall()
+void LogicManager::shootMirrorBall()
 {
     MirrorBall* newBall = m_MirrorBallList[(m_MirrorBallListEnd+1)%MAX_MIRROR];
     if (mirrorSize() > m_MaxMirror)
         destroyMirrorBall(m_MirrorBallListBegin);
     newBall = static_cast<MirrorBall*>(ObjectFactory::getSingleton().createObj("MirrorBall"));
     // Setup init postion and direction
-
+    newBall->position() = m_pCamera->getRealPosition();
+    newBall->direction() = m_pCamera->getRealDirection();
 }
 
 void LogicManager::destroyMirrorBall(int idx)
@@ -89,11 +92,11 @@ void LogicManager::calcLaserPath()
         if (testRay.getHitCount() > 0)
         {
             OgreNewt::BasicRaycast::BasicRaycastInfo result = testRay.getFirstHit();
-            Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
-            if (hitobj)
+            try
             {
+                Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
                 Vector3 ep = sp + dir * (result.mDistance * m_RaycastDistance - 0.01f);
-/*                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
+                /*                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
                 Ogre::LogManager::getSingleton().stream()<<"Laser ep normal"<<ep<<result.mNormal;*/
                 if (hitobj->isReflective())
                 {
@@ -107,10 +110,10 @@ void LogicManager::calcLaserPath()
                     break;
                 }
             }
-            else
+            catch(Ogre::Exception)
             {
                 m_pLaser->contactPoints().push_back(sp = sp + dir * m_RaycastDistance);
-//                Ogre::LogManager::getSingleton().logMessage("Laser hit nothing case1, wired");
+                //                Ogre::LogManager::getSingleton().logMessage("Laser hit nothing case1, wired");
                 break;
             }
         }
