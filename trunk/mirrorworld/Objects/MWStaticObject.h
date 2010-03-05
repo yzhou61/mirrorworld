@@ -16,8 +16,8 @@ public:
     virtual Ogre::String name() const = 0;
     void setPhyMaterial(OgreNewt::MaterialID* matID) { m_pPhyMatID = matID; }
     virtual void setEntity(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, 
-            Ogre::SceneNode* node, Ogre::Entity* entity); 
-private:
+            Ogre::SceneNode* node, Ogre::Entity* entity);
+protected:
     OgreNewt::MaterialID* m_pPhyMatID;
 }; // End of StaticObject
 } //End of MirrorWorld

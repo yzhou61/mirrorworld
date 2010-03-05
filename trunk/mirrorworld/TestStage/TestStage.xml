@@ -24,9 +24,9 @@
             <colour r="0" g="0" b="0" a="1" />
         </viewport>
         <camera name="intViewCamera1" viewMode="0" polyMode="3" fov="1">
-            <clipping near="1" far="1000" />
-            <position x="107.675" y="232.071" z="328.501" />
-            <rotation qw="0.946954" qx="-0.301983" qy="0.104752" qz="0.0334071" />
+            <clipping near="1" far="100000" />
+            <position x="280.61" y="793.847" z="1100.6" />
+            <rotation qw="0.946952" qx="-0.301983" qy="0.104752" qz="0.0334071" />
         </camera>
     </environment>
     <nodes>
@@ -43,9 +43,9 @@
             <entity name="Wall1" meshFile="box.mesh" castShadows="false" />
         </node>
         <node name="Barrel0" id="286080512">
-            <position x="10" y="9" z="-20" />
+            <position x="0" y="30" z="0" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="3" y="3" z="3" />
+            <scale x="10" y="10" z="10" />
             <entity name="Barrel0" meshFile="Barrel.mesh" castShadows="true" />
         </node>
         <node name="Wall2" id="382366432">
