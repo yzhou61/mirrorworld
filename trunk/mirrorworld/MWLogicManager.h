@@ -21,9 +21,12 @@ public:
     void init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, int maxMirror = 3, Ogre::Camera* camera = NULL);
     void update(double timeElapsed);
     void triggerLaser();
+    void switchShootMode() { m_ShootMode = (m_ShootMode == LASER) ? MIRROR_BALL : LASER; }
+    void switchToLaser() { m_ShootMode = LASER; }
+    void switchToMirrorBall() { m_ShootMode = MIRROR_BALL; }
 private:
     int mirrorSize();
-    void createMirrorBall();
+    void shootMirrorBall();
     void destroyMirrorBall(int idx);
     void calcLaserPath();
     void updateMirrorBall(MirrorBall* ball, double timeElasped);
@@ -45,6 +48,8 @@ private:
     // Temporary, should switch to player later
     Ogre::Camera*               m_pCamera;
     LaserModel*                 m_pLaserModel;
+    enum ShootMode { LASER, MIRROR_BALL };
+    ShootMode                   m_ShootMode;
 
     // Probably switch to OgreNewt RayCast
 //    Ogre::RaySceneQuery*        m_TestRayQuery;

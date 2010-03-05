@@ -97,9 +97,11 @@ void LaserModel::deactive()
 
 void LaserModel::update(std::vector<Ogre::Vector3> &contactPointList)
 {
+    deactive();
     m_nUseLaser = (contactPointList.size() - 1) < MAX_LASERBEAM ? contactPointList.size() - 1 : MAX_LASERBEAM;
     for (int i = 0;i < m_nUseLaser; i++)
         m_LaserBeamList[i].update(contactPointList[i], contactPointList[i+1]);
+    active();
 }
 
 }
