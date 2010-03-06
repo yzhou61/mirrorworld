@@ -272,6 +272,10 @@
 					RelativePath=".\Scene\MWLaserModel.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Scene\MWMirrorBallModel.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -352,6 +356,10 @@
 				</File>
 				<File
 					RelativePath=".\Scene\MWLaserModel.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene\MWMirrorBallModel.h"
 					>
 				</File>
 				<File
