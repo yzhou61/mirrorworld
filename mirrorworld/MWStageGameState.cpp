@@ -195,6 +195,12 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
         if (m_pPhyWorldDebugger)
             m_bShowphyDebugger = !m_bShowphyDebugger;
         break;
+    case OIS::KC_L:
+        m_pLogicMgr->switchToLaser();
+        break;
+    case OIS::KC_M:
+        m_pLogicMgr->switchToMirrorBall();
+        break;
     default:
         GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
         break;
@@ -250,9 +256,11 @@ bool StageGameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
 {
     if (id == OIS::MB_Left)
     {
-        m_bLMouseDown = true;
         CEGUI::System::getSingletonPtr()->injectMouseButtonDown(CEGUI::LeftButton);
-        m_pLogicMgr->triggerLaser();
+        if (m_bLMouseDown)
+            return true;
+        m_bLMouseDown = true;
+        m_pLogicMgr->triggerOn();
     } 
     else if (id == OIS::MB_Right)
     {
@@ -271,7 +279,7 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
     {
         m_bLMouseDown = false;
         CEGUI::System::getSingletonPtr()->injectMouseButtonUp(CEGUI::LeftButton);
-        m_pLogicMgr->triggerLaser();
+        m_pLogicMgr->triggerOff();
     } 
     else if (id == OIS::MB_Right)
     {

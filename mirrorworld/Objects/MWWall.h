@@ -10,7 +10,7 @@ namespace MirrorWorld {
 class Wall : public StaticObject
 {
 public:
-    Wall(unsigned int id) : StaticObject(id) { }
+    Wall(unsigned int id) : StaticObject(id, true, true) { }
     ~Wall() {}
     Ogre::String name() const { return "Wall"; }
 }; // End of Wall

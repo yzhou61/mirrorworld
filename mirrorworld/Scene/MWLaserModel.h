@@ -17,7 +17,7 @@ public:
     ~LaserBeam() { }
     void init(Ogre::SceneManager* sceneMgr, Ogre::MaterialPtr, int i);
     void destroy(Ogre::SceneManager* sceneMgr);
-    void update(Ogre::Vector3 sp, Ogre::Vector3 ep);
+    void update(const Ogre::Vector3& sp, const Ogre::Vector3& ep);
     void active();
     void deactive();
 private:
@@ -30,11 +30,11 @@ private:
 class LaserModel
 {
 public:
-    LaserModel(Ogre::SceneManager* sceneMgr, Ogre::String materialName);
+    LaserModel(Ogre::SceneManager* sceneMgr);
     ~LaserModel();
     void active();
     void deactive();
-    void update(std::vector<Ogre::Vector3>& contactPointList);
+    void update(const std::vector<Ogre::Vector3>& contactPointList);
     static const int            MAX_LASERBEAM = 15;
     static int                  m_nPlanes;
     static Ogre::Real           m_Radius;

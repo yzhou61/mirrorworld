@@ -25,7 +25,7 @@ void LaserBeam::destroy(Ogre::SceneManager* sceneMgr)
     sceneMgr->destroyManualObject(m_pModel);
 }
 
-void LaserBeam::update(Ogre::Vector3 sp, Ogre::Vector3 ep)
+void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
 {
     Ogre::Vector3 dir = ep - sp;
     Ogre::Real length = dir.normalise();
@@ -75,9 +75,9 @@ void LaserBeam::deactive()
     m_pSceneNode->setVisible(false);
 }
 
-LaserModel::LaserModel(Ogre::SceneManager *sceneMgr, Ogre::String materialName):m_nUseLaser(0)
+LaserModel::LaserModel(Ogre::SceneManager *sceneMgr):m_nUseLaser(0)
 {
-   m_pMaterial = Ogre::MaterialManager::getSingleton().getByName(materialName);
+   m_pMaterial = Ogre::MaterialManager::getSingleton().getByName("Laserbeam");
    Ogre::LogManager::getSingleton().logMessage("initializing lasermodel");
    for (int i = 0;i < MAX_LASERBEAM; i++)
        m_LaserBeamList[i].init(sceneMgr, m_pMaterial, i);
@@ -95,7 +95,7 @@ void LaserModel::deactive()
         m_LaserBeamList[i].deactive();
 }
 
-void LaserModel::update(std::vector<Ogre::Vector3> &contactPointList)
+void LaserModel::update(const std::vector<Ogre::Vector3> &contactPointList)
 {
     deactive();
     m_nUseLaser = (contactPointList.size() - 1) < MAX_LASERBEAM ? contactPointList.size() - 1 : MAX_LASERBEAM;
