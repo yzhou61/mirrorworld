@@ -9,15 +9,48 @@
 #include <queue>
 #include "Objects/FPSCamera.h"
 #include "Objects/MWObjectFactory.h"
+#include "MWResourcePool.h"
 #include "Scene/MWLaserModel.h"
 #include "Scene/MWMirrorBallModel.h"
+#include "Scene/MWUnattachModel.h"
 
 namespace MirrorWorld {
+class LogicManager;
+class MirrorBallNode : public ResourceNode
+{
+public:
+    MirrorBallNode(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, LogicManager* logicEng);
+    ~MirrorBallNode() {}
+    bool update(double timeElasped);
+    void active(const Ogre::Vector3& pos, const Ogre::Vector3& dir);
+    void deactive();
+    MirrorBall*             ball;
+    MirrorBallModel*        model;
+private:
+    float                   m_MirrorBallVelocity;
+    Ogre::SceneManager*     m_pSceneMgr;
+    OgreNewt::World*        m_pWorld;
+    LogicManager*           m_pLogicEngine;
+};
+
+class UnattachNode : public ResourceNode
+{
+public:
+    UnattachNode(Ogre::SceneManager* sceneMgr, OgreNewt::World* world);
+    ~UnattachNode() {}
+    bool update(double timeElasped);
+    void active(const Ogre::Vector3& pos, const Ogre::Vector3& nor);
+    void deactive();
+    UnattachModel*      model;
+private:
+    Ogre::SceneManager*     m_pSceneMgr;
+    OgreNewt::World*        m_pWorld;
+};
+
 class LogicManager 
 {
 public:
-    LogicManager():m_bLaserOn(false), m_pLaser(NULL), m_MirrorBallListBegin(0), m_MirrorBallListEnd(0)
-    { memset(m_MirrorBallList, 0, sizeof(MirrorBall*)*MAX_MIRROR); }
+    LogicManager();
     ~LogicManager() {}
     void init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, int maxMirror = 3, Ogre::Camera* camera = NULL);
     void update(double timeElapsed);
@@ -28,16 +61,12 @@ public:
     { m_ShootMode == LASER ? triggerLaser() : shootMirrorBall(); }
     void triggerOff()
     { if (m_ShootMode == LASER) triggerLaser(); }
-private:
-    int mirrorSize();
-    void triggerLaser();
     void shootMirrorBall();
-    void destroyMirrorBall(int idx);
-    void calcLaserPath();
-    void updateMirrorBall(int idx, double timeElasped);
-    void updateMirrorBalls(double timeElasped);
+    void hitObstacle(const Ogre::Vector3& pos, const Ogre::Vector3& nor);
 private:
-    static const int            MAX_MIRROR = 10;
+    void triggerLaser();
+    void calcLaserPath();
+private:
     static float                m_RaycastDistance;
     enum ShootMode { LASER, MIRROR_BALL };
     ShootMode                   m_ShootMode;
@@ -46,20 +75,14 @@ private:
     bool                        m_bLaserOn;
     Laser*                      m_pLaser;
     int                         m_MaxMirror;
-    int                         m_MirrorBallListBegin;
-    int                         m_MirrorBallListEnd;
-    MirrorBall*                 m_MirrorBallList[MAX_MIRROR];
-    double                      m_MirrorBallVelocity;
+    ResourcePool*               m_pMirrorBallPool;
+    ResourcePool*               m_pUnattachPool;
+
     Player*                     m_pPlayer;
 
     // Temporary, should switch to player later
     Ogre::Camera*               m_pCamera;
     LaserModel*                 m_pLaserModel;
-    MirrorBallModel*            m_MirrorBallModelList[MAX_MIRROR];
-
-    // Probably switch to OgreNewt RayCast
-//    Ogre::RaySceneQuery*        m_TestRayQuery;
-//    Ogre::Ray                   m_TestRay;
 };
 }
 #endif

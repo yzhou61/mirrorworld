@@ -10,6 +10,97 @@ float MirrorWorld::LogicManager::m_RaycastDistance = 5000;
 
 namespace MirrorWorld
 {
+MirrorBallNode::MirrorBallNode(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, LogicManager* logicEng):
+    m_pSceneMgr(sceneMgr), m_pWorld(world), m_pLogicEngine(logicEng)
+{
+    ball = static_cast<MirrorBall*>(ObjectFactory::getSingleton().createObj("MirrorBall"));
+    model = new MirrorBallModel(m_pSceneMgr);
+    m_MirrorBallVelocity = 0.5;
+}
+
+bool MirrorBallNode::update(double timeElasped)
+{
+    Vector3& sp = ball->position();
+    // Notice: dir should be normalized before
+    Vector3& dir = ball->direction();
+    Real travelDistance = static_cast<Real>(m_MirrorBallVelocity*timeElasped);
+    Vector3 ep = sp + dir * travelDistance;
+
+    OgreNewt::BasicRaycast testRay(m_pWorld, sp, ep, true);
+    if (testRay.getHitCount() > 0)
+    {
+        OgreNewt::BasicRaycast::BasicRaycastInfo result = testRay.getFirstHit();
+        Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
+        //            Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
+        //            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<sp;
+        //            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<ep;
+        Vector3 hitPoint = sp + dir * result.mDistance * travelDistance;
+        // Change position and dir
+        if (hitobj->isReflective())
+        {
+            Vector3 hitPoint = sp + dir * result.mDistance * travelDistance;
+            dir = dir.reflect(result.mNormal);
+            dir.normalise();
+            sp = hitPoint + dir * (1.0f - result.mDistance) * travelDistance;
+        }
+        // Attach 
+        else if (hitobj->isAttachable())
+        {
+
+            return false;
+        }
+        // Show particle system
+        else 
+        {
+            m_pLogicEngine->hitObstacle(hitPoint, result.mNormal);
+            return false;
+        }
+    }
+    // Otherwise, just move on
+    else
+        ball->position() = ep;
+    model->update(ball->position());
+    return true;
+}
+
+void MirrorBallNode::active(const Ogre::Vector3& pos, const Ogre::Vector3& dir)
+{
+    ball->position() = pos;
+    ball->direction() = dir;
+    model->active(pos);
+}
+
+void MirrorBallNode::deactive()
+{
+    model->deactive();
+}
+
+UnattachNode::UnattachNode(Ogre::SceneManager* sceneMgr, OgreNewt::World* world):
+        m_pSceneMgr(sceneMgr), m_pWorld(world)
+{
+    model = new UnattachModel(m_pSceneMgr, m_pWorld);
+}
+
+bool UnattachNode::update(double timeElasped)
+{
+    return model->update(timeElasped);
+}
+
+void UnattachNode::active(const Ogre::Vector3& pos, const Ogre::Vector3& nor)
+{
+    model->active(pos, nor);
+}
+
+void UnattachNode::deactive()
+{
+    model->deactive();
+}
+
+LogicManager::LogicManager():m_bLaserOn(false), m_pLaser(NULL),m_pLaserModel(NULL),
+                    m_pMirrorBallPool(NULL),m_pUnattachPool(NULL)
+{
+}
+
 void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, int maxMirror, Ogre::Camera* camera)
 {
     Ogre::LogManager::getSingleton().logMessage("Initializing LogicManager...");
@@ -21,31 +112,27 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, in
     m_pLaser = static_cast<Laser*>(ObjectFactory::getSingleton().createObj("Laser"));
     m_pLaser->reset();
     m_bLaserOn = false;
+    m_pLaserModel = new LaserModel(m_pSceneMgr);
     
     // Clear up the mirror ball list
-    for (int i = m_MirrorBallListBegin; i < m_MirrorBallListEnd; i++)
-        delete m_MirrorBallList[i];
-    m_MirrorBallListBegin = m_MirrorBallListEnd = 0;
-
-    m_MirrorBallVelocity = 0.1;
     m_MaxMirror = maxMirror;
+    m_pMirrorBallPool = new ResourcePool(m_MaxMirror);
+    for (int i = 0;i < m_MaxMirror; i++)
+        m_pMirrorBallPool->getNodeList()[i] = new MirrorBallNode(m_pSceneMgr, m_pWorld, this);
+    m_pUnattachPool = new ResourcePool(m_MaxMirror);
+    for (int i = 0;i < m_MaxMirror; i++)
+        m_pUnattachPool->getNodeList()[i] = new UnattachNode(m_pSceneMgr, m_pWorld);
+    MirrorBallModel::resetCounter();
+    UnattachModel::resetCounter();
 
     m_ShootMode = LASER;
-
-    m_pLaserModel = new LaserModel(m_pSceneMgr);
 }
 
 void LogicManager::update(double timeElapsed)
 {
     calcLaserPath();
-    updateMirrorBalls(timeElapsed);
-}
-
-int LogicManager::mirrorSize()
-{
-    return m_MirrorBallListBegin < m_MirrorBallListEnd ? 
-            m_MirrorBallListEnd-m_MirrorBallListBegin : 
-            m_MirrorBallListEnd+MAX_MIRROR-m_MirrorBallListBegin;
+    m_pMirrorBallPool->update(timeElapsed);
+    m_pUnattachPool->update(timeElapsed);
 }
 
 void LogicManager::triggerLaser()
@@ -59,22 +146,14 @@ void LogicManager::triggerLaser()
 
 void LogicManager::shootMirrorBall()
 {
-    MirrorBall* newBall = static_cast<MirrorBall*>(ObjectFactory::getSingleton().createObj("MirrorBall"));
-    if (mirrorSize() > m_MaxMirror)
-        destroyMirrorBall(m_MirrorBallListBegin);
-    m_MirrorBallList[m_MirrorBallListEnd] = newBall;
-    // Setup init postion and direction
-    newBall->position() = m_pCamera->getRealPosition();
-    newBall->direction() = m_pCamera->getRealDirection();
-
-    MirrorBallModel* newBallModel =  new MirrorBallModel(m_pSceneMgr, newBall->position());
-    m_MirrorBallModelList[m_MirrorBallListEnd] = newBallModel;
-    m_MirrorBallListEnd = (m_MirrorBallListEnd+1)%MAX_MIRROR;
+    MirrorBallNode* mirrorBall = static_cast<MirrorBallNode*>(m_pMirrorBallPool->getOneNode());
+    mirrorBall->active(m_pCamera->getRealPosition(), m_pCamera->getRealDirection());
 }
 
-void LogicManager::destroyMirrorBall(int idx)
+void LogicManager::hitObstacle(const Ogre::Vector3& pos, const Ogre::Vector3& nor)
 {
-    // TO DO
+    UnattachNode* unattachNode = static_cast<UnattachNode*>(m_pUnattachPool->getOneNode());
+    unattachNode->active(pos, nor);
 }
 
 void LogicManager::calcLaserPath()
@@ -133,64 +212,6 @@ void LogicManager::calcLaserPath()
         m_pLaser->contactPoints()[0] -= Vector3(0, 10, 0);
         m_pLaserModel->update(m_pLaser->contactPoints());
     }
-}
-
-void LogicManager::updateMirrorBalls(double timeElasped)
-{
-    if (m_MirrorBallListBegin <= m_MirrorBallListEnd)
-    {
-        for (int i = m_MirrorBallListBegin; i < m_MirrorBallListEnd; i++)
-            updateMirrorBall(i, timeElasped);
-    }
-    else
-    {
-        for (int i = m_MirrorBallListBegin; i < MAX_MIRROR; i++)
-            updateMirrorBall(i, timeElasped);
-        for (int i = 0;i < m_MirrorBallListEnd; i++)
-            updateMirrorBall(i, timeElasped);
-    }
-}
-
-void LogicManager::updateMirrorBall(int idx, double timeElasped)
-{
-    MirrorBall* ball = m_MirrorBallList[idx];
-    Vector3& sp = ball->position();
-    // Notice: dir should be normalized before
-    Vector3& dir = ball->direction();
-    Real travelDistance = static_cast<Real>(m_MirrorBallVelocity*timeElasped);
-    Vector3 ep = sp + dir * travelDistance;
-    
-    OgreNewt::BasicRaycast testRay(m_pWorld, sp, ep, true);
-    if (testRay.getHitCount() > 0)
-    {
-        OgreNewt::BasicRaycast::BasicRaycastInfo result = testRay.getFirstHit();
-        Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
-//            Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
-//            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<sp;
-//            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<ep;
-        // Change position and dir
-        if (hitobj->isReflective())
-        {
-            Vector3 hitPoint = sp + dir * result.mDistance * travelDistance;
-            dir = dir.reflect(result.mNormal);
-            dir.normalise();
-            sp = hitPoint + dir * (1.0f - result.mDistance) * travelDistance;
-        }
-        // Attach 
-        else if (hitobj->isAttachable())
-        {
-
-        }
-        // Show particle system
-        else 
-        {
-
-        }
-    }
-    // Otherwise, just move on
-    else
-        ball->position() = ep;
-    m_MirrorBallModelList[idx]->update(ball->position());
 }
 
 }

@@ -218,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MWResourcePool.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MWStageGameState.cpp"
 				>
 			</File>
@@ -276,6 +280,10 @@
 					RelativePath=".\Scene\MWMirrorBallModel.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Scene\MWUnattachModel.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -301,6 +309,10 @@
 			</File>
 			<File
 				RelativePath=".\MWMenuGameState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MWResourcePool.h"
 				>
 			</File>
 			<File
@@ -360,6 +372,10 @@
 				</File>
 				<File
 					RelativePath=".\Scene\MWMirrorBallModel.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene\MWUnattachModel.h"
 					>
 				</File>
 				<File
