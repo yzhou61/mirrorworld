@@ -116,7 +116,16 @@ void StageGameState::createScene()
     m_pPhyWorldDebugger->init(m_pSceneMgr);
 
     m_pLogicMgr = new LogicManager();
-    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, 3, m_pCamera);
+    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 3, m_pCamera);
+
+	Ogre::Light *light = m_pSceneMgr->createLight("Light1");
+	light->setType(Ogre::Light::LT_POINT);
+	light->setPosition(Vector3(0, 300, 0));
+	light->setDiffuseColour(1.0, 1.0, 1.0);
+	light->setSpecularColour(1.0, 1.0, 1.0);
+
+	m_pLogicMgr->createMirror(Vector3(0, 0, 1), Vector3(0, 100, -100), Vector3(0, 1, 0), 200, 200);
+	m_pLogicMgr->createMirror(Vector3(0, 0, -1), Vector3(0, 100, 100), Vector3(0, 1, 0), 200, 200);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -161,6 +170,12 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->stopRaycastRecording();
         m_pPhyWorldDebugger->hideDebugInformation();
     }
+
+	Ogre::Real fLeft, fRight, fTop, fBottom;
+	m_pFPSCamera->getFrustum(fLeft, fRight, fTop, fBottom);
+	m_pLogicMgr->resetMirrors();
+	m_pLogicMgr->updateMirrors(m_pFPSCamera->getPosition(), m_pFPSCamera->getDirection(), m_pFPSCamera->getUp(),
+		fLeft, fRight, fTop, fBottom, -1);
 }
 
 //////////////////////////////////////////////////////////////////////////

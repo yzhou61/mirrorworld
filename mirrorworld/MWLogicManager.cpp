@@ -101,12 +101,16 @@ LogicManager::LogicManager():m_bLaserOn(false), m_pLaser(NULL),m_pLaserModel(NUL
 {
 }
 
-void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, int maxMirror, Ogre::Camera* camera)
+void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow* window,
+	int maxMirror, Ogre::Camera* camera)
 {
     Ogre::LogManager::getSingleton().logMessage("Initializing LogicManager...");
     m_pSceneMgr = sceneMgr;
     m_pWorld = world;
     m_pCamera = camera;
+	m_Window = window;
+
+	mirrorCount = 0;
 
     // Will always has one laser
     m_pLaser = static_cast<Laser*>(ObjectFactory::getSingleton().createObj("Laser"));
@@ -212,6 +216,62 @@ void LogicManager::calcLaserPath()
         m_pLaser->contactPoints()[0] -= Vector3(0, 10, 0);
         m_pLaserModel->update(m_pLaser->contactPoints());
     }
+}
+
+size_t LogicManager::createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up,
+		size_t width, size_t height) {
+	Ogre::LogManager::getSingleton().logMessage("second mirror?");
+	Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
+	curMirror->init(m_pSceneMgr, normal, position, up, width, height, m_pCamera);
+
+	m_MirrorList[mirrorCount] = curMirror;
+	return mirrorCount++;
+}
+
+void LogicManager::resetMirrors() {
+	for (size_t i = 0; i < mirrorCount; ++i) {
+		m_MirrorList[i]->resetResource();
+	}
+}
+
+void LogicManager::updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up,
+	Ogre::Real fLeft, Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom, size_t mirrorID) {
+
+	for (size_t i = 0; i < mirrorCount; ++i) {
+
+		Mirror *m = m_MirrorList[i];
+		if (m->getID() == mirrorID) {
+			continue;
+		}
+		if (m->getNormal().dotProduct(position - m->getCenterPosition()) <= 0) {
+			continue;
+		}
+		bool cont = m->setEye(position, direction, up, fLeft, fRight, fTop, fBottom);
+		if (cont) {
+			 //		  if (mirrorID == 0) {
+			 //			  GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(m->getPosition()), 0);
+			 //			  GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(m->getDirection()), 1);
+			 //			  GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(position) + " "
+			 //				  + Ogre::StringConverter::toString(direction), 2);
+			 //		  }
+			Ogre::Real ffLeft, ffRight, ffTop, ffBottom;
+			m->getEye()->getFrustumExtents(ffLeft, ffRight, ffTop, ffBottom);
+			updateMirrors(m->getPosition(), m->getDirection(), m->getUp(), -ffRight, -ffLeft, ffTop, ffBottom, m->getID());
+			m->update();
+		}
+	}
+	setRealReflections(position, direction, fLeft, fRight, fTop, fBottom);
+}
+
+void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 direction,
+		Ogre::Real fLeft, Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom) {
+
+	for (size_t i = 0; i < mirrorCount; ++i) {
+		Mirror *m = m_MirrorList[i];
+		if (m->getNormal().dotProduct(position - m->getCenterPosition()) <= 0)
+			continue;
+		m->reflectReal();
+	}
 }
 
 }
