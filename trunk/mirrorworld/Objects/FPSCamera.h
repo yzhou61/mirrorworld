@@ -40,6 +40,9 @@ public:
     OgreNewt::MaterialID* getPhyMaterial() { return m_PhyMatID; }
     Vector3 getPosition();
     Vector3 getDirection();
+	void getFrustum(float &left, float &right, float &top, float &bottom);
+	Ogre::Vector3 getUp() { return m_Camera->getRealUp(); }
+
 private:
     void cameraForceCallback(OgreNewt::Body *body, float timeStep, int threadIndex);
     Ogre::SceneManager*     m_SceneMgr;
