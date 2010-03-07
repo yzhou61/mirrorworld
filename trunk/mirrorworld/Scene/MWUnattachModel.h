@@ -18,7 +18,6 @@ public:
     void deactive();
     bool update(double timeElasped);
     void destroy();
-    bool isActive() { return m_bActive; }
     static void resetCounter() { m_nUniqueID = 0; }
 private:
     static int              m_nUniqueID;
@@ -26,7 +25,6 @@ private:
     OgreNewt::World*        m_pWorld;
     Ogre::SceneNode*        m_pSceneNode;
     Ogre::ParticleSystem*   m_pParticleSys;
-    bool                    m_bActive;
     double                  m_LifeTime;
 };
 }

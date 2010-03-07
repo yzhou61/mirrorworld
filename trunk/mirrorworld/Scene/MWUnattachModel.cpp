@@ -19,32 +19,38 @@ UnattachModel::UnattachModel(Ogre::SceneManager* sceneMgr, OgreNewt::World* worl
 void UnattachModel::active(const Ogre::Vector3& pos, const Ogre::Vector3& normal)
 {
     m_pSceneNode->setPosition(pos);
+    m_pParticleSys->getEmitter(0)->setPosition(Ogre::Vector3::ZERO);
     m_pParticleSys->getEmitter(0)->setDirection(normal);
     if (m_pParticleSys->getNumAffectors() ==  3)
         m_pParticleSys->removeAffector(2);
-    Ogre::ParticleAffector* groundAffector =  m_pParticleSys->addAffector("DeflectorPlane");
-    Ogre::NameValuePairList pairList;
-    pairList["plane_point"] = "	0 0 0";
-    pairList["plane_normal"] = "0 1 0";
-    pairList["bounce"] = "0.8989";
-    groundAffector->setParameterList(pairList);
+
+    OgreNewt::BasicRaycast testRay(m_pWorld, pos, Ogre::Vector3::NEGATIVE_UNIT_Y * 2000, true);
+    if (testRay.getHitCount() > 0)
+    {
+        Ogre::Vector3 plane = Ogre::Vector3::ZERO;
+        plane.y = pos.y - testRay.getFirstHit().mDistance*2000;
+        Ogre::ParticleAffector* groundAffector =  m_pParticleSys->addAffector("DeflectorPlane");
+        Ogre::NameValuePairList pairList;
+        pairList["plane_point"] = Ogre::StringConverter::toString(plane);
+        pairList["plane_normal"] = "0 1 0";
+        pairList["bounce"] = "1.00";
+        groundAffector->setParameterList(pairList);
+    }
     m_pSceneNode->attachObject(m_pParticleSys);
     m_LifeTime = 0.0;
-    m_bActive = true;
 }
 
 void UnattachModel::deactive()
 {
     m_pSceneNode->detachAllObjects();
-    m_bActive = false;
 }
 
 bool UnattachModel::update(double timeElasped)
 {
     m_LifeTime += timeElasped;
-    if (m_LifeTime > m_pParticleSys->getEmitter(0)->getRepeatDelay())
-        deactive();
-    return m_bActive;
+    if (m_LifeTime > m_pParticleSys->getEmitter(0)->getRepeatDelay()*1000.0)
+        return false;
+    return true;
 }
 
 void UnattachModel::destroy()
