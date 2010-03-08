@@ -7,7 +7,6 @@
 #include <stack>
 
 namespace MirrorWorld {
-
 	class Mirror : public Object
 	{
 	public:
@@ -68,6 +67,5 @@ namespace MirrorWorld {
 		~MirrorMgr() {}
 		Mirror *create(unsigned int id) const;
 	};
-
 }
 #endif

@@ -7,8 +7,8 @@
 using namespace Ogre;
 
 namespace MirrorWorld {
-
-Mirror::~Mirror() {
+Mirror::~Mirror() 
+{
 	delete plane;
 }
 
@@ -75,7 +75,7 @@ void Mirror::update() {
 	eyes.at(index)->disableCustomNearClipPlane();
 	m_pEntity->setVisible(true);
 
-	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << name;
+//	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << name;
 }
 
 bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft,
@@ -201,7 +201,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 	Real mWidth = (omRight - omLeft) / 2;
 	Real mHeight = (omTop - omBottom) / 2;
 	
-	GameFramework::getSingletonPtr()->m_pLog->stream() << name << " " << mWidth << " " << mHeight;
+//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << " " << mWidth << " " << mHeight;
 /*
 	GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(omLeft) + " "
 		+ Ogre::StringConverter::toString(omRight) + " "
@@ -316,10 +316,10 @@ void Mirror::reflectReal() {
 		ss << m_Identity << "-" << index;
 		String name = ss.str();
 		m_pEntity->setMaterialName("RttMat" + name);
-		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << name;
+//		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << name;
 	} else if (index == -1) {
 		GameFramework::getSingletonPtr()->m_pLog->stream() << "real wall";
-		m_pEntity->setMaterialName("Examples/Rockwall");
+//		m_pEntity->setMaterialName("Examples/Rockwall");
 	}
 }
 

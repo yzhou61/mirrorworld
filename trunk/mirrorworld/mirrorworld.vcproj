@@ -126,7 +126,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;$(NEWTON_HOME)\OgreNewt\include&quot;;&quot;$(NEWTON_HOME)\include&quot;;&quot;$(CEGUI_HOME)\cegui\include&quot;;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;;C:\boost_1_42_0"
+				AdditionalIncludeDirectories="&quot;$(NEWTON_HOME)\OgreNewt\include&quot;;&quot;$(NEWTON_HOME)\include&quot;;&quot;$(CEGUI_HOME)\cegui\include&quot;;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;;&quot;$(BOOST_HOME)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"

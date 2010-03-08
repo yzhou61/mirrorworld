@@ -40,6 +40,7 @@ private:
     void                setupPhyMaterialPairs();
 private:
     static float        m_WorldSize;
+    double              m_AcumulatedTime;
     bool                m_bQuit;
     // Mouse State
     bool                m_bRMouseDown, m_bLMouseDown;

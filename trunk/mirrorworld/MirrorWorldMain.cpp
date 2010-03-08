@@ -34,7 +34,6 @@ void MirrorWorldMain::start()
     ObjectFactory::getSingleton().registerObjType(new MirrorMgr(), "Mirror");
     ObjectFactory::getSingleton().registerObjType(new MirrorBallMaker(), "MirrorBall");
 
-
     GameFramework::getSingletonPtr()->m_pLog->logMessage("Mirror World initialized!");
     GameStateManager::getSingletonPtr()->start(GameStateManager::getSingletonPtr()->findByName("MenuState"));
 }
