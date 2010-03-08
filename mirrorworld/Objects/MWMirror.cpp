@@ -39,7 +39,7 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
 
     m_Mesh = MeshManager::getSingleton().createPlane("mirror" + indexStr,
         ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, *m_Plane, 
-        MIRROR_WIDTH, MIRROR_HEIGHT, 1, 1, true, 1, 1, 1, Vector3::UNIT_Y);
+        (Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 1, 1, true, 1, 1, 1, Vector3::UNIT_Y);
 
     m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
 
@@ -366,7 +366,7 @@ void Mirror::postUpdate(double timeElapsed)
         if (unfolding > 850)
             return;
         if (unfolding < 320) {
-            m_Node->setScale(1, unfolding / 300, 1);
+            m_Node->setScale(1, (Ogre::Real)unfolding / 300, 1);
         } else if (unfolding < 650) {
             m_Node->setScale(1, 1, 1);
             if (!m_pEntity->getVisible())

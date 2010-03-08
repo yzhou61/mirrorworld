@@ -69,7 +69,7 @@ namespace MirrorWorld {
 		Ogre::SceneManager *m_SceneMgr;
 
         bool activated;
-        Ogre::Real unfolding;
+        double unfolding;
 	};
 
 	class MirrorMgr : public ObjectMaker {
