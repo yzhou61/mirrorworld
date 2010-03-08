@@ -19,6 +19,8 @@ UnattachModel::UnattachModel(Ogre::SceneManager* sceneMgr, OgreNewt::World* worl
 void UnattachModel::active(const Ogre::Vector3& pos, const Ogre::Vector3& normal)
 {
     m_pSceneNode->setPosition(pos);
+    m_pParticleSys->clear();
+    m_pParticleSys->getEmitter(0)->setEnabled(true);
     m_pParticleSys->getEmitter(0)->setPosition(Ogre::Vector3::ZERO);
     m_pParticleSys->getEmitter(0)->setDirection(normal);
     if (m_pParticleSys->getNumAffectors() ==  3)

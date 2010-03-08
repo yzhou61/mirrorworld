@@ -103,9 +103,9 @@ private:
     Ogre::Camera*               m_pCamera;
     LaserModel*                 m_pLaserModel;
 
-    MirrorWorld::Mirror*		m_MirrorList[MAX_MIRROR];
-    Ogre::RenderWindow*			m_Window;
-    size_t						m_MirrorCount;
+    MirrorWorld::Mirror*        m_MirrorList[MAX_MIRROR];
+    Ogre::RenderWindow*         m_Window;
+    size_t                      m_MirrorCount;
 };
 
 }
