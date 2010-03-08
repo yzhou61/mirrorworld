@@ -17,13 +17,13 @@ FPSCamera::FPSCamera(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre:
     m_Size = Vector3(30, 30, 30);
     m_Gravity = -9.8;
     m_Mass = 40;
-    m_JumpPower = 5;
-    m_FPSSpeed = 3;
+    m_JumpPower = 20;
+    m_FPSSpeed = 20;
     m_xStep = 1.0;
     m_yStep = 1.0;
     m_xRotationTotal = 0;
     m_yRotationTotal = 0;
-    m_yLimitA = 30;
+    m_yLimitA = 60;
     m_yLimitB = -60;
     m_Velocity = 0;
     m_SideVel = 0;
@@ -79,13 +79,12 @@ void FPSCamera::cameraForceCallback(OgreNewt::Body *body, float timeStep, int th
 //    Ogre::LogManager::getSingleton().stream()<<direction<<sideDir;
 
     Vector3 v0 = body->getVelocity();
-    Vector3 v1 = (direction*m_Velocity+sideDir*m_SideVel);
-    Vector3 acc = v1 - v0;
+    Vector3 v1 = direction*m_Velocity+sideDir*m_SideVel;
+    Vector3 acc = (v1 - v0)/timeStep;
 
     Vector3 force(static_cast<Real>(acc.x), gravityForce.y, static_cast<Real>(acc.z));
     force *= m_Mass;
 
-//    Ogre::LogManager::getSingleton().stream()<<force;
     body->addForce(force);
     body->setOmega(Vector3(m_xRotation, 0, 0));
 }
@@ -153,7 +152,7 @@ void FPSCamera::rightRelease()
 void FPSCamera::jump()
 {
     if (m_Height < 100)
-        m_CamBody->setVelocity(m_CamBody->getVelocity()*Vector3(1, 0, 1)+Vector3(0, 40, 0)*m_JumpPower);
+        m_CamBody->setVelocity(m_CamBody->getVelocity()*Vector3(1, 0, 1)+Vector3(0, 1, 0)*m_JumpPower);
 }
 
 void FPSCamera::update()
@@ -176,9 +175,10 @@ Vector3 FPSCamera::getPosition()
 
 Vector3 FPSCamera::getDirection()
 {
-	return m_Camera->getRealDirection();
+    return m_Camera->getRealDirection();
 }
 
-void FPSCamera::getFrustum(float &left, float &right, float &top, float &bottom) {
-	m_Camera->getFrustumExtents(left, right, top, bottom);
+void FPSCamera::getFrustum(float &left, float &right, float &top, float &bottom) 
+{
+    m_Camera->getFrustumExtents(left, right, top, bottom);
 }

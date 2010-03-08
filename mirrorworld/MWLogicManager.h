@@ -65,20 +65,19 @@ public:
     void shootMirrorBall();
     void hitObstacle(const Ogre::Vector3& pos, const Ogre::Vector3& nor);
 
-	size_t createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up, size_t width, size_t height);
-	void updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft, Ogre::Real fRight, 
+    size_t createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up, size_t width, size_t height);
+    void updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft, Ogre::Real fRight, 
 		Ogre::Real fTop, Ogre::Real fBottom, size_t mirrorID);
-
-	void resetMirrors();
+    void resetMirrors();
 
 private:
     void triggerLaser();
     void calcLaserPath();
 
-	void setRealReflections(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Real fLeft, Ogre::Real fRight, 
+    void setRealReflections(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Real fLeft, Ogre::Real fRight, 
 		Ogre::Real fTop, Ogre::Real fBottom);
 private:
-	static const int            MAX_MIRROR = 10;
+    static const int            MAX_MIRROR = 10;
     static float                m_RaycastDistance;
     enum ShootMode { LASER, MIRROR_BALL };
     ShootMode                   m_ShootMode;
@@ -96,10 +95,10 @@ private:
     Ogre::Camera*               m_pCamera;
     LaserModel*                 m_pLaserModel;
 
-	MirrorWorld::Mirror*		m_MirrorList[MAX_MIRROR];
-	Ogre::RenderWindow*			m_Window;
-	Ogre::Camera*				m_RefCamera;
-	size_t						mirrorCount;
+    MirrorWorld::Mirror*		m_MirrorList[MAX_MIRROR];
+    Ogre::RenderWindow*			m_Window;
+    Ogre::Camera*				m_RefCamera;
+    size_t						mirrorCount;
 };
 }
 #endif

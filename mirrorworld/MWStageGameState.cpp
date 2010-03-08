@@ -61,6 +61,7 @@ void StageGameState::enter()
     m_bQuit = false;
 
     createScene();
+    m_AcumulatedTime = 0.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,7 +106,7 @@ void StageGameState::resume()
 void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
-    m_pPhyWorld = new OgreNewt::World();
+    m_pPhyWorld = new OgreNewt::World(100.0, 5);
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
@@ -156,7 +157,7 @@ void StageGameState::update(double timeSinceLastFrame)
 
     handleInput();
     m_pFPSCamera->update();
-    m_pPhyWorld->update(static_cast<Ogre::Real>(timeSinceLastFrame));
+    m_pPhyWorld->update(static_cast<Real>(timeSinceLastFrame/1000.0));
     m_pLogicMgr->update(timeSinceLastFrame);
     if (m_bShowphyDebugger)
     {
