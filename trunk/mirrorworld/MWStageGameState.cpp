@@ -107,6 +107,7 @@ void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
     m_pPhyWorld = new OgreNewt::World(100.0, 5);
+    m_pPhyWorld->setThreadCount(2);
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
@@ -116,7 +117,7 @@ void StageGameState::createScene()
 
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
-
+    
     m_pLogicMgr = new LogicManager();
     m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 3, m_pCamera);
 

@@ -14,7 +14,7 @@ FPSCamera::FPSCamera(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre:
     if((m_Camera = camera) == NULL)
         Ogre::LogManager::getSingleton().logMessage("Camera is null in Player");
 
-    m_Size = Vector3(30, 30, 30);
+    m_Size = Vector3(20, 30, 20);
     m_Gravity = -9.8;
     m_Mass = 40;
     m_JumpPower = 20;
