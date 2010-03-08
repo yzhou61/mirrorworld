@@ -13,21 +13,19 @@ namespace MirrorWorld {
 		Mirror(unsigned int id):Object(id, false, true){}
 		~Mirror();
 		Ogre::String name() const { return "Mirror"; }
-
-		virtual void init(Ogre::SceneManager *mgr, Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up,
-			size_t width, size_t height, Ogre::Camera *refCam);
-		virtual void update();
-
+		void init(Ogre::SceneManager *mgr, Ogre::Camera *refCam);
+        
+        void update();
 		bool setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft, Ogre::Real fRight, 
 			Ogre::Real fTop, Ogre::Real fBottom);
+
+        void preUpdate();
+        void postUpdate(double timeElapsed);
 
 		Ogre::Vector3 getPosition();
 		Ogre::Vector3 getDirection();
 		Ogre::Vector3 getUp();
-		Ogre::Camera *getEye();
-
-		void resetResource();
-		size_t getNewResourceIndex();
+        void getEyeFrustum(Ogre::Real &left, Ogre::Real &right, Ogre::Real &top, Ogre::Real &bottom);
 
 		Ogre::Vector3 getCorners(int index);
 		Ogre::Vector3 getNormal();
@@ -35,14 +33,24 @@ namespace MirrorWorld {
 
 		void reflectReal();
 
-		void setEntity(Ogre::Entity* entity) { m_pEntity = entity; }
-		void setSceneNode(Ogre::SceneNode *node) { m_Node = node; }
-		void setPosition(Ogre::Vector3 p) { m_Node->setPosition(p); }
+        size_t getNewResourceIndex();
+
+        void activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up);
+        void suspend();
+        bool isActivated() { return activated; }
+
+        // Debug
+        void reactivate();
 
 	private:
-		Ogre::MovablePlane *plane;
+        void suspendResource();
+
+        static const int MIRROR_WIDTH = 150;
+        static const int MIRROR_HEIGHT = 200;
+
+		Ogre::MovablePlane *m_Plane;
 		Ogre::Camera *ptr_RefCamera;
-		Ogre::Camera *tempCam;
+        Ogre::MeshPtr m_Mesh;
 		Ogre::SceneNode* m_Node;
 		Ogre::Vector3 m_Normal;
 		Ogre::Vector3 m_Position;
@@ -59,6 +67,9 @@ namespace MirrorWorld {
 		size_t maxResource;
 		size_t curResource;
 		Ogre::SceneManager *m_SceneMgr;
+
+        bool activated;
+        Ogre::Real unfolding;
 	};
 
 	class MirrorMgr : public ObjectMaker {

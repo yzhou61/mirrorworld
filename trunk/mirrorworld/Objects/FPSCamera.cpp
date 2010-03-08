@@ -167,18 +167,3 @@ void FPSCamera::update()
     m_xRotation = 0;
     m_yRotation = 0;
 }
-
-Vector3 FPSCamera::getPosition()
-{
-	return m_Camera->getRealPosition();
-}
-
-Vector3 FPSCamera::getDirection()
-{
-    return m_Camera->getRealDirection();
-}
-
-void FPSCamera::getFrustum(float &left, float &right, float &top, float &bottom) 
-{
-    m_Camera->getFrustumExtents(left, right, top, bottom);
-}

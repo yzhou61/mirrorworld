@@ -210,24 +210,23 @@ void GameFramework::updateStats()
     static Ogre::String tris = "Triangle Count: "; 
     static Ogre::String batches = "Batch Count: "; 
 
-    Ogre::OverlayElement* guiAvg = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps"); 
-    Ogre::OverlayElement* guiCurr = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps"); 
+    Ogre::OverlayElement* guiCurr = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
+    Ogre::OverlayElement* guiAvg = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
     Ogre::OverlayElement* guiBest = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/BestFps"); 
     Ogre::OverlayElement* guiWorst = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps"); 
 
     const Ogre::RenderTarget::FrameStats& stats = m_pRenderWnd->getStatistics(); 
-    guiAvg->setCaption(avgFps + Ogre::StringConverter::toString(stats.avgFPS)); 
     guiCurr->setCaption(currFps + Ogre::StringConverter::toString(stats.lastFPS)); 
-    guiBest->setCaption(bestFps + Ogre::StringConverter::toString(stats.bestFPS) 
-        +" "+Ogre::StringConverter::toString(stats.bestFrameTime)+" ms"); 
-    guiWorst->setCaption(worstFps + Ogre::StringConverter::toString(stats.worstFPS) 
-        +" "+Ogre::StringConverter::toString(stats.worstFrameTime)+" ms"); 
+
+    guiAvg->setCaption(m_DebugInfo[0]);
+    guiBest->setCaption(m_DebugInfo[1]);
+    guiWorst->setCaption(m_DebugInfo[2]); 
 
     Ogre::OverlayElement* guiTris = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumTris"); 
-    guiTris->setCaption(tris + Ogre::StringConverter::toString(stats.triangleCount)); 
+    guiTris->setCaption(m_DebugInfo[3]);
 
     Ogre::OverlayElement* guiBatches = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/NumBatches"); 
-    guiBatches->setCaption(batches + Ogre::StringConverter::toString(stats.batchCount)); 
+    guiBatches->setCaption(m_DebugInfo[4]); 
 
     Ogre::OverlayElement* guiDbg = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/DebugText"); 
     guiDbg->setCaption("");
