@@ -111,6 +111,7 @@ void StageGameState::createScene()
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
     m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);
+    m_pCamera = m_pFPSCamera->getCamera();
     setupPhyMaterialPairs();
 
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
@@ -125,8 +126,8 @@ void StageGameState::createScene()
 	light->setDiffuseColour(1.0, 1.0, 1.0);
 	light->setSpecularColour(1.0, 1.0, 1.0);
 
-	m_pLogicMgr->createMirror(Vector3(0, 0, 1), Vector3(0, 100, -100), Vector3(0, 1, 0), 200, 200);
-	m_pLogicMgr->createMirror(Vector3(0, 0, -1), Vector3(0, 100, 100), Vector3(0, 1, 0), 200, 200);
+	m_pLogicMgr->createMirror(Vector3(0, 0, -1), Vector3(0, 100, 100), Vector3(0, 1, 0));
+    m_pLogicMgr->createMirror(Vector3(0, 0, 1), Vector3(0, 100, -100), Vector3(1, 1, 0));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -172,11 +173,7 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->hideDebugInformation();
     }
 
-	Ogre::Real fLeft, fRight, fTop, fBottom;
-	m_pFPSCamera->getFrustum(fLeft, fRight, fTop, fBottom);
-	m_pLogicMgr->resetMirrors();
-	m_pLogicMgr->updateMirrors(m_pFPSCamera->getPosition(), m_pFPSCamera->getDirection(), m_pFPSCamera->getUp(),
-		fLeft, fRight, fTop, fBottom, -1);
+	
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -217,6 +214,15 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
     case OIS::KC_M:
         m_pLogicMgr->switchToMirrorBall();
         break;
+    case OIS::KC_N:
+        m_pLogicMgr->getMirror(1)->suspend();
+        m_pLogicMgr->getMirror(0)->activate(Vector3(1, 0, 0), Vector3(-100, 100, 0), Vector3(0, 1, 1));
+//        m_pLogicMgr->getMirror(0)->reactivate();
+//        m_pLogicMgr->getMirror(1)->reactivate();
+        break;
+    case OIS::KC_B:
+        m_pLogicMgr->getMirror(0)->suspend();
+        m_pLogicMgr->getMirror(1)->activate(Vector3(-1, 0, 0), Vector3(100, 100, 0), Vector3(0, 1, 1));
     default:
         GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
         break;

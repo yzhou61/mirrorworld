@@ -48,6 +48,8 @@ public:
     bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id); 
     bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
+    void setDebugInfo(Ogre::String text, int index) { m_DebugInfo[index] = text; }
+
     Ogre::Root*                 m_pRoot;
     Ogre::RenderWindow*         m_pRenderWnd;
     Ogre::Viewport*			    m_pViewport;
@@ -65,6 +67,8 @@ private:
 private:
     Ogre::Overlay*			    m_pDebugOverlay;
     int				            m_iNumScreenShots;
+
+    Ogre::String				m_DebugInfo[5];
 }; // End of GameFramework
 
 } // End of namespace

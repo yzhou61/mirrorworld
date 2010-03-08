@@ -65,10 +65,18 @@ public:
     void shootMirrorBall();
     void hitObstacle(const Ogre::Vector3& pos, const Ogre::Vector3& nor);
 
-    size_t createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up, size_t width, size_t height);
+    // Mirror related.
+    size_t createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up);
     void updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft, Ogre::Real fRight, 
 		Ogre::Real fTop, Ogre::Real fBottom, size_t mirrorID);
-    void resetMirrors();
+    void preUpdateMirrors();
+    void postUpdateMirrors(double timeElapsed);
+
+    Mirror *getMirror(size_t mirrorID) {
+        if (mirrorID >= m_MirrorCount)
+            return NULL;
+        return m_MirrorList[mirrorID];
+    }
 
 private:
     void triggerLaser();
@@ -97,8 +105,8 @@ private:
 
     MirrorWorld::Mirror*		m_MirrorList[MAX_MIRROR];
     Ogre::RenderWindow*			m_Window;
-    Ogre::Camera*				m_RefCamera;
-    size_t						mirrorCount;
+    size_t						m_MirrorCount;
 };
+
 }
 #endif

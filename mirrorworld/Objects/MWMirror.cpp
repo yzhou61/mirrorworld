@@ -1,4 +1,4 @@
-#include "MWMirror.h"
+    #include "MWMirror.h"
 #include "../MWGameFramework.h"
 #include <cmath>
 #include <string>
@@ -9,49 +9,93 @@ using namespace Ogre;
 namespace MirrorWorld {
 Mirror::~Mirror() 
 {
-	delete plane;
+	delete m_Plane;
 }
 
-void Mirror::init(SceneManager *mgr, Vector3 normal, Vector3 position, Vector3 up, size_t width, size_t height,
-				  Camera *refCam) {
+void Mirror::init(SceneManager *mgr, Camera *refCam) {
 	m_SceneMgr = mgr;
 	ptr_RefCamera = refCam;
 
-	m_Position = position;
-	m_Normal = normal.normalisedCopy();
-	m_Up = up.normalisedCopy();
+    m_Position = Vector3::ZERO;
+    m_Normal = Vector3::UNIT_Z;
+    m_Up = Vector3::UNIT_Y;
 
-//	tempCam = m_SceneMgr->createCamera("tempCam");
+    m_Node = m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_Plane = new MovablePlane("");
 
-	plane = new MovablePlane("plane" + m_Identity);
-	plane->normal = Vector3::UNIT_Z;
-	plane->d = 0;
-	MeshManager::getSingleton().createPlane("mirror" + m_Identity,
-	  ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, *plane, 
-	  static_cast<Real>(width), static_cast<Real>(height), 1, 1, true, 1, 1, 1, Vector3::UNIT_Y);
-	
-	m_pEntity = m_SceneMgr->createEntity("mEnt" + StringConverter::toString(m_Identity), "mirror" + m_Identity);
-	m_Node = m_SceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_Node->attachObject(m_pEntity);
-	m_Node->attachObject(plane);
+    maxResource = 0;
+    activated = false;
+}
 
-	Quaternion q = Vector3::UNIT_Z.getRotationTo(normal);
-	Vector3 newUp = q * Vector3::UNIT_Y;
+void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up) {
+    if (activated)
+        return;
 
-	m_Node->translate(position);
-	m_Node->rotate(newUp.getRotationTo(up));
-	m_Node->rotate(q);
+    Ogre::String indexStr = Ogre::StringConverter::toString(m_Identity);
 
-	Vector3 hor = normal.crossProduct(m_Up);
-	hor.normalise();
+    m_Plane->normal = Vector3::UNIT_Z;
+    m_Plane->d = 0;
+    m_Node->attachObject(m_Plane);
 
-	m_Corners[0] = m_Position + hor * (Real)width / 2 + m_Up * (Real)height / 2;
-	m_Corners[1] = m_Position + hor * (Real)width / 2 - m_Up * (Real)height / 2;
-	m_Corners[2] = m_Position - hor * (Real)width / 2 - m_Up * (Real)height / 2;
-	m_Corners[3] = m_Position - hor * (Real)width / 2 + m_Up * (Real)height / 2;
+    m_Mesh = MeshManager::getSingleton().createPlane("mirror" + indexStr,
+        ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, *m_Plane, 
+        MIRROR_WIDTH, MIRROR_HEIGHT, 1, 1, true, 1, 1, 1, Vector3::UNIT_Y);
 
-	maxResource = 0;
-	curResource = 0;
+    m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
+
+    m_Node->attachObject(m_pEntity);
+
+    Quaternion q = Vector3::UNIT_Z.getRotationTo(normal);
+    Vector3 newUp = q * Vector3::UNIT_Y;
+
+    m_Node->rotate(newUp.getRotationTo(up));
+    m_Node->rotate(q);
+    m_Node->translate(position);
+
+    m_Position = position;
+    m_Normal = normal.normalisedCopy();
+    m_Up = up.normalisedCopy();
+
+    Vector3 hor = normal.crossProduct(m_Up);
+    hor.normalise();
+
+    m_Corners[0] = m_Position + hor * MIRROR_WIDTH / 2 + m_Up * MIRROR_HEIGHT / 2;
+    m_Corners[1] = m_Position + hor * MIRROR_WIDTH / 2 - m_Up * MIRROR_HEIGHT / 2;
+    m_Corners[2] = m_Position - hor * MIRROR_WIDTH / 2 - m_Up * MIRROR_HEIGHT / 2;
+    m_Corners[3] = m_Position - hor * MIRROR_WIDTH / 2 + m_Up * MIRROR_HEIGHT / 2;
+
+    preUpdate();
+
+    unfolding = 1;
+    activated = true;
+}
+
+// For debugging.
+void Mirror::reactivate() {
+    if (!activated)
+        return;
+    unfolding = 1;
+}
+
+void Mirror::suspendResource() {
+
+    m_pEntity->setVisible(false);
+
+    m_Node->detachAllObjects();
+    m_Node->resetToInitialState();
+
+    MeshManager::getSingleton().remove(m_Mesh->getHandle());
+    if (m_pEntity != NULL)
+        m_SceneMgr->destroyEntity(m_pEntity);
+
+    activated = false;
+}
+
+void Mirror::suspend() {
+    if (!activated)
+        return;
+
+    unfolding = -1;
 }
 
 void Mirror::update() {
@@ -66,14 +110,12 @@ void Mirror::update() {
 	Ogre::RenderTexture *renderTexture = textures.at(index)->getBuffer()->getRenderTarget();
 	renderTexture->setAutoUpdated(false);
 
-	m_pEntity->setVisible(false);
-	eyes.at(index)->enableReflection(plane);
-	eyes.at(index)->enableCustomNearClipPlane(plane);
+	eyes.at(index)->enableReflection(m_Plane);
+	eyes.at(index)->enableCustomNearClipPlane(m_Plane);
 	renderTexture->update();
 	m_pEntity->setMaterialName("RttMat" + name);
 	eyes.at(index)->disableReflection();
 	eyes.at(index)->disableCustomNearClipPlane();
-	m_pEntity->setVisible(true);
 
 //	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << name;
 }
@@ -95,7 +137,6 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 
 	direction.normalise();
 	up.normalise();
-//	eyes.at(index)->setDirection(direction);
 	Quaternion q = eyes.at(index)->getRealDirection().getRotationTo(direction);
 	Vector3 newUp = q * eyes.at(index)->getRealUp();
 
@@ -103,7 +144,6 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 
 	eyes.at(index)->rotate(q);
 	eyes.at(index)->rotate(newUp.getRotationTo(up));
-//	eyes.at(index)->setDirection(direction);
 	eyes.at(index)->setPosition(position);
 
 	eyePositions.at(index) = position - 2 * m_Normal.dotProduct(position - m_Position) / m_Normal.length() * m_Normal;
@@ -136,8 +176,6 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 	
 	for (int i = 0; i < 4; ++i) {
 		Vector3 cornerPoint = eyes.at(index)->getProjectionMatrix() * eyes.at(index)->getViewMatrix() * m_Corners[i];
-
-//		GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(m_Corners[i]), i);
 
 		if ((cornerPoint.z > 1)) {
 			if (cornerPoint.x < 0)
@@ -219,10 +257,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 	omBottom *= -ofBottom;
 	
 	eyes.at(index)->setFrustumExtents(omLeft, omRight, omTop, omBottom);
-//	if (index == 0)
-//	GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(eyes.at(index)->getRealUp()), 3);
-//	if (index == 3)
-//	GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(eyes.at(index)->getRealUp()), 1);
+
 	resourceStack.push(index);
 	realReflectionStack.push(index);
 	return true;
@@ -243,17 +278,18 @@ Ogre::Vector3 Mirror::getUp() {
 	return eyeUps.at(index);
 }
 
-Ogre::Camera *Mirror::getEye() {
+void Mirror::getEyeFrustum(Ogre::Real &left, Ogre::Real &right, Ogre::Real &top, Ogre::Real &bottom) {
 	size_t index = resourceStack.top();
-	return eyes.at(index);
+    eyes.at(index)->getFrustumExtents(left, right, top, bottom);
 }
 
-void Mirror::resetResource() {
+void Mirror::preUpdate() {
 	while (!resourceStack.empty())
 		resourceStack.pop();
 	while (!realReflectionStack.empty())
 		realReflectionStack.pop();
 	curResource = 0;
+    m_pEntity->setVisible(true);
 }
 
 size_t Mirror::getNewResourceIndex() {
@@ -318,9 +354,45 @@ void Mirror::reflectReal() {
 		m_pEntity->setMaterialName("RttMat" + name);
 //		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << name;
 	} else if (index == -1) {
-		GameFramework::getSingletonPtr()->m_pLog->stream() << "real wall";
-//		m_pEntity->setMaterialName("Examples/Rockwall");
+//		GameFramework::getSingletonPtr()->m_pLog->stream() << "real wall";
+		m_pEntity->setMaterialName("Examples/Rockwall");
 	}
+}
+
+void Mirror::postUpdate(double timeElapsed)
+{
+    if (unfolding > 0) {
+        unfolding += timeElapsed;
+        if (unfolding > 850)
+            return;
+        if (unfolding < 320) {
+            m_Node->setScale(1, unfolding / 300, 1);
+        } else if (unfolding < 650) {
+            m_Node->setScale(1, 1, 1);
+            if (!m_pEntity->getVisible())
+                m_pEntity->setVisible(true);
+        } else if (unfolding < 700) {
+            if (m_pEntity->getVisible())
+                m_pEntity->setVisible(false);
+        } else if (unfolding < 750) {
+            if (!m_pEntity->getVisible())
+                m_pEntity->setVisible(true);
+        } else if (unfolding < 800) {
+            if (m_pEntity->getVisible())
+                m_pEntity->setVisible(false);
+        } else if (!m_pEntity->getVisible()) {
+            m_pEntity->setVisible(true);
+        }
+    }
+    if (unfolding < 0) {
+        unfolding -= timeElapsed;
+        if (unfolding < -100) {
+            if (activated)
+                suspendResource();
+            return;
+        }
+        m_Node->setScale(1, (unfolding + 100) / 100, 1);
+    }
 }
 
 /////////////////////////////////////////////////////////////////////
