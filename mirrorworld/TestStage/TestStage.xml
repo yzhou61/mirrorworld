@@ -33,31 +33,31 @@
         <node name="Bottom" id="951719680">
             <position x="0" y="0" z="0" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1000" y="0.5" z="1000" />
+            <scale x="1000" y="40" z="1000" />
             <entity name="Bottom" meshFile="box.mesh" castShadows="false" />
         </node>
         <node name="Wall1" id="471724608">
             <position x="-500" y="500" z="0" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="0.5" y="1000" z="1000" />
+            <scale x="40" y="1000" z="1000" />
             <entity name="Wall1" meshFile="box.mesh" castShadows="false" />
         </node>
         <node name="Barrel0" id="286080512">
             <position x="0" y="30" z="0" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="10" y="10" z="10" />
+            <scale x="0" y="20" z="0" />
             <entity name="Barrel0" meshFile="Barrel.mesh" castShadows="true" />
         </node>
         <node name="Wall2" id="382366432">
             <position x="500" y="500" z="0" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="0.5" y="1000" z="1000" />
+            <scale x="40" y="1000" z="1000" />
             <entity name="Wall2" meshFile="box.mesh" castShadows="false" />
         </node>
         <node name="Wall4" id="611987648">
             <position x="0" y="500" z="-500" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1000" y="1000" z="0.5" />
+            <scale x="1000" y="1000" z="40" />
             <entity name="Wall4" meshFile="box.mesh" castShadows="false" />
         </node>
     </nodes>

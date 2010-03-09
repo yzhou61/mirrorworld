@@ -106,15 +106,16 @@ void StageGameState::resume()
 void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
-    m_pPhyWorld = new OgreNewt::World(100.0, 5);
-    m_pPhyWorld->setThreadCount(2);
+    m_pPhyWorld = new OgreNewt::World(100.0, 1);
+    m_pPhyWorld->setThreadCount(1);
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
     m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);
     m_pCamera = m_pFPSCamera->getCamera();
+    m_pPlayer = new Player(0);
+    m_pPlayer->init(m_pSceneMgr, m_pPhyWorld);
     setupPhyMaterialPairs();
-
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
     
@@ -161,6 +162,7 @@ void StageGameState::update(double timeSinceLastFrame)
     m_pFPSCamera->update();
     m_pPhyWorld->update(static_cast<Real>(timeSinceLastFrame/1000.0));
     m_pLogicMgr->update(timeSinceLastFrame);
+    m_pPlayer->updateAnimation(timeSinceLastFrame);
     if (m_bShowphyDebugger)
     {
         m_pPhyWorldDebugger->startRaycastRecording();

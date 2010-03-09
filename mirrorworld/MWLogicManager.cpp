@@ -227,7 +227,7 @@ void LogicManager::calcLaserPath()
 
 size_t LogicManager::createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up) {
 	Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
-	curMirror->init(m_pSceneMgr, m_pCamera);
+	curMirror->init(m_pSceneMgr, m_pCamera, m_pWorld);
     curMirror->activate(normal, position, up);
 
 	m_MirrorList[m_MirrorCount] = curMirror;

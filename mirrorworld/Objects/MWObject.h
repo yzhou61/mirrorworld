@@ -24,7 +24,7 @@ public:
     Ogre::String nameID() const { return name()+"_id"+Ogre::StringConverter::toString(m_Identity); }
     virtual void setEntity(Ogre::SceneManager* sceneMgr, OgreNewt::World* world = NULL, 
         Ogre::SceneNode* node = NULL, Ogre::Entity* entity = NULL) 
-    { m_pEntity = entity; attachUserData(); }
+    { m_pSceneMgr = sceneMgr; m_pWorld = world; m_pEntity = entity; attachUserData(); }
     bool isAttachable() { return m_bAttachable; }
     bool isReflective() { return m_bReflective; }
     bool isRemovable() { return m_bRemovable; }
@@ -38,7 +38,9 @@ protected:
     // Can reflect light?
     bool                m_bReflective;
     bool                m_bRemovable;
+    Ogre::SceneManager* m_pSceneMgr;
     Ogre::Entity*       m_pEntity;
+    OgreNewt::World*    m_pWorld;
     OgreNewt::Body*     m_pPhyBody;
 }; // End of MWObject
 

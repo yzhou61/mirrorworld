@@ -34,7 +34,9 @@ MirrorBallModel::MirrorBallModel(Ogre::SceneManager* sceneMgr)
 
 void MirrorBallModel::active(const Ogre::Vector3& pos)
 {
+    m_pRibbonTrail->removeNode(m_pBallNode);
     m_pBallNode->setPosition(pos);
+    m_pRibbonTrail->addNode(m_pBallNode);
     m_pBallNode->attachObject(m_pLight);
     m_pBallNode->attachObject(m_pBillboard);
     m_pTrailNode->attachObject(m_pRibbonTrail);

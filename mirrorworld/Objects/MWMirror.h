@@ -13,7 +13,7 @@ namespace MirrorWorld {
 		Mirror(unsigned int id):Object(id, false, true){}
 		~Mirror();
 		Ogre::String name() const { return "Mirror"; }
-		void init(Ogre::SceneManager *mgr, Ogre::Camera *refCam);
+		void init(Ogre::SceneManager *mgr, Ogre::Camera *refCam, OgreNewt::World* world);
         
         void update();
 		bool setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft, Ogre::Real fRight, 
@@ -45,8 +45,8 @@ namespace MirrorWorld {
 	private:
         void suspendResource();
 
-        static const int MIRROR_WIDTH = 150;
-        static const int MIRROR_HEIGHT = 200;
+        static float MIRROR_WIDTH;
+        static float MIRROR_HEIGHT;
 
 		Ogre::MovablePlane *m_Plane;
 		Ogre::Camera *ptr_RefCamera;
