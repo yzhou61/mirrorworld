@@ -51,7 +51,7 @@ class LogicManager
 {
 public:
     LogicManager();
-    ~LogicManager() {}
+    ~LogicManager();
 	void init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow *window, 
 		int maxMirror = 3, Ogre::Camera* camera = NULL);
     void update(double timeElapsed);
@@ -66,17 +66,12 @@ public:
     void hitObstacle(const Ogre::Vector3& pos, const Ogre::Vector3& nor);
 
     // Mirror related.
-    size_t createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up);
     void updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft, Ogre::Real fRight, 
 		Ogre::Real fTop, Ogre::Real fBottom, size_t mirrorID);
     void preUpdateMirrors();
     void postUpdateMirrors(double timeElapsed);
 
-    Mirror *getMirror(size_t mirrorID) {
-        if (mirrorID >= m_MirrorCount)
-            return NULL;
-        return m_MirrorList[mirrorID];
-    }
+    void showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection);
 
 private:
     void triggerLaser();
@@ -85,7 +80,6 @@ private:
     void setRealReflections(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Real fLeft, Ogre::Real fRight, 
 		Ogre::Real fTop, Ogre::Real fBottom);
 private:
-    static const int            MAX_MIRROR = 10;
     static float                m_RaycastDistance;
     enum ShootMode { LASER, MIRROR_BALL };
     ShootMode                   m_ShootMode;
@@ -103,9 +97,9 @@ private:
     Ogre::Camera*               m_pCamera;
     LaserModel*                 m_pLaserModel;
 
-    MirrorWorld::Mirror*        m_MirrorList[MAX_MIRROR];
+    MirrorWorld::Mirror**       m_MirrorList;
     Ogre::RenderWindow*         m_Window;
-    size_t                      m_MirrorCount;
+    int                         m_CurMirrorIndex;
 };
 
 }

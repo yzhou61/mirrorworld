@@ -128,8 +128,8 @@ void StageGameState::createScene()
 	light->setDiffuseColour(1.0, 1.0, 1.0);
 	light->setSpecularColour(1.0, 1.0, 1.0);
 
-	m_pLogicMgr->createMirror(Vector3(0, 0, -1), Vector3(0, 100, 100), Vector3(0, 1, 0));
-    m_pLogicMgr->createMirror(Vector3(0, 0, 1), Vector3(0, 100, -100), Vector3(1, 1, 0));
+//    m_pLogicMgr->createMirror(Vector3(0, 0, -1), Vector3(0, 100, 100), Vector3(0, 1, 0));
+//    m_pLogicMgr->createMirror(Vector3(0, 0, 1), Vector3(0, 100, -100), Vector3(1, 1, 0));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -184,6 +184,7 @@ void StageGameState::update(double timeSinceLastFrame)
 //////////////////////////////////////////////////////////////////////////
 bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
+    static int pos = -200;
     if (GameFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
     {
         m_bQuit = true;
@@ -218,14 +219,16 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
         m_pLogicMgr->switchToMirrorBall();
         break;
     case OIS::KC_N:
-        m_pLogicMgr->getMirror(1)->suspend();
-        m_pLogicMgr->getMirror(0)->activate(Vector3(1, 0, 0), Vector3(-100, 100, 0), Vector3(0, 1, 1));
+//        m_pLogicMgr->getMirror(1)->suspend();
+//        m_pLogicMgr->getMirror(0)->activate(Vector3(1, 0, 0), Vector3(-100, 100, 0), Vector3(0, 1, 1));
 //        m_pLogicMgr->getMirror(0)->reactivate();
 //        m_pLogicMgr->getMirror(1)->reactivate();
+        pos += 100;
+        m_pLogicMgr->showMirror(Vector3(pos, 100, 0), Vector3(-1, 0, 0), Vector3(0.3, 0.4, 0.5));
         break;
     case OIS::KC_B:
-        m_pLogicMgr->getMirror(0)->suspend();
-        m_pLogicMgr->getMirror(1)->activate(Vector3(-1, 0, 0), Vector3(100, 100, 0), Vector3(0, 1, 1));
+//        m_pLogicMgr->getMirror(0)->suspend();
+//        m_pLogicMgr->getMirror(1)->activate(Vector3(-1, 0, 0), Vector3(100, 100, 0), Vector3(0, 1, 1));
     default:
         GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
         break;
