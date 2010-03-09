@@ -38,15 +38,14 @@ namespace MirrorWorld {
         void activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up);
         void suspend();
         bool isActivated() { return activated; }
-
-        // Debug
-        void reactivate();
+        bool shouldUpdate() { return activated && m_pEntity->getVisible(); }
 
 	private:
         void suspendResource();
 
-        static float MIRROR_WIDTH;
-        static float MIRROR_HEIGHT;
+        static const int MIRROR_WIDTH = 150;
+        static const int MIRROR_HEIGHT = 200;
+        static const int TEXTURE_SIZE = 512;
 
 		Ogre::MovablePlane *m_Plane;
 		Ogre::Camera *ptr_RefCamera;
@@ -60,7 +59,7 @@ namespace MirrorWorld {
 		std::vector<Ogre::Vector3> eyePositions;
 		std::vector<Ogre::Vector3> eyeDirections;
 		std::vector<Ogre::Vector3> eyeUps;
-		std::vector<Ogre::TexturePtr> textures;
+        std::vector<Ogre::RenderTexture *> textures;
 		std::vector<Ogre::MaterialPtr> materials;
 		std::stack<size_t> resourceStack;
 		std::stack<int> realReflectionStack;
@@ -70,6 +69,8 @@ namespace MirrorWorld {
 
         bool activated;
         double unfolding;
+
+        size_t last;
 	};
 
 	class MirrorMgr : public ObjectMaker {

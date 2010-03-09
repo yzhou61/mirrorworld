@@ -1,13 +1,10 @@
-    #include "MWMirror.h"
+#include "MWMirror.h"
 #include "../MWGameFramework.h"
 #include <cmath>
 #include <string>
 #include <sstream>
 
 using namespace Ogre;
-
-float MirrorWorld::Mirror::MIRROR_HEIGHT = 200.0f;
-float MirrorWorld::Mirror::MIRROR_WIDTH = 150.0f;
 
 namespace MirrorWorld {
 Mirror::~Mirror() 
@@ -52,7 +49,7 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
     m_Node->translate(position);
 
     m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
-    Ogre::Vector3 size(MIRROR_WIDTH, MIRROR_HEIGHT, 2);
+    Ogre::Vector3 size((Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 2);
     OgreNewt::ConvexCollisionPtr colPtr(
         new OgreNewt::CollisionPrimitives::Box(m_pWorld, size, 0));
     m_pPhyBody = new OgreNewt::Body(m_pWorld, colPtr);
@@ -82,13 +79,8 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
 
     unfolding = 1;
     activated = true;
-}
-
-// For debugging.
-void Mirror::reactivate() {
-    if (!activated)
-        return;
-    unfolding = 1;
+    m_Node->setScale(1, 0, 1);
+    m_pEntity->setVisible(true);
 }
 
 void Mirror::suspendResource() {
@@ -122,15 +114,10 @@ void Mirror::update() {
 	ss << m_Identity << "-" << index;
 	String name = ss.str();
 	
-	Ogre::RenderTexture *renderTexture = textures.at(index)->getBuffer()->getRenderTarget();
-	renderTexture->setAutoUpdated(false);
-
-	eyes.at(index)->enableReflection(m_Plane);
-	eyes.at(index)->enableCustomNearClipPlane(m_Plane);
-	renderTexture->update();
+	textures.at(index)->update();
 	m_pEntity->setMaterialName("RttMat" + name);
-	eyes.at(index)->disableReflection();
-	eyes.at(index)->disableCustomNearClipPlane();
+
+//    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(m_Normal), 0);
 
 //	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << name;
 }
@@ -146,10 +133,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 	Real ofLeft, ofRight, ofTop, ofBottom;
 	ptr_RefCamera->getFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
 	eyes.at(index)->setFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
-
-	materials.at(index)->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
-	materials.at(index)->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setProjectiveTexturing(true, eyes.at(index));
-
+	
 	direction.normalise();
 	up.normalise();
 	Quaternion q = eyes.at(index)->getRealDirection().getRotationTo(direction);
@@ -261,7 +245,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 		+ Ogre::StringConverter::toString(omTop) + " "
 		+ Ogre::StringConverter::toString(omBottom), 4);
 */
-	if ((mWidth < 0.1) && (mHeight < 0.1)) {
+	if ((mWidth < 0.05) && (mHeight < 0.05)) {
 		realReflectionStack.push(-1);
 		return false;
 	}
@@ -298,15 +282,6 @@ void Mirror::getEyeFrustum(Ogre::Real &left, Ogre::Real &right, Ogre::Real &top,
     eyes.at(index)->getFrustumExtents(left, right, top, bottom);
 }
 
-void Mirror::preUpdate() {
-	while (!resourceStack.empty())
-		resourceStack.pop();
-	while (!realReflectionStack.empty())
-		realReflectionStack.pop();
-	curResource = 0;
-    m_pEntity->setVisible(true);
-}
-
 size_t Mirror::getNewResourceIndex() {
 	if (curResource < maxResource) {
 		++curResource;
@@ -321,6 +296,8 @@ size_t Mirror::getNewResourceIndex() {
 		newEye->setNearClipDistance(ptr_RefCamera->getNearClipDistance());
 		newEye->setFarClipDistance(ptr_RefCamera->getFarClipDistance());
 		newEye->setFOVy(ptr_RefCamera->getFOVy());
+        newEye->enableReflection(m_Plane);
+        newEye->enableCustomNearClipPlane(m_Plane);
 		eyes.push_back(newEye);
 
 		Ogre::Vector3 temp;
@@ -328,16 +305,23 @@ size_t Mirror::getNewResourceIndex() {
 		eyeDirections.push_back(temp);
 		eyeUps.push_back(temp);
 
-		textures.push_back(Ogre::TextureManager::getSingleton().createManual("RttTex" + name,
-			ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, TEX_TYPE_2D, 512, 512, 0, PF_R8G8B8, TU_RENDERTARGET));
+        Ogre::TexturePtr texturePtr = Ogre::TextureManager::getSingleton().createManual("RttTex" + name,
+            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, TEX_TYPE_2D, TEXTURE_SIZE, TEXTURE_SIZE, 0, PF_R8G8B8, TU_RENDERTARGET);
 
-		Viewport *v = textures.at(curResource)->getBuffer()->getRenderTarget()->addViewport(eyes.at(curResource));
+        Ogre::RenderTexture *curTex = texturePtr->getBuffer()->getRenderTarget();
+        curTex->setAutoUpdated(false);
+        textures.push_back(curTex);
+
+		Viewport *v = curTex->addViewport(newEye);
 		v->setClearEveryFrame(true);
-		v->setBackgroundColour(ColourValue::Black);
+        v->setBackgroundColour(ColourValue::White);
 
-		materials.push_back(MaterialManager::getSingleton().create("RttMat" + name,
-			ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME));
-		materials.at(curResource)->getTechnique(0)->getPass(0)->createTextureUnitState("RttTex" + name);
+        Ogre::MaterialPtr newMat = MaterialManager::getSingleton().create("RttMat" + name,
+            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		newMat->getTechnique(0)->getPass(0)->createTextureUnitState("RttTex" + name);
+        newMat->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+        newMat->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setProjectiveTexturing(true, eyes.at(curResource));
+        materials.push_back(newMat);
 		
 		++curResource;
 		++maxResource;
@@ -362,6 +346,7 @@ Ogre::Vector3 Mirror::getCenterPosition() {
 void Mirror::reflectReal() {
 	int index = realReflectionStack.top();
 	realReflectionStack.pop();
+    last = index;
 	if (index >= 0) {
 		std::stringstream ss;
 		ss << m_Identity << "-" << index;
@@ -372,6 +357,15 @@ void Mirror::reflectReal() {
 //		GameFramework::getSingletonPtr()->m_pLog->stream() << "real wall";
 		m_pEntity->setMaterialName("Examples/Rockwall");
 	}
+}
+
+void Mirror::preUpdate() {
+    while (!resourceStack.empty())
+        resourceStack.pop();
+    while (!realReflectionStack.empty())
+        realReflectionStack.pop();
+    curResource = 0;
+    //    m_pEntity->setVisible(true);
 }
 
 void Mirror::postUpdate(double timeElapsed)
@@ -401,12 +395,24 @@ void Mirror::postUpdate(double timeElapsed)
     }
     if (unfolding < 0) {
         unfolding -= timeElapsed;
-        if (unfolding < -100) {
+        if (unfolding < -400) {
             if (activated)
                 suspendResource();
             return;
         }
-        m_Node->setScale(1, static_cast<Ogre::Real>(unfolding + 100) / 100.0f, 1);
+        Ogre::Real scale = static_cast<Ogre::Real>(unfolding + 400) / 400.0f;
+        m_Node->setScale(scale, scale, 1);
+        m_Node->rotate(m_Normal, Degree(20), Ogre::Node::TS_WORLD);
+
+//        std::stringstream ss;
+//        ss << m_Identity << "-" << last;
+//        String name = ss.str();
+//        GameFramework::getSingleton().m_pLog->stream() << last;
+//        Ogre::TextureUnitState *t = materials.at(last)->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+//        ColourValue c(1, 1, 1, 0);
+//        materials.at(last)->getTechnique(0)->setDepthWriteEnabled(false);
+//        t->setColourOperationEx(LBX_BLEND_MANUAL, LBS_TEXTURE, LBS_CURRENT, c, c, (unfolding + 400) / 400.0f);
+
     }
 }
 

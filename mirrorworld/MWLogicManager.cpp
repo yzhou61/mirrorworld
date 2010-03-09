@@ -121,11 +121,11 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
     m_bLaserOn = false;
     m_pLaserModel = new LaserModel(m_pSceneMgr);
     
-    m_MaxMirror = maxMirror + 1;
+    m_MaxMirrors = maxMirror + 1;
     m_CurMirrorIndex = 0;
-    m_MirrorList = new Mirror*[m_MaxMirror];
+    m_MirrorList = new Mirror*[m_MaxMirrors];
 
-    for (int i = 0; i < m_MaxMirror; ++i) {
+    for (int i = 0; i < m_MaxMirrors; ++i) {
         Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
         curMirror->init(m_pSceneMgr, m_pCamera, m_pWorld);
 
@@ -133,16 +133,14 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
     }
 
     // Clear up the mirror ball list
-    m_pMirrorBallPool = new ResourcePool(m_MaxMirror);
-    for (int i = 0;i < m_MaxMirror; i++)
+    m_pMirrorBallPool = new ResourcePool(maxMirror);
+    for (int i = 0;i < maxMirror; i++)
         m_pMirrorBallPool->getNodeList()[i] = new MirrorBallNode(m_pSceneMgr, m_pWorld, this);
-    m_pUnattachPool = new ResourcePool(m_MaxMirror);
-    for (int i = 0;i < m_MaxMirror; i++)
+    m_pUnattachPool = new ResourcePool(maxMirror);
+    for (int i = 0;i < maxMirror; i++)
         m_pUnattachPool->getNodeList()[i] = new UnattachNode(m_pSceneMgr, m_pWorld);
     MirrorBallModel::resetCounter();
     UnattachModel::resetCounter();
-
-    m_ShootMode = LASER;
 }
 
 void LogicManager::update(double timeElapsed)
@@ -239,14 +237,14 @@ void LogicManager::calcLaserPath()
 }
 
 void LogicManager::preUpdateMirrors() {
-	for (int i = 0; i < m_MaxMirror; ++i) {
+	for (int i = 0; i < m_MaxMirrors; ++i) {
         if (m_MirrorList[i]->isActivated())
 		    m_MirrorList[i]->preUpdate();
 	}
 }
 
 void LogicManager::postUpdateMirrors(double timeElapsed) {
-    for (int i = 0; i < m_MaxMirror; ++i) {
+    for (int i = 0; i < m_MaxMirrors; ++i) {
         if (m_MirrorList[i]->isActivated())
             m_MirrorList[i]->postUpdate(timeElapsed);
     }
@@ -255,10 +253,10 @@ void LogicManager::postUpdateMirrors(double timeElapsed) {
 void LogicManager::updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up,
 	Ogre::Real fLeft, Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom, size_t mirrorID) {
 
-	for (int i = 0; i < m_MaxMirror; ++i) {
+	for (int i = 0; i < m_MaxMirrors; ++i) {
 
 		Mirror *m = m_MirrorList[i];
-        if (!m->isActivated())
+        if (!m->shouldUpdate())
             continue;
 
 		if (m->getID() == mirrorID) {
@@ -281,10 +279,10 @@ void LogicManager::updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction
 void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 direction,
 		Ogre::Real fLeft, Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom) {
 
-	for (int i = 0; i < m_MaxMirror; ++i) {
+	for (int i = 0; i < m_MaxMirrors; ++i) {
         
 		Mirror *m = m_MirrorList[i];
-        if (!m->isActivated())
+        if (!m->shouldUpdate())
             continue;
 		if (m->getNormal().dotProduct(position - m->getCenterPosition()) <= 0)
 			continue;
@@ -293,7 +291,7 @@ void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 dire
 }
 
 void LogicManager::showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection) {
-    int toSuspend = (m_CurMirrorIndex + 1) % m_MaxMirror;
+    int toSuspend = (m_CurMirrorIndex + 1) % m_MaxMirrors;
     m_MirrorList[toSuspend]->suspend();
 
     Vector3 up;
@@ -303,7 +301,7 @@ void LogicManager::showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre
         up = normal.crossProduct(Vector3::UNIT_Y.crossProduct(normal));
     }
     m_MirrorList[m_CurMirrorIndex]->activate(normal, position + normal, up);
-    m_CurMirrorIndex = (m_CurMirrorIndex + 1) % m_MaxMirror;
+    m_CurMirrorIndex = (m_CurMirrorIndex + 1) % m_MaxMirrors;
 }
 
 }
