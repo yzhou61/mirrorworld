@@ -9,6 +9,7 @@
 #include "MWGameState.h"
 #include "MWLogicManager.h"
 #include "Scene/DotSceneLoader.h"
+#include "Objects/MWPlayer.h"
 #include "Objects/FPSCamera.h"
 
 namespace MirrorWorld{
@@ -49,6 +50,7 @@ private:
     OgreNewt::World*    m_pPhyWorld;
     OgreNewt::Debugger* m_pPhyWorldDebugger;
     bool                m_bShowphyDebugger;
+    Player*             m_pPlayer;
     FPSCamera*          m_pFPSCamera;
     LogicManager*       m_pLogicMgr;
 }; // End of StageGameState

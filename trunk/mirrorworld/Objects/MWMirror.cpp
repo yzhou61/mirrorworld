@@ -6,14 +6,18 @@
 
 using namespace Ogre;
 
+float MirrorWorld::Mirror::MIRROR_HEIGHT = 200.0f;
+float MirrorWorld::Mirror::MIRROR_WIDTH = 150.0f;
+
 namespace MirrorWorld {
 Mirror::~Mirror() 
 {
 	delete m_Plane;
 }
 
-void Mirror::init(SceneManager *mgr, Camera *refCam) {
+void Mirror::init(SceneManager *mgr, Camera *refCam, OgreNewt::World* world) {
 	m_SceneMgr = mgr;
+    m_pWorld = world;
 	ptr_RefCamera = refCam;
 
     m_Position = Vector3::ZERO;
@@ -41,16 +45,26 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
         ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, *m_Plane, 
         (Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 1, 1, true, 1, 1, 1, Vector3::UNIT_Y);
 
-    m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
-
-    m_Node->attachObject(m_pEntity);
-
     Quaternion q = Vector3::UNIT_Z.getRotationTo(normal);
     Vector3 newUp = q * Vector3::UNIT_Y;
-
     m_Node->rotate(newUp.getRotationTo(up));
     m_Node->rotate(q);
     m_Node->translate(position);
+
+    m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
+    Ogre::Vector3 size(MIRROR_WIDTH, MIRROR_HEIGHT, 2);
+    OgreNewt::ConvexCollisionPtr colPtr(
+        new OgreNewt::CollisionPrimitives::Box(m_pWorld, size, 0));
+    m_pPhyBody = new OgreNewt::Body(m_pWorld, colPtr);
+#ifdef OGRENEWT_NO_COLLISION_SHAREDPTR
+    delete colPtr;
+#endif
+    m_pPhyBody->setPositionOrientation(m_Node->getPosition(), m_Node->getOrientation());
+    m_pPhyBody->attachNode(m_Node);
+    m_pPhyBody->setMaterialGroupID(m_pWorld->getDefaultMaterialID());
+    attachUserData();
+
+    m_Node->attachObject(m_pEntity);
 
     m_Position = position;
     m_Normal = normal.normalisedCopy();
@@ -88,6 +102,7 @@ void Mirror::suspendResource() {
     if (m_pEntity != NULL)
         m_SceneMgr->destroyEntity(m_pEntity);
 
+    delete m_pPhyBody;
     activated = false;
 }
 
@@ -391,7 +406,7 @@ void Mirror::postUpdate(double timeElapsed)
                 suspendResource();
             return;
         }
-        m_Node->setScale(1, (unfolding + 100) / 100, 1);
+        m_Node->setScale(1, static_cast<Ogre::Real>(unfolding + 100) / 100.0f, 1);
     }
 }
 
