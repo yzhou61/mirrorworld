@@ -47,6 +47,7 @@ bool MirrorBallNode::update(double timeElasped)
         else if (hitobj->isAttachable())
         {
 
+            m_pLogicEngine->showMirror(hitPoint, result.mNormal, dir);
             return false;
         }
         // Show particle system
@@ -101,6 +102,10 @@ LogicManager::LogicManager():m_bLaserOn(false), m_pLaser(NULL),m_pLaserModel(NUL
 {
 }
 
+LogicManager::~LogicManager() {
+    delete[] m_MirrorList;
+}
+
 void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow* window,
 	int maxMirror, Ogre::Camera* camera)
 {
@@ -110,16 +115,24 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
     m_pCamera = camera;
 	m_Window = window;
 
-	m_MirrorCount = 0;
-
     // Will always has one laser
     m_pLaser = static_cast<Laser*>(ObjectFactory::getSingleton().createObj("Laser"));
     m_pLaser->reset();
     m_bLaserOn = false;
     m_pLaserModel = new LaserModel(m_pSceneMgr);
     
+    m_MaxMirror = maxMirror + 1;
+    m_CurMirrorIndex = 0;
+    m_MirrorList = new Mirror*[m_MaxMirror];
+
+    for (int i = 0; i < m_MaxMirror; ++i) {
+        Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
+        curMirror->init(m_pSceneMgr, m_pCamera, m_pWorld);
+
+        m_MirrorList[i] = curMirror;
+    }
+
     // Clear up the mirror ball list
-    m_MaxMirror = maxMirror;
     m_pMirrorBallPool = new ResourcePool(m_MaxMirror);
     for (int i = 0;i < m_MaxMirror; i++)
         m_pMirrorBallPool->getNodeList()[i] = new MirrorBallNode(m_pSceneMgr, m_pWorld, this);
@@ -225,24 +238,15 @@ void LogicManager::calcLaserPath()
     }
 }
 
-size_t LogicManager::createMirror(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up) {
-	Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
-	curMirror->init(m_pSceneMgr, m_pCamera, m_pWorld);
-    curMirror->activate(normal, position, up);
-
-	m_MirrorList[m_MirrorCount] = curMirror;
-	return m_MirrorCount++;
-}
-
 void LogicManager::preUpdateMirrors() {
-	for (size_t i = 0; i < m_MirrorCount; ++i) {
+	for (int i = 0; i < m_MaxMirror; ++i) {
         if (m_MirrorList[i]->isActivated())
 		    m_MirrorList[i]->preUpdate();
 	}
 }
 
 void LogicManager::postUpdateMirrors(double timeElapsed) {
-    for (size_t i = 0; i < m_MirrorCount; ++i) {
+    for (int i = 0; i < m_MaxMirror; ++i) {
         if (m_MirrorList[i]->isActivated())
             m_MirrorList[i]->postUpdate(timeElapsed);
     }
@@ -251,7 +255,7 @@ void LogicManager::postUpdateMirrors(double timeElapsed) {
 void LogicManager::updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up,
 	Ogre::Real fLeft, Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom, size_t mirrorID) {
 
-	for (size_t i = 0; i < m_MirrorCount; ++i) {
+	for (int i = 0; i < m_MaxMirror; ++i) {
 
 		Mirror *m = m_MirrorList[i];
         if (!m->isActivated())
@@ -277,7 +281,7 @@ void LogicManager::updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction
 void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 direction,
 		Ogre::Real fLeft, Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom) {
 
-	for (size_t i = 0; i < m_MirrorCount; ++i) {
+	for (int i = 0; i < m_MaxMirror; ++i) {
         
 		Mirror *m = m_MirrorList[i];
         if (!m->isActivated())
@@ -286,6 +290,20 @@ void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 dire
 			continue;
 		m->reflectReal();
 	}
+}
+
+void LogicManager::showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection) {
+    int toSuspend = (m_CurMirrorIndex + 1) % m_MaxMirror;
+    m_MirrorList[toSuspend]->suspend();
+
+    Vector3 up;
+    if ((abs(normal.angleBetween(Vector3::UNIT_Y).valueDegrees()) < 1) || (abs(normal.angleBetween(Vector3::NEGATIVE_UNIT_Y).valueDegrees()) < 1)) {
+        up = normal.crossProduct(hitDirection.crossProduct(normal));
+    } else {
+        up = normal.crossProduct(Vector3::UNIT_Y.crossProduct(normal));
+    }
+    m_MirrorList[m_CurMirrorIndex]->activate(normal, position + normal, up);
+    m_CurMirrorIndex = (m_CurMirrorIndex + 1) % m_MaxMirror;
 }
 
 }
