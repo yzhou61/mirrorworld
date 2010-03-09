@@ -53,6 +53,7 @@ private:
     Player*             m_pPlayer;
     FPSCamera*          m_pFPSCamera;
     LogicManager*       m_pLogicMgr;
+    Ogre::Overlay*      m_CrossHair;
 }; // End of StageGameState
 
 } // End of namespace

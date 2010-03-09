@@ -62,6 +62,10 @@ void StageGameState::enter()
 
     createScene();
     m_AcumulatedTime = 0.0f;
+
+    CEGUI::MouseCursor::getSingleton().hide();
+    m_CrossHair = Ogre::OverlayManager::getSingleton().getByName("Game/CrossHair");
+    m_CrossHair->show();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -75,6 +79,9 @@ void StageGameState::exit()
     if(m_pSceneMgr)
         GameFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
     delete m_pPhyWorld;
+
+    m_CrossHair->hide();
+    CEGUI::MouseCursor::getSingleton().show();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -175,8 +182,7 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->stopRaycastRecording();
         m_pPhyWorldDebugger->hideDebugInformation();
     }
-
-	
+    m_CrossHair->rotate(Ogre::Radian(timeSinceLastFrame / 500.0));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -213,18 +219,16 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
             m_bShowphyDebugger = !m_bShowphyDebugger;
         break;
     case OIS::KC_L:
-        m_pLogicMgr->switchToLaser();
         break;
     case OIS::KC_M:
-        m_pLogicMgr->switchToMirrorBall();
         break;
     case OIS::KC_N:
 //        m_pLogicMgr->getMirror(1)->suspend();
 //        m_pLogicMgr->getMirror(0)->activate(Vector3(1, 0, 0), Vector3(-100, 100, 0), Vector3(0, 1, 1));
 //        m_pLogicMgr->getMirror(0)->reactivate();
 //        m_pLogicMgr->getMirror(1)->reactivate();
-        pos += 100;
-        m_pLogicMgr->showMirror(Vector3(pos, 100, 0), Vector3(-1, 0, 0), Vector3(0.3, 0.4, 0.5));
+//        pos += 100;
+//        m_pLogicMgr->showMirror(Vector3(pos, 100, 0), Vector3(-1, 0, 0), Vector3(0.3, 0.4, 0.5));
         break;
     case OIS::KC_B:
 //        m_pLogicMgr->getMirror(0)->suspend();
@@ -288,11 +292,12 @@ bool StageGameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
         if (m_bLMouseDown)
             return true;
         m_bLMouseDown = true;
-        m_pLogicMgr->triggerOn();
+        m_pLogicMgr->triggerLaser();
     } 
     else if (id == OIS::MB_Right)
     {
         m_bRMouseDown = true;
+        m_pLogicMgr->shootMirrorBall();
     } 
 
     return true;
@@ -307,7 +312,7 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
     {
         m_bLMouseDown = false;
         CEGUI::System::getSingletonPtr()->injectMouseButtonUp(CEGUI::LeftButton);
-        m_pLogicMgr->triggerOff();
+        m_pLogicMgr->triggerLaser();
     } 
     else if (id == OIS::MB_Right)
     {

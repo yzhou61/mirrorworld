@@ -213,7 +213,7 @@ void GameFramework::updateStats()
     Ogre::OverlayElement* guiCurr = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/CurrFps");
     Ogre::OverlayElement* guiAvg = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/AverageFps");
     Ogre::OverlayElement* guiBest = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/BestFps"); 
-    Ogre::OverlayElement* guiWorst = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps"); 
+    Ogre::OverlayElement* guiWorst = Ogre::OverlayManager::getSingleton().getOverlayElement("Core/WorstFps");
 
     const Ogre::RenderTarget::FrameStats& stats = m_pRenderWnd->getStatistics(); 
     guiCurr->setCaption(currFps + Ogre::StringConverter::toString(stats.lastFPS)); 
