@@ -23,7 +23,7 @@ public:
     Crate* create(unsigned int id) const 
     { Crate* crate = new Crate(id); crate->setPhyMaterial(m_pPhyMatID); return crate; }
     void setupEngine(Ogre::SceneManager* sceneMgr, OgreNewt::World* world = NULL);
-}; // End of WallMaker
+}; // End of CrateMaker
 
 } // End fo MirrorWorld
 

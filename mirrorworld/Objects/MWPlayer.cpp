@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
+#include "../MWGameFramework.h"
 #include "MWPlayer.h"
 
 #define M_PI_DEGREE 0.017453f
@@ -190,7 +191,8 @@ void Player::update(double timeElasped)
     Quaternion pitch(Ogre::Radian(m_yRotationTotal*M_PI_DEGREE), Vector3::UNIT_X);
     m_pPhyBody->getVisualPositionOrientation(pos, orient);
     orient = orient * pitch;
-    pos.y += m_pPlayerControl->getPlayerHeight() * 0.75f;
+    pos += Vector3(0, m_pPlayerControl->getPlayerHeight() * 0.75f, 0);
+    pos += orient * Vector3::NEGATIVE_UNIT_Z * 7;
     m_pCamera->setPosition(pos);
     m_pCamera->setOrientation(orient);
     m_pPlayerControl->setVelocity(m_Velocity, m_SideVel, m_Heading);
