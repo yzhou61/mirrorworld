@@ -118,25 +118,18 @@ void StageGameState::createScene()
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
-    m_pFPSCamera = new FPSCamera(m_pSceneMgr, m_pPhyWorld, m_pCamera);
-    m_pCamera = m_pFPSCamera->getCamera();
     m_pPlayer = new Player(0);
-    m_pPlayer->init(m_pSceneMgr, m_pPhyWorld);
+    m_pPlayer->init(m_pSceneMgr, m_pPhyWorld, m_pCamera);
     setupPhyMaterialPairs();
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
-    
     m_pLogicMgr = new LogicManager();
     m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 3, m_pCamera);
-
 	Ogre::Light *light = m_pSceneMgr->createLight("Light1");
 	light->setType(Ogre::Light::LT_POINT);
 	light->setPosition(Vector3(0, 300, 0));
 	light->setDiffuseColour(1.0, 1.0, 1.0);
 	light->setSpecularColour(1.0, 1.0, 1.0);
-
-//    m_pLogicMgr->createMirror(Vector3(0, 0, -1), Vector3(0, 100, 100), Vector3(0, 1, 0));
-//    m_pLogicMgr->createMirror(Vector3(0, 0, 1), Vector3(0, 100, -100), Vector3(1, 1, 0));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -145,13 +138,19 @@ void StageGameState::createScene()
 void StageGameState::setupPhyMaterialPairs()
 {
     OgreNewt::MaterialID* matWall = ObjectFactory::getSingleton().getPhyMaterial("Wall");
-    OgreNewt::MaterialID* matCam = m_pFPSCamera->getPhyMaterial();
-    OgreNewt::MaterialPair* materialPairCamWall = new OgreNewt::MaterialPair(m_pPhyWorld, matCam, matWall);
+    OgreNewt::MaterialID* matPlayer = m_pPlayer->getPhyMaterial();
+    OgreNewt::MaterialPair* materialPairPlayerWall = new OgreNewt::MaterialPair(m_pPhyWorld, matPlayer, matWall);
 
-    materialPairCamWall->setDefaultFriction(0.0f, 0.0f);
-    materialPairCamWall->setDefaultSoftness(1);
-    materialPairCamWall->setDefaultElasticity(0);
-    materialPairCamWall->setContinuousCollisionMode(0);
+    materialPairPlayerWall->setDefaultFriction(0.0f, 0.0f);
+    materialPairPlayerWall->setDefaultSoftness(1);
+    materialPairPlayerWall->setDefaultElasticity(0);
+    materialPairPlayerWall->setContinuousCollisionMode(0);
+
+    OgreNewt::MaterialPair* materialPairPlayerDefault = new OgreNewt::MaterialPair(m_pPhyWorld, matPlayer, m_pPhyWorld->getDefaultMaterialID());
+    materialPairPlayerDefault->setDefaultFriction(0.0f, 0.0f);
+    materialPairPlayerDefault->setDefaultSoftness(0);
+    materialPairPlayerDefault->setDefaultElasticity(0);
+    materialPairPlayerDefault->setContinuousCollisionMode(0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -166,10 +165,9 @@ void StageGameState::update(double timeSinceLastFrame)
     }
 
     handleInput();
-    m_pFPSCamera->update();
+    m_pPlayer->update(timeSinceLastFrame);
     m_pPhyWorld->update(static_cast<Real>(timeSinceLastFrame/1000.0));
     m_pLogicMgr->update(timeSinceLastFrame);
-    m_pPlayer->updateAnimation(timeSinceLastFrame);
     if (m_bShowphyDebugger)
     {
         m_pPhyWorldDebugger->startRaycastRecording();
@@ -182,7 +180,7 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->stopRaycastRecording();
         m_pPhyWorldDebugger->hideDebugInformation();
     }
-    m_CrossHair->rotate(Ogre::Radian(timeSinceLastFrame / 500.0));
+    m_CrossHair->rotate(Ogre::Radian(static_cast<Real>(timeSinceLastFrame / 500.0)));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,28 +198,29 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
     switch (keyEventRef.key)
     {
     case OIS::KC_W:
-        m_pFPSCamera->up();
+        m_pPlayer->up();
     	break;
     case OIS::KC_S:
-        m_pFPSCamera->down();
+        m_pPlayer->down();
         break;
     case OIS::KC_A:
-        m_pFPSCamera->left();
+        m_pPlayer->left();
         break;
     case OIS::KC_D:
-        m_pFPSCamera->right();
+        m_pPlayer->right();
         break;
     case OIS::KC_SPACE:
-        m_pFPSCamera->jump();
+        m_pPlayer->jump();
         break;
     case OIS::KC_F3:
         if (m_pPhyWorldDebugger)
             m_bShowphyDebugger = !m_bShowphyDebugger;
         break;
     case OIS::KC_L:
+        m_pPlayer->test();
         break;
     case OIS::KC_M:
-        break;
+        m_pPlayer->test2();
     case OIS::KC_N:
 //        m_pLogicMgr->getMirror(1)->suspend();
 //        m_pLogicMgr->getMirror(0)->activate(Vector3(1, 0, 0), Vector3(-100, 100, 0), Vector3(0, 1, 1));
@@ -249,16 +248,16 @@ bool StageGameState::keyReleased(const OIS::KeyEvent &keyEventRef)
     switch (keyEventRef.key)
     {
     case OIS::KC_W:
-        m_pFPSCamera->upRelease();
+        m_pPlayer->upRelease();
         break;
     case OIS::KC_S:
-        m_pFPSCamera->downRelease();
+        m_pPlayer->downRelease();
         break;
     case OIS::KC_A:
-        m_pFPSCamera->leftRelease();
+        m_pPlayer->leftRelease();
         break;
     case OIS::KC_D:
-        m_pFPSCamera->rightRelease();
+        m_pPlayer->rightRelease();
         break;
     default:
         GameFramework::getSingletonPtr()->keyReleased(keyEventRef);
@@ -276,7 +275,7 @@ bool StageGameState::mouseMoved(const OIS::MouseEvent &evt)
     CEGUI::System::getSingletonPtr()->injectMouseWheelChange((float)evt.state.Z.rel);
     CEGUI::System::getSingletonPtr()->injectMouseMove((float)evt.state.X.rel, (float)evt.state.Y.rel);
 
-    m_pFPSCamera->moveCamera(evt.state.X.rel, evt.state.Y.rel);
+    m_pPlayer->moveCamera(evt.state.X.rel, evt.state.Y.rel);
 
     return true;
 }
@@ -327,6 +326,6 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
 //////////////////////////////////////////////////////////////////////////
 void StageGameState::handleInput()
 {
-
+    
 }
 }

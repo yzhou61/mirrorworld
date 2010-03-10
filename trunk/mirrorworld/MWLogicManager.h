@@ -7,7 +7,6 @@
 #include <Ogre.h>
 #include <vector>
 #include <queue>
-#include "Objects/FPSCamera.h"
 #include "Objects/MWObjectFactory.h"
 #include "MWResourcePool.h"
 #include "Scene/MWLaserModel.h"

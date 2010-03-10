@@ -49,7 +49,7 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
     m_Node->translate(position);
 
     m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
-    Ogre::Vector3 size((Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 2);
+    Ogre::Vector3 size((Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 0.1);
     OgreNewt::ConvexCollisionPtr colPtr(
         new OgreNewt::CollisionPrimitives::Box(m_pWorld, size, 0));
     m_pPhyBody = new OgreNewt::Body(m_pWorld, colPtr);

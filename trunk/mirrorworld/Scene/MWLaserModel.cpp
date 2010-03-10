@@ -4,7 +4,7 @@
 #include "MWLaserModel.h"
 
 int MirrorWorld::LaserModel::m_nPlanes = 6;
-Ogre::Real MirrorWorld::LaserModel::m_Radius = 1.0f;
+Ogre::Real MirrorWorld::LaserModel::m_Radius = 0.4f;
 
 namespace MirrorWorld {
 void LaserBeam::init(Ogre::SceneManager* sceneMgr, Ogre::MaterialPtr material, int i)
@@ -54,6 +54,8 @@ void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
         m_pModel->triangle(4*i, 4*i+2, 4*i+3);
         m_pModel->triangle(4*i+1, 4*i+3, 4*i+2);
         m_pModel->triangle(4*i, 4*i+1, 4*i+2);
+//        m_pModel->position(0.0, 0.0, 0.0);
+//        m_pModel->position(0.0, 0.0, 1.0);
         radVec = rot*radVec;
     }
     m_pModel->end();
