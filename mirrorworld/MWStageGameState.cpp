@@ -63,8 +63,8 @@ void StageGameState::enter()
     createScene();
     m_AcumulatedTime = 0.0f;
 
-    CEGUI::MouseCursor::getSingleton().hide();
     m_CrossHair = Ogre::OverlayManager::getSingleton().getByName("Game/CrossHair");
+    m_CrossHair->setScale(0.6, 0.6);
     m_CrossHair->show();
 }
 
@@ -124,7 +124,7 @@ void StageGameState::createScene()
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
     m_pLogicMgr = new LogicManager();
-    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 3, m_pCamera);
+    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 4, m_pCamera);
 	Ogre::Light *light = m_pSceneMgr->createLight("Light1");
 	light->setType(Ogre::Light::LT_POINT);
 	light->setPosition(Vector3(0, 300, 0));
