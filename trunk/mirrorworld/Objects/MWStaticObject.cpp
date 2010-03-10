@@ -22,6 +22,8 @@ void StaticObject::setEntity(Ogre::SceneManager* sceneMgr, OgreNewt::World* worl
 
     if (m_pPhyMatID)
         m_pPhyBody->setMaterialGroupID(m_pPhyMatID);
+    else
+        m_pPhyBody->setMaterialGroupID(m_pWorld->getDefaultMaterialID());
 
     attachUserData();
 }

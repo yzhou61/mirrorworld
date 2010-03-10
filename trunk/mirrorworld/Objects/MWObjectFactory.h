@@ -11,6 +11,8 @@
 #include <vector>
 #include "MWObject.h"
 #include "MWWall.h"
+#include "MWBarrel.h"
+#include "MWCrate.h"
 #include "MWLaser.h"
 #include "MWPlayer.h"
 #include "MWMirror.h"

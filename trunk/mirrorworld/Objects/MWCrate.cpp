@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
-#include "MWWall.h"
+#include "MWCrate.h"
 
 namespace MirrorWorld {
 
-void WallMaker::setupEngine(Ogre::SceneManager* sceneMgr, OgreNewt::World* world /* = NULL */)
+void CrateMaker::setupEngine(Ogre::SceneManager* sceneMgr, OgreNewt::World* world /* = NULL */)
 {
     m_pSceneMgr = sceneMgr;
     m_pPhyWorld = world;

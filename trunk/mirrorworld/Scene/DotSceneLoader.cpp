@@ -790,8 +790,8 @@ void DotSceneLoader::processEntity(rapidxml::xml_node<>* XMLNode, Ogre::SceneNod
 		pParent->attachObject(pEntity);
 		
         // Modify
-        MirrorWorld::Object* obj = MirrorWorld::ObjectFactory::getSingleton().createObj("Wall");
-        Ogre::LogManager::getSingleton().stream()<<"Create "<<"Wall";
+        MirrorWorld::Object* obj = MirrorWorld::ObjectFactory::getSingleton().createObj(name.substr(0, 3));
+        Ogre::LogManager::getSingleton().stream()<<"Create "<<name;
         obj->setEntity(mSceneMgr, mWorld, pParent, pEntity);
         
 		if(!materialFile.empty())
