@@ -3,6 +3,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MWPlayer.h"
 
+#define M_PI_DEGREE 0.017453f
+
 namespace MirrorWorld {
 Player::Player(unsigned int id):Object(id, false, false), m_AnimationSpeed(0.001), testnum(0)
 {
@@ -14,7 +16,7 @@ Player::~Player()
 
 void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Camera* camera)
 {
-    m_Size = Vector3(40, 70, 20);
+    m_Size = Vector3(30, 50, 20);
     m_Gravity = -9.8;
     m_Mass = 80;
     m_JumpPower = 20;
@@ -32,11 +34,11 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pCamera = camera;
     m_pEntity = m_pSceneMgr->createEntity("Player", "robot.mesh");
     m_pSceneNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode");
-    m_pSceneNode->setPosition(200, 20, 0);
+    m_pSceneNode->setPosition(200, 0.5, 0);
     Ogre::SceneNode* bodyNode = m_pSceneNode->createChildSceneNode("BodyNode", Vector3::ZERO, Vector3::UNIT_X.getRotationTo(Vector3::NEGATIVE_UNIT_Z));
     bodyNode->attachObject(m_pEntity);
     OgreNewt::ConvexCollisionPtr colPtr(
-        new OgreNewt::CollisionPrimitives::Ellipsoid(m_pWorld, m_Size, 0, Quaternion::IDENTITY, Vector3(0, m_Size[1]/2.0f, 0)));
+        new OgreNewt::CollisionPrimitives::Ellipsoid(m_pWorld, m_Size, 0, Quaternion::IDENTITY, Vector3(0, m_Size[1], 0)));
     m_pPhyBody = new OgreNewt::Body(m_pWorld, colPtr);
     Vector3 inertia, offset;
     colPtr->calculateInertialMatrix(inertia, offset);
@@ -50,14 +52,14 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pPhyBody->setPositionOrientation(m_pSceneNode->getPosition(), m_pSceneNode->getOrientation());
     m_pPhyBody->attachNode(m_pSceneNode);
 
-    m_pPlayerControl = new OgreNewt::PlayerController(m_pPhyBody, 0.4);
+    m_pPlayerControl = new OgreNewt::PlayerController(m_pPhyBody, 0.1);
     m_PhyMatID = new OgreNewt::MaterialID(m_pWorld);
     m_pPhyBody->setMaterialGroupID(m_PhyMatID);
     attachUserData();
     m_pSkeleton = m_pEntity->getSkeleton();
     m_pHeadBone = m_pSkeleton->getBone(11);
     m_pNeckBone = m_pSkeleton->getBone(10);
-    m_pNeckBone->setManuallyControlled(true);
+//    m_pNeckBone->setManuallyControlled(true);
     m_pHeadBone->setManuallyControlled(true);
     
 //    m_pSeleton->setBlendMode(Ogre::SkeletonAnimationBlendMode::ANIMBLEND_CUMULATIVE);
@@ -65,13 +67,13 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pWalkState->setEnabled(false);
     m_bWalking = false;
     m_WalkingTimeLength = m_pWalkState->getLength();
-    m_pSkeleton->getAnimation("Walk")->destroyNodeTrack(m_pNeckBone->getHandle());
+//    m_pSkeleton->getAnimation("Walk")->destroyNodeTrack(m_pNeckBone->getHandle());
     m_pSkeleton->getAnimation("Walk")->destroyNodeTrack(m_pHeadBone->getHandle());
 }
 
 void Player::up()
 {
-    m_Velocity = 80;
+    m_Velocity = 160;
     walk();
 }
 
@@ -83,7 +85,7 @@ void Player::upRelease()
 
 void Player::down()
 {
-    m_Velocity = -50;
+    m_Velocity = -100;
     walk();
 }
 
@@ -95,7 +97,7 @@ void Player::downRelease()
 
 void Player::left()
 {
-    m_SideVel = -50;
+    m_SideVel = -100;
     walk();
 }
 
@@ -107,7 +109,7 @@ void Player::leftRelease()
 
 void Player::right()
 {
-    m_SideVel = 50;
+    m_SideVel = 100;
     walk();
 }
 
@@ -119,8 +121,7 @@ void Player::rightRelease()
 
 void Player::jump()
 {
-    if (m_Height < 100)
-        m_pPhyBody->setVelocity(m_pPhyBody->getVelocity()*Vector3(1, 0, 1)+Vector3(0, 1, 0)*m_JumpPower);
+
 }
 
 void Player::moveCamera(int xRel, int yRel)
@@ -141,7 +142,7 @@ void Player::moveCamera(int xRel, int yRel)
     }
 //    m_pNeckBone->yaw(Ogre::Degree(m_xRotation), Ogre::Node ::TS_WORLD);
 
-    m_Heading = Ogre::Radian(m_xRotationTotal/180.f*3.1416f);
+    m_Heading = Ogre::Radian(m_xRotationTotal*M_PI_DEGREE);
     m_pPlayerControl->setVelocity(m_Velocity, m_SideVel, m_Heading);
 }
 
@@ -184,19 +185,15 @@ void Player::update(double timeElasped)
     OgreNewt::BasicRaycast testRay(m_pWorld, pos-Vector3::UNIT_Y*2*m_Size.y, Vector3::NEGATIVE_UNIT_Y * 2000, false);
     if (testRay.getHitCount() > 0)
         m_Height = testRay.getFirstHit().mDistance*10000;*/
-
     Vector3 pos;
     Quaternion orient;
-    Quaternion pitch(Ogre::Radian(m_yRotationTotal/180.f*3.1416f), Vector3::UNIT_X);
-    OgreNewt::Body* playerBody = m_pPlayerControl->getBody0();
-    playerBody->getVisualPositionOrientation(pos, orient);
+    Quaternion pitch(Ogre::Radian(m_yRotationTotal*M_PI_DEGREE), Vector3::UNIT_X);
+    m_pPhyBody->getVisualPositionOrientation(pos, orient);
     orient = orient * pitch;
     pos.y += m_pPlayerControl->getPlayerHeight() * 0.75f;
     m_pCamera->setPosition(pos);
     m_pCamera->setOrientation(orient);
     m_pPlayerControl->setVelocity(m_Velocity, m_SideVel, m_Heading);
-    m_xRotation = 0;
-    m_yRotation = 0;
     updateAnimation(timeElasped);
 }
 

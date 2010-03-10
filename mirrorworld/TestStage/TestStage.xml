@@ -29,19 +29,6 @@
         </camera>
     </environment>
     <nodes>
-        <node name="Lgt02" id="367809088">
-            <position x="0" y="100" z="100" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <light name="Lgt02" id="367809088" type="point" castShadows="true">
-                <position x="0" y="100" z="100" />
-                <directionVector x="0" y="0" z="1" />
-                <colourDiffuse r="1" g="1" b="1" a="1" />
-                <colourSpecular r="0" g="0" b="0" a="1" />
-                <lightRange inner="15" outer="30" falloff="1" />
-                <lightAttenuation range="100" constant="1" linear="0.5" quadratic="0" />
-            </light>
-        </node>
         <node name="Wal02" id="949583424">
             <position x="0" y="0" z="500" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
@@ -96,19 +83,6 @@
             <scale x="1" y="1" z="1" />
             <entity name="Wal06" meshFile="wall-wood-width.mesh" castShadows="false" />
         </node>
-        <node name="Lgt01" id="682241280">
-            <position x="0" y="100" z="250" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <light name="Lgt01" id="682241280" type="point" castShadows="true">
-                <position x="0" y="100" z="250" />
-                <directionVector x="0" y="0" z="1" />
-                <colourDiffuse r="1" g="1" b="1" a="1" />
-                <colourSpecular r="0" g="0" b="0" a="1" />
-                <lightRange inner="15" outer="30" falloff="1" />
-                <lightAttenuation range="100" constant="1" linear="0.5" quadratic="0" />
-            </light>
-        </node>
         <node name="Wal07" id="303048800">
             <position x="-250" y="0" z="-100" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
@@ -126,19 +100,6 @@
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
             <entity name="Grd00" meshFile="ground-stone-1.mesh" castShadows="false" />
-        </node>
-        <node name="Lgt00" id="155552848">
-            <position x="0" y="100" z="400" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <light name="Lgt00" id="155552848" type="point" castShadows="true">
-                <position x="0" y="100" z="400" />
-                <directionVector x="0" y="0" z="1" />
-                <colourDiffuse r="1" g="1" b="1" a="1" />
-                <colourSpecular r="0" g="0" b="0" a="1" />
-                <lightRange inner="15" outer="30" falloff="1" />
-                <lightAttenuation range="100" constant="1" linear="0.5" quadratic="0" />
-            </light>
         </node>
         <node name="Wal00" id="517105632">
             <position x="500" y="0" z="0" />

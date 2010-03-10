@@ -137,15 +137,7 @@ void StageGameState::createScene()
 //////////////////////////////////////////////////////////////////////////
 void StageGameState::setupPhyMaterialPairs()
 {
-    OgreNewt::MaterialID* matWall = ObjectFactory::getSingleton().getPhyMaterial("Wall");
     OgreNewt::MaterialID* matPlayer = m_pPlayer->getPhyMaterial();
-    OgreNewt::MaterialPair* materialPairPlayerWall = new OgreNewt::MaterialPair(m_pPhyWorld, matPlayer, matWall);
-
-    materialPairPlayerWall->setDefaultFriction(0.0f, 0.0f);
-    materialPairPlayerWall->setDefaultSoftness(1);
-    materialPairPlayerWall->setDefaultElasticity(0);
-    materialPairPlayerWall->setContinuousCollisionMode(0);
-
     OgreNewt::MaterialPair* materialPairPlayerDefault = new OgreNewt::MaterialPair(m_pPhyWorld, matPlayer, m_pPhyWorld->getDefaultMaterialID());
     materialPairPlayerDefault->setDefaultFriction(0.0f, 0.0f);
     materialPairPlayerDefault->setDefaultSoftness(0);

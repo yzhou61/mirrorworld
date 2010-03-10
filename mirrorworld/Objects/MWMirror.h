@@ -45,7 +45,7 @@ namespace MirrorWorld {
 
         static const int MIRROR_WIDTH = 120;
         static const int MIRROR_HEIGHT = 150;
-        static const int TEXTURE_SIZE = 256;
+        static const int TEXTURE_SIZE = 512;
 
 		Ogre::MovablePlane *m_Plane;
 		Ogre::Camera *ptr_RefCamera;
