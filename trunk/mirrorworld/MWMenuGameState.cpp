@@ -127,7 +127,10 @@ bool MenuGameState::onExitButton(const CEGUI::EventArgs &args)
 //////////////////////////////////////////////////////////////////////////
 bool MenuGameState::onEnterButton(const CEGUI::EventArgs &args)
 {
+    GameFramework::getSingleton().setDebugInfo("Loading...", 0);
+    CEGUI::MouseCursor::getSingleton().hide();
     m_pStateManager->pushGameState(m_pStateManager->findByName("StageState"));
+//    GameFramework::getSingleton().setDebugInfo("", 0);
     return true;
 }
 

@@ -245,7 +245,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 		+ Ogre::StringConverter::toString(omTop) + " "
 		+ Ogre::StringConverter::toString(omBottom), 4);
 */
-	if ((mWidth < 0.05) && (mHeight < 0.05)) {
+	if ((mWidth < 0.1) && (mHeight < 0.1)) {
 		realReflectionStack.push(-1);
 		return false;
 	}
