@@ -229,10 +229,6 @@
 				Name="Objects"
 				>
 				<File
-					RelativePath=".\Objects\FPSCamera.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Objects\MWLaser.cpp"
 					>
 				</File>
@@ -322,10 +318,6 @@
 			<Filter
 				Name="Objects"
 				>
-				<File
-					RelativePath=".\Objects\FPSCamera.h"
-					>
-				</File>
 				<File
 					RelativePath=".\Objects\MWLaser.h"
 					>

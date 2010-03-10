@@ -30,6 +30,7 @@ bool MirrorBallNode::update(double timeElasped)
     if (testRay.getHitCount() > 0)
     {
         OgreNewt::BasicRaycast::BasicRaycastInfo result = testRay.getFirstHit();
+        Ogre::LogManager::getSingleton().stream()<<result.mBody->getOgreNode()->getName();
         Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
         //            Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
         //            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<sp;
@@ -46,7 +47,7 @@ bool MirrorBallNode::update(double timeElasped)
         // Attach 
         else if (hitobj->isAttachable())
         {
-
+            
             m_pLogicEngine->showMirror(hitPoint, result.mNormal, dir);
             return false;
         }
