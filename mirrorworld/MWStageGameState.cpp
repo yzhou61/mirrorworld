@@ -29,7 +29,7 @@ void StageGameState::enter()
     m_pSceneMgr = GameFramework::getSingletonPtr()->m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
     Ogre::AxisAlignedBox worldBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize);
     m_pSceneMgr->setOption("Size", &worldBox);
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
 
     m_pCamera = m_pSceneMgr->createCamera("GameCam");
 //    m_pCamera->setPosition(Vector3(5, 60, 60));
@@ -126,11 +126,17 @@ void StageGameState::createScene()
     m_pPhyWorldDebugger->init(m_pSceneMgr);
     m_pLogicMgr = new LogicManager();
     m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 4, m_pCamera);
-	Ogre::Light *light = m_pSceneMgr->createLight("Light1");
-	light->setType(Ogre::Light::LT_POINT);
-	light->setPosition(Vector3(0, 300, 0));
-	light->setDiffuseColour(1.0, 1.0, 1.0);
-	light->setSpecularColour(1.0, 1.0, 1.0);
+
+    Ogre::Real lightPositions[][3] = { { 0, 100, 0 }, { 0, 100, 200 } };
+/*
+    for (int i = 0; i < 2; ++i) {
+	    Ogre::Light *light = m_pSceneMgr->createLight("Light" + i);
+	    light->setType(Ogre::Light::LT_POINT);
+	    light->setPosition(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2]);
+	    light->setDiffuseColour(1.0, 1.0, 1.0);
+	    light->setSpecularColour(1.0, 1.0, 1.0);
+    }
+    */
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -175,6 +181,7 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->stopRaycastRecording();
         m_pPhyWorldDebugger->hideDebugInformation();
     }
+    GameFramework::getSingleton().m_pLog->stream() << "+++++++++++++++++++++";
 }
 
 //////////////////////////////////////////////////////////////////////////

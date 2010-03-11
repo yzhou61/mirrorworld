@@ -10,6 +10,15 @@ namespace MirrorWorld {
 Mirror::~Mirror() 
 {
 	delete m_Plane;
+    while (realUnitStack.size() != 0) {
+        delete realUnitStack.top();
+        realUnitStack.pop();
+    }
+    for (int i = 0; i < TEXTURE_LEVELS; ++i)
+        while (texturePools[i].size() != 0) {
+            delete texturePools[i].top();
+            texturePools[i].pop();
+        }
 }
 
 void Mirror::init(SceneManager *mgr, Camera *refCam, OgreNewt::World* world) {
@@ -24,8 +33,15 @@ void Mirror::init(SceneManager *mgr, Camera *refCam, OgreNewt::World* world) {
     m_Node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_Plane = new MovablePlane("");
 
-    m_pSurroundModel = new SurroundModel(m_pSceneMgr);
+    m_CamMoving = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+
     maxResource = 0;
+    for (int i = 0; i < TEXTURE_LEVELS; ++i) {
+        RenderUnit *unit = getNewRenderUnit(i);
+        texturePools[i].push(unit);
+    }
+
+    m_pSurroundModel = new SurroundModel(m_pSceneMgr);
     activated = false;
 }
 
@@ -109,72 +125,73 @@ void Mirror::suspend() {
 
 void Mirror::update() {
 
-	size_t index = resourceStack.top();
-	resourceStack.pop();
-
-	std::stringstream ss;
-	ss << m_Identity << "-" << index;
-	String name = ss.str();
+    RenderUnit *unit = renderUnits.top();
+    renderUnits.pop();
 	
-    eyes.at(index)->enableCustomNearClipPlane(m_Plane);
-	textures.at(index)->update();
-    eyes.at(index)->disableCustomNearClipPlane();
-	m_pEntity->setMaterialName("RttMat" + name);
+    unit->eyeCamera->enableCustomNearClipPlane(m_Plane);
+	unit->texture->update();
+    unit->eyeCamera->disableCustomNearClipPlane();
+	m_pEntity->setMaterial(unit->material);
 
-//    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(m_Normal), 0);
-
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << name;
+	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << unit->texture->getName();
 }
 
 bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft,
-	Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom) {
-	size_t index = getNewResourceIndex();
+                    Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom) {
 /*
     GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(fLeft) + " "
         + Ogre::StringConverter::toString(fRight) + " "
         + Ogre::StringConverter::toString(fTop) + " "
         + Ogre::StringConverter::toString(fBottom), 0);
 */
-	std::stringstream ss;
-	ss << m_Identity << "-" << index;
-	String name = ss.str();
+//  GameFramework::getSingleton().setDebugInfo(StringConverter::toString(position.distance(m_Position)), 4);
 
-	Real ofLeft, ofRight, ofTop, ofBottom;
-	ptr_RefCamera->getFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
-	eyes.at(index)->setFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
-	
-	direction.normalise();
-	up.normalise();
-	Quaternion q = eyes.at(index)->getRealDirection().getRotationTo(direction);
-	Vector3 newUp = q * eyes.at(index)->getRealUp();
+    Ogre::Real dis = position.distance(m_Position);
 
-//	GameFramework::getSingletonPtr()->setDebugInfo("original dir: " + Ogre::StringConverter::toString(eyes.at(index)->getDirection()), 4);
+    if (dis > MAXIMUM_MIRROR_DISTANCE) {
+        realUnitStack.push(NULL);
+        return false;
+    }
 
-	eyes.at(index)->rotate(q);
-	eyes.at(index)->rotate(newUp.getRotationTo(up));
-	eyes.at(index)->setPosition(position);
+    int level = 6 - (int)((dis + 200.0) / 200.0);
+    if (level < 0)
+        level = 0;
 
-	eyePositions.at(index) = position - 2 * m_Normal.dotProduct(position - m_Position) / m_Normal.length() * m_Normal;
-	eyeDirections.at(index) = direction - 2 * m_Normal.dotProduct(direction) / m_Normal.length() * m_Normal;
+    RenderUnit *unit = getNewRenderUnit(level);
 
-	eyeDirections.at(index).normalise();
-	eyeUps.at(index) = up - 2 * m_Normal.dotProduct(up) / m_Normal.length() * m_Normal;
-	eyeUps.at(index).normalise();
+    m_CamMoving->detachAllObjects();
+    m_CamMoving->resetToInitialState();
+    unit->eyeCamera->detachFromParent();
+    m_CamMoving->attachObject(unit->eyeCamera);
 
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << eyes.at(index)->getDirection();
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << direction;
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << eyes.at(index)->getUp();
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << up;
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << eyes.at(index)->getDirection().dotProduct(eyes.at(index)->getUp());
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << eyes.at(index)->getDirection().dotProduct(up);
+    GameFramework::getSingleton().m_pLog->stream() << "set eye" << unit->texture->getName();
 
-//	GameFramework::getSingletonPtr()->setDebugInfo("1 up: " + Ogre::StringConverter::toString(up), 0);
-//	GameFramework::getSingletonPtr()->setDebugInfo("1 dir: " + Ogre::StringConverter::toString(direction), 1);
+    Real ofLeft, ofRight, ofTop, ofBottom;
+    ptr_RefCamera->getFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
+    unit->eyeCamera->setFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
 
-//	GameFramework::getSingletonPtr()->setDebugInfo("2 up: " + Ogre::StringConverter::toString(eyes.at(index)->getUp()), 2);
-//	GameFramework::getSingletonPtr()->setDebugInfo("2 dir: " + Ogre::StringConverter::toString(eyes.at(index)->getDirection()), 3);
+    direction.normalise();
+    up.normalise();
+    GameFramework::getSingleton().m_pLog->stream() << "eye dir " << unit->eyeCamera->getRealDirection();
+    Quaternion q = unit->eyeCamera->getRealDirection().getRotationTo(direction);
+    Vector3 newUp = q * unit->eyeCamera->getRealUp();
+/*
+    unit->eyeCamera->rotate(newUp.getRotationTo(up));
+    unit->eyeCamera->rotate(q);
+    unit->eyeCamera->setPosition(position);
+*/
+    m_CamMoving->rotate(newUp.getRotationTo(up));
+    m_CamMoving->rotate(q);
+    m_CamMoving->translate(position - unit->eyeCamera->getRealPosition());
 
-//	GameFramework::getSingletonPtr()->setDebugInfo("real up: " + Ogre::StringConverter::toString(eyes.at(index)->getRealUp()), 2);
+    unit->eyePosition = position - 2 * m_Normal.dotProduct(position - m_Position) / m_Normal.length() * m_Normal;
+    unit->eyeDirection = direction - 2 * m_Normal.dotProduct(direction) / m_Normal.length() * m_Normal;
+
+    unit->eyeDirection.normalise();
+    unit->eyeUp = up - 2 * m_Normal.dotProduct(up) / m_Normal.length() * m_Normal;
+    unit->eyeUp.normalise();
+
+	GameFramework::getSingleton().setDebugInfo(StringConverter::toString(level), 1);
 	
 	Real omLeft, omRight, omTop, omBottom;
 	omLeft = 1.0f;
@@ -183,7 +200,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 	omBottom = 1.0f;
 	
 	for (int i = 0; i < 4; ++i) {
-		Vector3 cornerPoint = eyes.at(index)->getProjectionMatrix() * eyes.at(index)->getViewMatrix() * m_Corners[i];
+		Vector3 cornerPoint = unit->eyeCamera->getProjectionMatrix() * unit->eyeCamera->getViewMatrix() * m_Corners[i];
 
 		if ((cornerPoint.z > 1)) {
 			if (cornerPoint.x < 0)
@@ -234,107 +251,108 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 		omBottom = fBottom;
 
 	if ((omBottom >= omTop) || (omLeft >= omRight)) {
-		realReflectionStack.push(-2);
+		realUnitStack.push(NULL);
+        recyclePool.push(unit);
 		return false;
 	}
 
 	if ((omBottom == -1.0f) && (omTop == 1.0f) && (omLeft == -1.0f) && (omRight == 1.0f)
 		&& (direction.dotProduct(m_Normal.dotProduct(position - m_Position) * m_Normal) >= 0)) {
-			realReflectionStack.push(-2);
+			realUnitStack.push(NULL);
+            recyclePool.push(unit);
 			return false;
 	}
-
+/*
 	Real mWidth = (omRight - omLeft) / 2;
 	Real mHeight = (omTop - omBottom) / 2;
+
+    GameFramework::getSingleton().m_pLog->stream() << mWidth << " " << mHeight;
 	
-/*	GameFramework::getSingletonPtr()->m_pLog->stream() << name << " " << mWidth << " " << mHeight;
+    GameFramework::getSingleton.setDebugInfo(StringConverter::toString(mWidth) + " " + StringConverter::toString(mHeight), 3);
 
 	GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(omLeft) + " "
 		+ Ogre::StringConverter::toString(omRight) + " "
 		+ Ogre::StringConverter::toString(omTop) + " "
 		+ Ogre::StringConverter::toString(omBottom), 4);
 */
-	if ((mWidth < MINIMUN_TEXTURE_DIMENSION / 100.0) && (mHeight < MINIMUN_TEXTURE_DIMENSION / 100.0)) {
-		realReflectionStack.push(-1);
-		return false;
-	}
 
 	omLeft *= -ofLeft;
 	omRight *= ofRight;
 	omTop *= ofTop;
 	omBottom *= -ofBottom;
-	
-	eyes.at(index)->setFrustumExtents(omLeft, omRight, omTop, omBottom);
 
-	resourceStack.push(index);
-	realReflectionStack.push(index);
+    unit->eyeCamera->setFrustumExtents(omLeft, omRight, omTop, omBottom);
+
+	renderUnits.push(unit);
+	realUnitStack.push(unit);
 	return true;
 }
 
 Ogre::Vector3 Mirror::getPosition() {
-	size_t index = resourceStack.top();
-	return eyePositions.at(index);
+	RenderUnit *unit = renderUnits.top();
+	return unit->eyePosition;
 }
 
 Ogre::Vector3 Mirror::getDirection() {
-	size_t index = resourceStack.top();
-	return eyeDirections.at(index);
+    RenderUnit *unit = renderUnits.top();
+    GameFramework::getSingleton().m_pLog->stream() << unit->eyeDirection;
+    return unit->eyeDirection;
 }
 
 Ogre::Vector3 Mirror::getUp() {
-	size_t index = resourceStack.top();
-	return eyeUps.at(index);
+    RenderUnit *unit = renderUnits.top();
+    return unit->eyeUp;
 }
 
 void Mirror::getEyeFrustum(Ogre::Real &left, Ogre::Real &right, Ogre::Real &top, Ogre::Real &bottom) {
-	size_t index = resourceStack.top();
-    eyes.at(index)->getFrustumExtents(left, right, top, bottom);
+    RenderUnit *unit = renderUnits.top();
+    unit->eyeCamera->getFrustumExtents(left, right, top, bottom);
 }
 
-size_t Mirror::getNewResourceIndex() {
-	if (curResource < maxResource) {
-		++curResource;
-		return curResource - 1;
-	} else {
-		std::stringstream ss;
-		ss << m_Identity << "-" << maxResource;
-		String name = ss.str();
+RenderUnit *Mirror::getNewRenderUnit(int textureLevel) {
 
-		Ogre::Camera *newEye = m_pSceneMgr->createCamera("ReflectCam" + name);
-		newEye->setAspectRatio(ptr_RefCamera->getAspectRatio());
-		newEye->setNearClipDistance(ptr_RefCamera->getNearClipDistance());
-		newEye->setFarClipDistance(ptr_RefCamera->getFarClipDistance());
-		newEye->setFOVy(ptr_RefCamera->getFOVy());
-        newEye->enableReflection(m_Plane);
-        newEye->enableCustomNearClipPlane(m_Plane);
-		eyes.push_back(newEye);
+    if (texturePools[textureLevel].size() == 0) {
+        std::stringstream ss;
+        ss << m_Identity << "-" << maxResource++;
+        String name = ss.str();
 
-		Ogre::Vector3 temp;
-		eyePositions.push_back(temp);
-		eyeDirections.push_back(temp);
-		eyeUps.push_back(temp);
+        RenderUnit *unit = new RenderUnit;
+
+        unit->level = textureLevel;
+
+        unit->eyeCamera = m_pSceneMgr->createCamera("ReflectCam" + name);
+        unit->eyeCamera->setAspectRatio(ptr_RefCamera->getAspectRatio());
+        unit->eyeCamera->setNearClipDistance(ptr_RefCamera->getNearClipDistance());
+        unit->eyeCamera->setFarClipDistance(ptr_RefCamera->getFarClipDistance());
+        unit->eyeCamera->setFOVy(ptr_RefCamera->getFOVy());
+        unit->eyeCamera->enableReflection(m_Plane);
+        unit->eyeCamera->enableCustomNearClipPlane(m_Plane);
+
+        unsigned int textureSize = LEVEL_0_TEXTURE_SIZE << textureLevel;
 
         Ogre::TexturePtr texturePtr = Ogre::TextureManager::getSingleton().createManual("RttTex" + name,
-            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, TEX_TYPE_2D, TEXTURE_SIZE, TEXTURE_SIZE, 0, PF_R8G8B8, TU_RENDERTARGET);
+            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, TEX_TYPE_2D, textureSize, textureSize, 0, PF_R8G8B8, TU_RENDERTARGET);
 
-        Ogre::RenderTexture *curTex = texturePtr->getBuffer()->getRenderTarget();
-        curTex->setAutoUpdated(false);
-        textures.push_back(curTex);
+        unit->texture = texturePtr->getBuffer()->getRenderTarget();
+        unit->texture->setAutoUpdated(false);
 
-		Viewport *v = curTex->addViewport(newEye);
-		v->setClearEveryFrame(true);
+        unit->material = MaterialManager::getSingleton().create("RttMat" + name,
+            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        unit->material->getTechnique(0)->getPass(0)->createTextureUnitState("RttTex" + name);
+        unit->material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
+        unit->material->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setProjectiveTexturing(true, unit->eyeCamera);
+
+        Viewport *v = unit->texture->addViewport(unit->eyeCamera);
+        v->setClearEveryFrame(true);
         v->setBackgroundColour(ColourValue::White);
 
-        Ogre::MaterialPtr newMat = MaterialManager::getSingleton().create("RttMat" + name,
-            ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-		newMat->getTechnique(0)->getPass(0)->createTextureUnitState("RttTex" + name);
-        newMat->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setTextureAddressingMode(TextureUnitState::TAM_CLAMP);
-        newMat->getTechnique(0)->getPass(0)->getTextureUnitState(0)->setProjectiveTexturing(true, eyes.at(curResource));
-        materials.push_back(newMat);
-		
-		++curResource;
-		++maxResource;
-		return curResource - 1;
+        return unit;
+
+    } else {
+		RenderUnit *unit = texturePools[textureLevel].top();
+        texturePools[textureLevel].pop();
+
+        return unit;
 	}
 }
 
@@ -352,29 +370,39 @@ Ogre::Vector3 Mirror::getCenterPosition() {
 	return m_Position;
 }
 
+Ogre::AxisAlignedBox Mirror::getBound() {
+    return m_pEntity->getWorldBoundingBox();
+}
+
 void Mirror::reflectReal() {
-	int index = realReflectionStack.top();
-	realReflectionStack.pop();
-    last = index;
-	if (index >= 0) {
-		std::stringstream ss;
-		ss << m_Identity << "-" << index;
-		String name = ss.str();
-		m_pEntity->setMaterialName("RttMat" + name);
-//		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << name;
-	} else if (index == -1) {
+    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(maxResource), 0);
+
+    RenderUnit *unit = realUnitStack.top();
+    realUnitStack.pop();
+
+	if (unit != NULL) {
+		m_pEntity->setMaterial(unit->material);
+        m_pEntity->setVisible(true);
+        recyclePool.push(unit);
+		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << unit->texture->getName();
+	} else {
 //		GameFramework::getSingletonPtr()->m_pLog->stream() << "real wall";
-		m_pEntity->setMaterialName("Examples/Rockwall");
+        m_pEntity->setVisible(false);
+//		m_pEntity->setMaterialName("Wall-white-length");
 	}
 }
 
 void Mirror::preUpdate() {
-    while (!resourceStack.empty())
-        resourceStack.pop();
-    while (!realReflectionStack.empty())
-        realReflectionStack.pop();
-    curResource = 0;
-    //    m_pEntity->setVisible(true);
+    while (!renderUnits.empty())
+        renderUnits.pop();
+    while (!realUnitStack.empty())
+        realUnitStack.pop();
+    while (!recyclePool.empty()) {
+        RenderUnit *unit = recyclePool.top();
+        if (unit != NULL)
+            texturePools[unit->level].push(unit);
+        recyclePool.pop();
+    }
 }
 
 void Mirror::postUpdate(double timeElapsed)
@@ -382,26 +410,10 @@ void Mirror::postUpdate(double timeElapsed)
     if (unfolding > 0) {
         m_pSurroundModel->active(m_Position, m_Normal, m_Up);
         unfolding += timeElapsed;
-        if (unfolding > 850)
-            return;
-        if (unfolding < 320) {
+        if (unfolding < 320)
             m_Node->setScale(1, (Ogre::Real)unfolding / 300, 1);
-        } else if (unfolding < 650) {
+        else
             m_Node->setScale(1, 1, 1);
-            if (!m_pEntity->getVisible())
-                m_pEntity->setVisible(true);
-        } else if (unfolding < 700) {
-            if (m_pEntity->getVisible())
-                m_pEntity->setVisible(false);
-        } else if (unfolding < 750) {
-            if (!m_pEntity->getVisible())
-                m_pEntity->setVisible(true);
-        } else if (unfolding < 800) {
-            if (m_pEntity->getVisible())
-                m_pEntity->setVisible(false);
-        } else if (!m_pEntity->getVisible()) {
-            m_pEntity->setVisible(true);
-        }
     }
     if (unfolding < 0) {
         unfolding -= timeElapsed;

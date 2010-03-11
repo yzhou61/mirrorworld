@@ -8,6 +8,18 @@
 #include <stack>
 
 namespace MirrorWorld {
+
+    struct RenderUnit {
+        int level;
+
+        Ogre::Camera *eyeCamera;
+        Ogre::Vector3 eyePosition;
+        Ogre::Vector3 eyeDirection;
+        Ogre::Vector3 eyeUp;
+        Ogre::MaterialPtr material;
+        Ogre::RenderTexture *texture;
+    };
+
 	class Mirror : public Object
 	{
 	public:
@@ -31,42 +43,40 @@ namespace MirrorWorld {
 		Ogre::Vector3 getCorners(int index);
 		Ogre::Vector3 getNormal();
 		Ogre::Vector3 getCenterPosition();
+        Ogre::AxisAlignedBox getBound();
 
 		void reflectReal();
 
-        size_t getNewResourceIndex();
+        RenderUnit *getNewRenderUnit(int textureLevel);
 
         void activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector3 up);
         void suspend();
         bool isActivated() { return activated; }
-        bool shouldUpdate() { return activated && m_pEntity->getVisible(); }
 
 	private:
         void suspendResource();
 
         static const int MIRROR_WIDTH = 80;
         static const int MIRROR_HEIGHT = 120;
-        static const int TEXTURE_SIZE = 512;
-        static const int MINIMUN_TEXTURE_DIMENSION = 10;
+        static const unsigned int LEVEL_0_TEXTURE_SIZE = 16;
+        static const int MAXIMUM_MIRROR_DISTANCE = 5000;
+        static const int TEXTURE_LEVELS = 7;
 
 		Ogre::MovablePlane *m_Plane;
 		Ogre::Camera *ptr_RefCamera;
+        Ogre::SceneNode *m_CamMoving;
         Ogre::MeshPtr m_Mesh;
 		Ogre::SceneNode* m_Node;
 		Ogre::Vector3 m_Normal;
 		Ogre::Vector3 m_Position;
 		Ogre::Vector3 m_Up;
 		Ogre::Vector3 m_Corners[4];
-		std::vector<Ogre::Camera *> eyes;
-		std::vector<Ogre::Vector3> eyePositions;
-		std::vector<Ogre::Vector3> eyeDirections;
-		std::vector<Ogre::Vector3> eyeUps;
-        std::vector<Ogre::RenderTexture *> textures;
-		std::vector<Ogre::MaterialPtr> materials;
-		std::stack<size_t> resourceStack;
-		std::stack<int> realReflectionStack;
+
+        std::stack<RenderUnit *> renderUnits;
+		std::stack<RenderUnit *> realUnitStack;
 		size_t maxResource;
-		size_t curResource;
+        std::stack<RenderUnit *> texturePools[TEXTURE_LEVELS];
+        std::stack<RenderUnit *> recyclePool;
 
         bool activated;
         double unfolding;

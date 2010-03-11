@@ -91,6 +91,8 @@ private:
     int                         m_CurMirrorIndex;
     int                         m_MaxMirrors;
     Ogre::RenderWindow*         m_Window;
+
+    Ogre::Camera*               m_MirrorCheckCam;
 };
 
 }
