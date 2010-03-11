@@ -117,6 +117,12 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
     m_pCamera = camera;
 	m_Window = window;
 
+    m_MirrorCheckCam = m_pSceneMgr->createCamera("MirrorCheck");
+    m_MirrorCheckCam->setAspectRatio(m_pCamera->getAspectRatio());
+    m_MirrorCheckCam->setNearClipDistance(m_pCamera->getNearClipDistance());
+    m_MirrorCheckCam->setFarClipDistance(m_pCamera->getFarClipDistance());
+    m_MirrorCheckCam->setFOVy(m_pCamera->getFOVy());
+
     // Will always has one laser
     m_pLaser = static_cast<Laser*>(ObjectFactory::getSingleton().createObj("Laser"));
     m_pLaser->reset();
@@ -260,15 +266,25 @@ void LogicManager::updateMirrors(Ogre::Vector3 position, Ogre::Vector3 direction
 	for (int i = 0; i < m_MaxMirrors; ++i) {
 
 		Mirror *m = m_MirrorList[i];
-        if (!m->shouldUpdate())
+        if (!m->isActivated())
             continue;
 
 		if (m->getID() == mirrorID) {
 			continue;
 		}
+
 		if (m->getNormal().dotProduct(position - m->getCenterPosition()) <= 0) {
 			continue;
 		}
+/*
+        if (mirrorID == -1) {
+            m_MirrorCheckCam->setFrustumExtents(fLeft, fRight, fTop, fBottom);
+            m_MirrorCheckCam->setPosition(position);
+            m_MirrorCheckCam->setDirection(direction);
+            if (!m_MirrorCheckCam->isVisible(m->getBound()))
+                continue;
+        }
+*/
 		bool cont = m->setEye(position, direction, up, fLeft, fRight, fTop, fBottom);
 		if (cont) {
 			Ogre::Real ffLeft, ffRight, ffTop, ffBottom;
@@ -286,7 +302,7 @@ void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 dire
 	for (int i = 0; i < m_MaxMirrors; ++i) {
         
 		Mirror *m = m_MirrorList[i];
-        if (!m->shouldUpdate())
+        if (!m->isActivated())
             continue;
 		if (m->getNormal().dotProduct(position - m->getCenterPosition()) <= 0)
 			continue;
@@ -295,8 +311,6 @@ void LogicManager::setRealReflections(Ogre::Vector3 position, Ogre::Vector3 dire
 }
 
 void LogicManager::showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection) {
-    int toSuspend = (m_CurMirrorIndex + 1) % m_MaxMirrors;
-    m_MirrorList[toSuspend]->suspend();
 
     Vector3 up;
     if ((abs(normal.angleBetween(Vector3::UNIT_Y).valueDegrees()) < 1) || (abs(normal.angleBetween(Vector3::NEGATIVE_UNIT_Y).valueDegrees()) < 1)) {
@@ -306,7 +320,10 @@ void LogicManager::showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre
     }
     m_MirrorList[m_CurMirrorIndex]->activate(normal, position + normal, up);
 
-    m_CurMirrorIndex = (m_CurMirrorIndex + 1) % m_MaxMirrors;
+    int toSuspend = (m_CurMirrorIndex + 1) % m_MaxMirrors;
+    m_MirrorList[toSuspend]->suspend();
+
+    m_CurMirrorIndex = toSuspend;
 }
 
 }
