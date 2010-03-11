@@ -114,7 +114,9 @@ void Mirror::update() {
 	ss << m_Identity << "-" << index;
 	String name = ss.str();
 	
+    eyes.at(index)->enableCustomNearClipPlane(m_Plane);
 	textures.at(index)->update();
+    eyes.at(index)->disableCustomNearClipPlane();
 	m_pEntity->setMaterialName("RttMat" + name);
 
 //    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(m_Normal), 0);
@@ -125,7 +127,12 @@ void Mirror::update() {
 bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft,
 	Ogre::Real fRight, Ogre::Real fTop, Ogre::Real fBottom) {
 	size_t index = getNewResourceIndex();
-
+/*
+    GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(fLeft) + " "
+        + Ogre::StringConverter::toString(fRight) + " "
+        + Ogre::StringConverter::toString(fTop) + " "
+        + Ogre::StringConverter::toString(fBottom), 0);
+*/
 	std::stringstream ss;
 	ss << m_Identity << "-" << index;
 	String name = ss.str();
@@ -238,14 +245,14 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 	Real mWidth = (omRight - omLeft) / 2;
 	Real mHeight = (omTop - omBottom) / 2;
 	
-//	GameFramework::getSingletonPtr()->m_pLog->stream() << name << " " << mWidth << " " << mHeight;
-/*
+/*	GameFramework::getSingletonPtr()->m_pLog->stream() << name << " " << mWidth << " " << mHeight;
+
 	GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(omLeft) + " "
 		+ Ogre::StringConverter::toString(omRight) + " "
 		+ Ogre::StringConverter::toString(omTop) + " "
 		+ Ogre::StringConverter::toString(omBottom), 4);
 */
-	if ((mWidth < 0.1) && (mHeight < 0.1)) {
+	if ((mWidth < MINIMUN_TEXTURE_DIMENSION / 100.0) && (mHeight < MINIMUN_TEXTURE_DIMENSION / 100.0)) {
 		realReflectionStack.push(-1);
 		return false;
 	}

@@ -195,6 +195,8 @@ void Player::update(double timeElasped)
     pos += orient * Vector3::NEGATIVE_UNIT_Z * 7;
     m_pCamera->setPosition(pos);
     m_pCamera->setOrientation(orient);
+//    GameFramework::getSingleton().setDebugInfo("in player (pos): " + Ogre::StringConverter::toString(m_pCamera->getRealPosition()), 0);
+//    GameFramework::getSingleton().setDebugInfo("in player (dir): " + Ogre::StringConverter::toString(m_pCamera->getRealDirection()), 1);
     m_pPlayerControl->setVelocity(m_Velocity, m_SideVel, m_Heading);
     updateAnimation(timeElasped);
 }
