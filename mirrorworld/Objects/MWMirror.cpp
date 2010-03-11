@@ -13,7 +13,7 @@ Mirror::~Mirror()
 }
 
 void Mirror::init(SceneManager *mgr, Camera *refCam, OgreNewt::World* world) {
-	m_SceneMgr = mgr;
+	m_pSceneMgr = mgr;
     m_pWorld = world;
 	ptr_RefCamera = refCam;
 
@@ -21,9 +21,10 @@ void Mirror::init(SceneManager *mgr, Camera *refCam, OgreNewt::World* world) {
     m_Normal = Vector3::UNIT_Z;
     m_Up = Vector3::UNIT_Y;
 
-    m_Node = m_SceneMgr->getRootSceneNode()->createChildSceneNode();
+    m_Node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_Plane = new MovablePlane("");
 
+    m_pSurroundModel = new SurroundModel(m_pSceneMgr);
     maxResource = 0;
     activated = false;
 }
@@ -48,7 +49,7 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
     m_Node->rotate(q);
     m_Node->translate(position);
 
-    m_pEntity = m_SceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
+    m_pEntity = m_pSceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
     Ogre::Vector3 size((Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 0.1);
     OgreNewt::ConvexCollisionPtr colPtr(
         new OgreNewt::CollisionPrimitives::Box(m_pWorld, size, 0));
@@ -92,8 +93,9 @@ void Mirror::suspendResource() {
 
     MeshManager::getSingleton().remove(m_Mesh->getHandle());
     if (m_pEntity != NULL)
-        m_SceneMgr->destroyEntity(m_pEntity);
+        m_pSceneMgr->destroyEntity(m_pEntity);
 
+    m_pSurroundModel->deactive();
     delete m_pPhyBody;
     activated = false;
 }
@@ -298,7 +300,7 @@ size_t Mirror::getNewResourceIndex() {
 		ss << m_Identity << "-" << maxResource;
 		String name = ss.str();
 
-		Ogre::Camera *newEye = m_SceneMgr->createCamera("ReflectCam" + name);
+		Ogre::Camera *newEye = m_pSceneMgr->createCamera("ReflectCam" + name);
 		newEye->setAspectRatio(ptr_RefCamera->getAspectRatio());
 		newEye->setNearClipDistance(ptr_RefCamera->getNearClipDistance());
 		newEye->setFarClipDistance(ptr_RefCamera->getFarClipDistance());
@@ -378,6 +380,7 @@ void Mirror::preUpdate() {
 void Mirror::postUpdate(double timeElapsed)
 {
     if (unfolding > 0) {
+        m_pSurroundModel->active(m_Position, m_Normal, m_Up);
         unfolding += timeElapsed;
         if (unfolding > 850)
             return;

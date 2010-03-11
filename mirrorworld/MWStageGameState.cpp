@@ -75,10 +75,11 @@ void StageGameState::exit()
 {
     GameFramework::getSingletonPtr()->m_pLog->logMessage("Leaving StageState...");
 //    CEGUI::System::getSingletonPtr()->setGUISheet(NULL);
+    m_pPhyWorld->destroyAllBodies();
+    delete m_pPhyWorld;
     m_pSceneMgr->destroyCamera(m_pCamera);
     if(m_pSceneMgr)
         GameFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
-    delete m_pPhyWorld;
 
     m_CrossHair->hide();
     CEGUI::MouseCursor::getSingleton().show();
@@ -114,7 +115,7 @@ void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
     m_pPhyWorld = new OgreNewt::World(100.0, 1);
-    m_pPhyWorld->setThreadCount(1);
+    m_pPhyWorld->setThreadCount(2);
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
     ObjectFactory::getSingleton().setupEngineAll(m_pSceneMgr, m_pPhyWorld);
     m_pSceneLoader->parseDotScene(m_SceneFile, "General", m_pSceneMgr, m_pPhyWorld);
@@ -157,9 +158,11 @@ void StageGameState::update(double timeSinceLastFrame)
     }
 
     handleInput();
-    m_pPlayer->update(timeSinceLastFrame);
+    
     m_pPhyWorld->update(static_cast<Real>(timeSinceLastFrame/1000.0));
+    m_pPlayer->update(timeSinceLastFrame);
     m_pLogicMgr->update(timeSinceLastFrame);
+    m_CrossHair->rotate(Ogre::Radian(static_cast<Real>(timeSinceLastFrame / 500.0)));
     if (m_bShowphyDebugger)
     {
         m_pPhyWorldDebugger->startRaycastRecording();
@@ -172,7 +175,6 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->stopRaycastRecording();
         m_pPhyWorldDebugger->hideDebugInformation();
     }
-    m_CrossHair->rotate(Ogre::Radian(static_cast<Real>(timeSinceLastFrame / 500.0)));
 }
 
 //////////////////////////////////////////////////////////////////////////

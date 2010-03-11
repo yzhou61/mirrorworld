@@ -33,7 +33,7 @@ bool MirrorBallNode::update(double timeElasped)
         OgreNewt::BasicRaycast::BasicRaycastInfo result = testRay.getFirstHit();
         Ogre::LogManager::getSingleton().stream()<<result.mBody->getOgreNode()->getName();
         Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
-        //            Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
+        Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
         //            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<sp;
         //            Ogre::LogManager::getSingleton().stream()<<"MirrorBall"<<idx<<ep;
         Vector3 hitPoint = sp + dir * result.mDistance * travelDistance;
@@ -129,6 +129,7 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
 
     for (int i = 0; i < m_MaxMirrors; ++i) {
         Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
+        Ogre::LogManager::getSingleton().logMessage("????");
         curMirror->init(m_pSceneMgr, m_pCamera, m_pWorld);
 
         m_MirrorList[i] = curMirror;
@@ -141,6 +142,7 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
     m_pUnattachPool = new ResourcePool(maxMirror);
     for (int i = 0;i < maxMirror; i++)
         m_pUnattachPool->getNodeList()[i] = new UnattachNode(m_pSceneMgr, m_pWorld);
+
     MirrorBallModel::resetCounter();
     UnattachModel::resetCounter();
 }
@@ -303,6 +305,7 @@ void LogicManager::showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre
         up = normal.crossProduct(Vector3::UNIT_Y.crossProduct(normal));
     }
     m_MirrorList[m_CurMirrorIndex]->activate(normal, position + normal, up);
+
     m_CurMirrorIndex = (m_CurMirrorIndex + 1) % m_MaxMirrors;
 }
 

@@ -2,6 +2,7 @@
 #define _MW_MIRROR_H_
 
 #include "MWObject.h"
+#include "../Scene/MWSurroundModel.h"
 
 #include <vector>
 #include <stack>
@@ -66,12 +67,12 @@ namespace MirrorWorld {
 		std::stack<int> realReflectionStack;
 		size_t maxResource;
 		size_t curResource;
-		Ogre::SceneManager *m_SceneMgr;
 
         bool activated;
         double unfolding;
 
         size_t last;
+        SurroundModel*      m_pSurroundModel;
 	};
 
 	class MirrorMgr : public ObjectMaker {

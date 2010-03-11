@@ -21,12 +21,12 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_Gravity = -9.8;
     m_Mass = 80;
     m_JumpPower = 20;
-    m_xStep = 1.0;
-    m_yStep = 1.0;
+    m_xStep = 0.2;
+    m_yStep = 0.1;
     m_xRotationTotal = 0;
     m_yRotationTotal = 0;
-    m_yLimitA = 80;
-    m_yLimitB = -60;
+    m_yLimitA = 90;
+    m_yLimitB = -90;
     m_Velocity = 0;
     m_SideVel = 0;
 
@@ -122,7 +122,6 @@ void Player::rightRelease()
 
 void Player::jump()
 {
-
 }
 
 void Player::moveCamera(int xRel, int yRel)

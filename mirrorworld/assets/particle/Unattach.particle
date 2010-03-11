@@ -2,8 +2,8 @@ particle_system Unattach
 {
 	quota	1000
 	material	Particles/SpinBeam
-	particle_width	10
-	particle_height	7
+	particle_width	4
+	particle_height	3
 	cull_each	false
 	renderer	billboard
 	sorted	false
@@ -24,7 +24,7 @@ particle_system Unattach
 		colour_range_start	0 0 1 1
 		colour_range_end	0 0.501961 1 1
 		direction	0 0 1
-		emission_rate	500
+		emission_rate	1000
 		position	0 0 0
 		velocity	15
 		velocity_min	15
