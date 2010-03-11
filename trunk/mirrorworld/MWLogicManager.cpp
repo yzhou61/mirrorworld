@@ -2,6 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////////
 #include "MWLogicManager.h"
+#include "MWGameFramework.h"
 
 using Ogre::Real;
 using Ogre::Vector3;
