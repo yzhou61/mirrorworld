@@ -141,7 +141,6 @@ void StageGameState::createScene()
 	    light->setSpecularColour(0.5, 0.5, 0.5);
         light->setAttenuation(3250, 1.0, 0.0014, 0.000007);
     }
-
 }
 
 //////////////////////////////////////////////////////////////////////////

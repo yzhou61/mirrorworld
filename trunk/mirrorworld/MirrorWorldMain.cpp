@@ -21,7 +21,7 @@ MirrorWorldMain::~MirrorWorldMain()
 void MirrorWorldMain::start()
 {
     GameFramework::create();
-    if (!GameFramework::getSingletonPtr()->initOgre("MirrorWorld", NULL, NULL))
+    if (!GameFramework::getSingletonPtr()->init("MirrorWorld", NULL, NULL))
         return;
 
     GameStateManager::create();

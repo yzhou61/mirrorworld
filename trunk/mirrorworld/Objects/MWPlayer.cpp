@@ -21,12 +21,12 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_Gravity = -9.8;
     m_Mass = 80;
     m_JumpPower = 20;
-    m_xStep = 0.2;
+    m_xStep = 0.15;
     m_yStep = 0.1;
     m_xRotationTotal = 0;
     m_yRotationTotal = 0;
     m_yLimitA = 90;
-    m_yLimitB = -90;
+    m_yLimitB = -60;
     m_Velocity = 0;
     m_SideVel = 0;
 
@@ -38,6 +38,14 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pSceneNode->setPosition(200, 0.5, 0);
     Ogre::SceneNode* bodyNode = m_pSceneNode->createChildSceneNode("BodyNode", Vector3::ZERO, Vector3::UNIT_X.getRotationTo(Vector3::NEGATIVE_UNIT_Z));
     bodyNode->attachObject(m_pEntity);
+
+    Ogre::Technique* t = m_pEntity->getSubEntity(0)->getMaterial()->getBestTechnique();
+    Ogre::Pass* p = t->getPass(0);
+    if (p->hasVertexProgram() && p->getVertexProgram()->isSkeletalAnimationIncluded())
+        Ogre::LogManager::getSingleton().logMessage("Hardware skinning is enabled");
+    else
+        Ogre::LogManager::getSingleton().logMessage("Software skinning is enabled");
+
     OgreNewt::ConvexCollisionPtr colPtr(
         new OgreNewt::CollisionPrimitives::Ellipsoid(m_pWorld, m_Size, 0, Quaternion::IDENTITY, Vector3(0, m_Size[1], 0)));
     m_pPhyBody = new OgreNewt::Body(m_pWorld, colPtr);
@@ -60,15 +68,15 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pSkeleton = m_pEntity->getSkeleton();
     m_pHeadBone = m_pSkeleton->getBone(11);
     m_pNeckBone = m_pSkeleton->getBone(10);
-//    m_pNeckBone->setManuallyControlled(true);
+    m_pNeckBone->setManuallyControlled(true);
     m_pHeadBone->setManuallyControlled(true);
-    
+
 //    m_pSeleton->setBlendMode(Ogre::SkeletonAnimationBlendMode::ANIMBLEND_CUMULATIVE);
     m_pWalkState = m_pEntity->getAnimationState("Walk");
     m_pWalkState->setEnabled(false);
     m_bWalking = false;
     m_WalkingTimeLength = m_pWalkState->getLength();
-//    m_pSkeleton->getAnimation("Walk")->destroyNodeTrack(m_pNeckBone->getHandle());
+    m_pSkeleton->getAnimation("Walk")->destroyNodeTrack(m_pNeckBone->getHandle());
     m_pSkeleton->getAnimation("Walk")->destroyNodeTrack(m_pHeadBone->getHandle());
 }
 
@@ -138,7 +146,8 @@ void Player::moveCamera(int xRel, int yRel)
     if (newyVal <= m_yLimitA && newyVal >= m_yLimitB)
     {
         m_yRotationTotal = newyVal;
-        m_pHeadBone->roll(Ogre::Degree(m_yRotation));
+        m_pNeckBone->roll(Ogre::Degree(m_yRotation));
+//        m_pHeadBone->roll(Ogre::Degree(m_yRotation));
     }
 //    m_pNeckBone->yaw(Ogre::Degree(m_xRotation), Ogre::Node ::TS_WORLD);
 
@@ -192,10 +201,9 @@ void Player::update(double timeElasped)
     orient = orient * pitch;
     pos += Vector3(0, m_pPlayerControl->getPlayerHeight() * 0.75f, 0);
     pos += orient * Vector3::NEGATIVE_UNIT_Z * 7;
+    
     m_pCamera->setPosition(pos);
     m_pCamera->setOrientation(orient);
-//    GameFramework::getSingleton().setDebugInfo("in player (pos): " + Ogre::StringConverter::toString(m_pCamera->getRealPosition()), 0);
-//    GameFramework::getSingleton().setDebugInfo("in player (dir): " + Ogre::StringConverter::toString(m_pCamera->getRealDirection()), 1);
     m_pPlayerControl->setVelocity(m_Velocity, m_SideVel, m_Heading);
     updateAnimation(timeElasped);
 }

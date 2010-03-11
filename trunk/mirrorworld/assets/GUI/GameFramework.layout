@@ -7,13 +7,13 @@
 		<Window Type="TaharezLook/Button" Name="EnterButton">
                 <Property Name="UnifiedPosition" Value="{{0.35,0},{0.3,0}}" />
                 <Property Name="UnifiedSize" Value="{{0.3,0},{0.1,0}}" />
-                <Property Name="Text" Value="Enter NextState" />
+                <Property Name="Text" Value="Start Game" />
             </Window>
 
 		<Window Type="TaharezLook/Button" Name="ExitButton">
                 <Property Name="UnifiedPosition" Value="{{0.35,0},{0.5,0}}" />
                 <Property Name="UnifiedSize" Value="{{0.3,0},{0.1,0}}" />
-                <Property Name="Text" Value="Exit GameFramework" />
+                <Property Name="Text" Value="Exit Game" />
             </Window>
 
 		<Window Type="TaharezLook/Editbox" Name="Credits">

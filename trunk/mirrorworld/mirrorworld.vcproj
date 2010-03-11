@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib OgreTerrain_d.lib OgreRTShaderSystem_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib newton.lib JointLibrary_d.lib dMath_d.lib OgreNewt_d.lib "
+				AdditionalDependencies="OgreMain_d.lib OgreTerrain_d.lib OgreRTShaderSystem_d.lib OIS_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib CEGUIExpatParser_d.lib CEGUIFalagardWRBase_d.lib newton.lib JointLibrary_d.lib dMath_d.lib OgreNewt_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\debug&quot;;&quot;$(NEWTON_HOME)\OgreNewt\lib&quot;;&quot;$(NEWTON_HOME)\lib\x32&quot;;&quot;$(NEWTON_HOME)\lib\x32\dll_vs9&quot;"

@@ -43,7 +43,7 @@ GameFramework::~GameFramework()
 //////////////////////////////////////////////////////////////////////////
 // function initOgre
 //////////////////////////////////////////////////////////////////////////
-bool GameFramework::initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListener, OIS::MouseListener *pMouseListener)
+bool GameFramework::init(Ogre::String wndTitle, OIS::KeyListener *pKeyListener, OIS::MouseListener *pMouseListener)
 {
     Ogre::LogManager* logMgr = new Ogre::LogManager();
 

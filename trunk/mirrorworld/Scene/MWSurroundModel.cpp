@@ -28,18 +28,13 @@ void SurroundModel::active(const Ogre::Vector3& pos, const Ogre::Vector3& normal
     m_pSceneNode->setPosition(pos);
     m_pParticleSys->clear();
     for (int i = 0;i < 4; i++)
-    {
         m_pParticleSys->getEmitter(i)->setEnabled(true);
-    }
-    Ogre::LogManager::getSingleton().stream()<<"haha"<<m_bLive;
     m_pSceneNode->attachObject(m_pParticleSys);
-    Ogre::LogManager::getSingleton().stream()<<"haha2";
     m_bLive = true;
 }
 
 void SurroundModel::deactive()
 {
-    Ogre::LogManager::getSingleton().logMessage("here");
     m_pSceneNode->detachAllObjects();
     m_bLive = false;
 }
