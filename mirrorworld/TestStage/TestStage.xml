@@ -39,7 +39,7 @@
             <position x="300" y="0" z="-200" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="50" y="50" z="50" />
-            <entity name="Crt01" meshFile="crate-hollow01.mesh" castShadows="false" />
+            <entity name="Crt01" meshFile="crate-hollow01.mesh" castShadows="true" />
         </node>
         <node name="Wal03" id="582049024">
             <position x="0" y="0" z="-500" />
@@ -51,13 +51,13 @@
             <position x="-200" y="0" z="-270.023" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="50" y="50" z="50" />
-            <entity name="Brl00" meshFile="barrel1.mesh" castShadows="false" />
+            <entity name="Brl00" meshFile="barrel1.mesh" castShadows="true" />
         </node>
         <node name="Crt00" id="195989856">
             <position x="-65.8494" y="0" z="-200" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
-            <entity name="Crt00" meshFile="crate01.mesh" castShadows="false" />
+            <entity name="Crt00" meshFile="crate01.mesh" castShadows="true" />
         </node>
         <node name="Wal04" id="743736064">
             <position x="250" y="0" z="350" />
@@ -75,7 +75,7 @@
             <position x="-100" y="0" z="-300" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="50" y="50" z="50" />
-            <entity name="Crt02" meshFile="crate-hollow02.mesh" castShadows="false" />
+            <entity name="Crt02" meshFile="crate-hollow02.mesh" castShadows="true" />
         </node>
         <node name="Wal06" id="699758912">
             <position x="250" y="0" z="50" />

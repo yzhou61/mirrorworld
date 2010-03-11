@@ -37,7 +37,7 @@ public:
     static void create() { if (!getSingletonPtr()) new GameFramework(); }
     ~GameFramework();
 
-    bool initOgre(Ogre::String wndTitle, OIS::KeyListener *pKeyListener = NULL, OIS::MouseListener *pMouseListener = NULL);
+    bool init(Ogre::String wndTitle, OIS::KeyListener *pKeyListener = NULL, OIS::MouseListener *pMouseListener = NULL);
     void updateOgre(double timeSinceLastFrame);
     void updateStats();
 
@@ -50,18 +50,17 @@ public:
 
     void setDebugInfo(Ogre::String text, int index) { m_DebugInfo[index] = text; }
 
-    Ogre::Root*                 m_pRoot;
-    Ogre::RenderWindow*         m_pRenderWnd;
-    Ogre::Viewport*			    m_pViewport;
-    Ogre::Log*                  m_pLog;
-    Ogre::Timer*			    m_pTimer;
+    Ogre::Root*                         m_pRoot;
+    Ogre::RenderWindow*                 m_pRenderWnd;
+    Ogre::Viewport*			            m_pViewport;
+    Ogre::Log*                          m_pLog;
+    Ogre::Timer*			            m_pTimer;
 
-    OIS::InputManager*		    m_pInputMgr;
-    OIS::Keyboard*			    m_pKeyboard;
-    OIS::Mouse*                 m_pMouse;
+    OIS::InputManager*		            m_pInputMgr;
+    OIS::Keyboard*			            m_pKeyboard;
+    OIS::Mouse*                         m_pMouse;
 
-    CEGUI::OgreRenderer*	    m_pGUIRenderer;
-
+    CEGUI::OgreRenderer*	            m_pGUIRenderer;
 private:
     GameFramework();
 private:

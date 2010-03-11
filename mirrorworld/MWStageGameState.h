@@ -10,7 +10,6 @@
 #include "MWLogicManager.h"
 #include "Scene/DotSceneLoader.h"
 #include "Objects/MWPlayer.h"
-//#include "Objects/FPSCamera.h"
 
 namespace MirrorWorld{
 

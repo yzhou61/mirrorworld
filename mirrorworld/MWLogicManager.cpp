@@ -135,7 +135,6 @@ void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Og
 
     for (int i = 0; i < m_MaxMirrors; ++i) {
         Mirror *curMirror = static_cast<Mirror *>(ObjectFactory::getSingleton().createObj("Mirror"));
-        Ogre::LogManager::getSingleton().logMessage("????");
         curMirror->init(m_pSceneMgr, m_pCamera, m_pWorld);
 
         m_MirrorList[i] = curMirror;

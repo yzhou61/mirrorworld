@@ -38,8 +38,8 @@ void MenuGameState::enter()
     GameFramework::getSingletonPtr()->m_pMouse->setEventCallback(this);
 
     // TO DO : Needed by CEGUI
-    CEGUI::System::getSingletonPtr()->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow"); 
-    CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow"); 
+    CEGUI::System::getSingletonPtr()->setDefaultMouseCursor((CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+    CEGUI::MouseCursor::getSingleton().setImage("TaharezLook", "MouseArrow");
 
     const OIS::MouseState state = GameFramework::getSingletonPtr()->m_pMouse->getMouseState();
     CEGUI::Point mousePos = CEGUI::MouseCursor::getSingleton().getPosition(); 
@@ -52,6 +52,9 @@ void MenuGameState::enter()
     button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&MenuGameState::onExitButton, this));
     button = (CEGUI::PushButton*)pMainWnd->getChild("EnterButton");
     button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&MenuGameState::onEnterButton, this));
+
+/*    if (!GameFramework::getSingletonPtr()->m_pSoundManager->init())
+        GameFramework::getSingletonPtr()->m_pLog->logMessage("Failed to init sound manager in Menu Game State");*/
 
     m_bQuit = false;
 

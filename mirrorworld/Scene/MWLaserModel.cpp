@@ -35,14 +35,14 @@ void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
     rot.FromAngleAxis(Ogre::Degree(180.0f/LaserModel::m_nPlanes), Ogre::Vector3::UNIT_Z);
     if (!m_bCreated)
     {
-        m_pModel->begin(m_pMaterial->getName(), Ogre::RenderOperation::OT_TRIANGLE_LIST);
+        m_pModel->begin(m_pMaterial->getName(), Ogre::RenderOperation::OT_LINE_LIST);
         m_bCreated = true;
     }
     else
         m_pModel->beginUpdate(0);
     for (int i = 0;i < LaserModel::m_nPlanes; i++)
     {
-        m_pModel->position(-radVec.x, -radVec.y, 1.0);
+/*        m_pModel->position(-radVec.x, -radVec.y, 1.0);
         m_pModel->textureCoord(0.0, 0.0);
         m_pModel->position(radVec.x, radVec.y, 1.0);
         m_pModel->textureCoord(1.0, 0.0);
@@ -53,9 +53,9 @@ void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
         m_pModel->triangle(4*i, 4*i+3, 4*i+1);
         m_pModel->triangle(4*i, 4*i+2, 4*i+3);
         m_pModel->triangle(4*i+1, 4*i+3, 4*i+2);
-        m_pModel->triangle(4*i, 4*i+1, 4*i+2);
-//        m_pModel->position(0.0, 0.0, 0.0);
-//        m_pModel->position(0.0, 0.0, 1.0);
+        m_pModel->triangle(4*i, 4*i+1, 4*i+2);*/
+        m_pModel->position(0.0, 0.0, 0.0);
+        m_pModel->position(0.0, 0.0, 1.0);
         radVec = rot*radVec;
     }
     m_pModel->end();
