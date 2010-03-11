@@ -29,7 +29,10 @@ void StageGameState::enter()
     m_pSceneMgr = GameFramework::getSingletonPtr()->m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
     Ogre::AxisAlignedBox worldBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize);
     m_pSceneMgr->setOption("Size", &worldBox);
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
+    m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    m_pSceneMgr->setShadowTextureSize(512);
+    m_pSceneMgr->setShadowColour(Ogre::ColourValue(0.6, 0.6, 0.6));
 
     m_pCamera = m_pSceneMgr->createCamera("GameCam");
 //    m_pCamera->setPosition(Vector3(5, 60, 60));
@@ -127,16 +130,18 @@ void StageGameState::createScene()
     m_pLogicMgr = new LogicManager();
     m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 4, m_pCamera);
 
-    Ogre::Real lightPositions[][3] = { { 0, 100, 0 }, { 0, 100, 200 } };
-/*
-    for (int i = 0; i < 2; ++i) {
+    Ogre::Real lightPositions[][3] = { { 60, 80, -150 }, { 0, 100, 200 } };
+
+    for (int i = 0; i < 1; ++i) {
 	    Ogre::Light *light = m_pSceneMgr->createLight("Light" + i);
-	    light->setType(Ogre::Light::LT_POINT);
+        light->setType(Ogre::Light::LT_POINT);
 	    light->setPosition(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2]);
+//        light->setDirection(Vector3::)
 	    light->setDiffuseColour(1.0, 1.0, 1.0);
-	    light->setSpecularColour(1.0, 1.0, 1.0);
+	    light->setSpecularColour(0.5, 0.5, 0.5);
+        light->setAttenuation(3250, 1.0, 0.0014, 0.000007);
     }
-    */
+
 }
 
 //////////////////////////////////////////////////////////////////////////

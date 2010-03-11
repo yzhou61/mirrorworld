@@ -219,18 +219,19 @@ void DotSceneLoader::processTerrain(rapidxml::xml_node<>* XMLNode)
 
 	Ogre::Vector3 lightdir(0, -0.3, 0.75);
 	lightdir.normalise();
-	Ogre::Light* l = mSceneMgr->createLight("tstLight");
+/*
+    Ogre::Light* l = mSceneMgr->createLight("tstLight");
 	l->setType(Ogre::Light::LT_DIRECTIONAL);
 	l->setDirection(lightdir);
 	l->setDiffuseColour(Ogre::ColourValue(1.0, 1.0, 1.0));
 	l->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.6, 0.6, 0.6));
-
+*/
 	Ogre::TerrainGlobalOptions::setMaxPixelError(1);
 	Ogre::TerrainGlobalOptions::setCompositeMapDistance(2000);
 	Ogre::TerrainGlobalOptions::setLightMapDirection(lightdir);
 	Ogre::TerrainGlobalOptions::setCompositeMapAmbient(mSceneMgr->getAmbientLight());
-	Ogre::TerrainGlobalOptions::setCompositeMapDiffuse(l->getDiffuseColour());
+	Ogre::TerrainGlobalOptions::setCompositeMapDiffuse(Ogre::ColourValue(1.0, 1.0, 1.0));
 
 	mTerrainGroup = OGRE_NEW Ogre::TerrainGroup(mSceneMgr, Ogre::Terrain::ALIGN_X_Z, mapSize, worldSize);
 	mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
@@ -398,7 +399,7 @@ void DotSceneLoader::processOctree(rapidxml::xml_node<>* XMLNode)
 }
 
 void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
-{
+{/*
 	// Process attributes
 	Ogre::String name = getAttrib(XMLNode, "name");
 	Ogre::String id = getAttrib(XMLNode, "id");
@@ -469,6 +470,8 @@ void DotSceneLoader::processLight(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode
 	pElement = XMLNode->first_node("userDataReference");
 	if(pElement)
 		;//processUserDataReference(pElement, pLight);
+
+        */
 }
 
 void DotSceneLoader::processCamera(rapidxml::xml_node<>* XMLNode, Ogre::SceneNode *pParent)
