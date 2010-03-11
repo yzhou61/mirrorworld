@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(NEWTON_HOME)\OgreNewt\include&quot;;&quot;$(NEWTON_HOME)\include&quot;;&quot;$(CEGUI_HOME)\cegui\include&quot;;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;;C:\boost_1_42_0"
+				AdditionalIncludeDirectories="&quot;$(NEWTON_HOME)\OgreNewt\include&quot;;&quot;$(NEWTON_HOME)\include&quot;;&quot;$(CEGUI_HOME)\cegui\include&quot;;include;&quot;$(OGRE_HOME)\include\OIS&quot;;&quot;$(OGRE_HOME)\include\OGRE&quot;;&quot;$(OGRE_HOME)\Samples\Common\include&quot;;&quot;$(BOOST_HOME)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
@@ -285,6 +285,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Scene\MWSurroundModel.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Scene\MWUnattachModel.cpp"
 					>
 				</File>
@@ -380,6 +384,10 @@
 				</File>
 				<File
 					RelativePath=".\Scene\MWMirrorBallModel.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene\MWSurroundModel.h"
 					>
 				</File>
 				<File
