@@ -24,64 +24,16 @@
         </viewport>
         <camera name="intViewCamera1" viewMode="0" polyMode="3" fov="1">
             <clipping near="1" far="1000" />
-            <position x="202.59" y="439.797" z="-357.705" />
-            <rotation qw="0.64201" qx="0.315906" qy="-0.626871" qz="0.308317" />
+            <position x="945.403" y="168.933" z="682.898" />
+            <rotation qw="-0.772997" qx="0.00584474" qy="-0.63437" qz="-0.00466817" />
         </camera>
     </environment>
     <nodes>
-        <node name="Msc06" id="744438016">
-            <position x="0" y="0" z="122.388" />
+        <node name="Msc11" id="252723776">
+            <position x="100" y="0" z="0" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
-            <entity name="Msc06" meshFile="fence-rotate.mesh" castShadows="false" />
-        </node>
-        <node name="Wal02" id="692892224">
-            <position x="0" y="0" z="500" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal02" meshFile="wall-brick-width.mesh" castShadows="false" />
-        </node>
-        <node name="Wal15" id="61006500">
-            <position x="350" y="875" z="-425" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal15" meshFile="wall-small-2.mesh" castShadows="false" />
-        </node>
-        <node name="Msc05" id="374980928">
-            <position x="490" y="0" z="-420" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="0.05" y="0.05" z="0.05" />
-            <entity name="Msc05" meshFile="door-rotate.mesh" castShadows="false" />
-        </node>
-        <node name="Wal03" id="303048800">
-            <position x="0" y="0" z="-500" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal03" meshFile="wall-brick-width.mesh" castShadows="false" />
-        </node>
-        <node name="Wal14" id="336313952">
-            <position x="420" y="580" z="-400" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1.7" y="1" z="1" />
-            <entity name="Wal14" meshFile="wall-small.mesh" castShadows="false" />
-        </node>
-        <node name="Wal04" id="225104528">
-            <position x="500" y="300" z="-250" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal04" meshFile="wall-500.mesh" castShadows="false" />
-        </node>
-        <node name="Wal13" id="503921632">
-            <position x="-400" y="550" z="-400" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal13" meshFile="wall-small.mesh" castShadows="false" />
-        </node>
-        <node name="Msc03" id="949156160">
-            <position x="490" y="0" z="-490" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Msc03" meshFile="wall-cylinder.mesh" castShadows="false" />
+            <entity name="Msc11" meshFile="crate01.mesh" castShadows="true" />
         </node>
         <node name="Wal05" id="147495952">
             <position x="-500" y="300" z="-250" />
@@ -89,35 +41,11 @@
             <scale x="1" y="1" z="1" />
             <entity name="Wal05" meshFile="wall-500.mesh" castShadows="false" />
         </node>
-        <node name="Msc02" id="457960768">
-            <position x="-490" y="0" z="-490" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Msc02" meshFile="wall-cylinder.mesh" castShadows="false" />
-        </node>
-        <node name="Wal06" id="484939136">
-            <position x="0" y="300" z="-500" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal06" meshFile="wall-1000.mesh" castShadows="false" />
-        </node>
-        <node name="Wal11" id="385235136">
-            <position x="-100" y="0" z="-50" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal11" meshFile="wall-brick-width.mesh" castShadows="false" />
-        </node>
         <node name="Wal22" id="949583424">
             <position x="0" y="125" z="25" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
             <entity name="Wal22" meshFile="wall-small-2.mesh" castShadows="false" />
-        </node>
-        <node name="Grd01" id="151554912">
-            <position x="0" y="0" z="-550" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Grd01" meshFile="ground-stone-2.mesh" castShadows="false" />
         </node>
         <node name="Msc01" id="425153344">
             <position x="-490" y="0" z="490" />
@@ -125,41 +53,11 @@
             <scale x="1" y="1" z="1" />
             <entity name="Msc01" meshFile="wall-cylinder.mesh" castShadows="false" />
         </node>
-        <node name="Wal07" id="599047808">
-            <position x="0" y="300" z="-50" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Wal07" meshFile="wall-1000.mesh" castShadows="false" />
-        </node>
         <node name="Wal18" id="345561088">
             <position x="-150" y="0" z="-300" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
             <entity name="Wal18" meshFile="wall-wood-width.mesh" castShadows="false" />
-        </node>
-        <node name="Wal23" id="657307712">
-            <position x="300" y="-25" z="-112" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="0.8" y="0.8" z="0.8" />
-            <entity name="Wal23" meshFile="wall-small-2.mesh" castShadows="false" />
-        </node>
-        <node name="Clg00" id="517105632">
-            <position x="0" y="300" z="450" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Clg00" meshFile="ceiling_2.mesh" castShadows="false" />
-        </node>
-        <node name="Grd00" id="837611008">
-            <position x="0" y="0" z="450" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Grd00" meshFile="ground-stone-1.mesh" castShadows="false" />
-        </node>
-        <node name="Msc00" id="468459136">
-            <position x="490" y="0" z="490" />
-            <rotation qw="1" qx="0" qy="0" qz="0" />
-            <scale x="1" y="1" z="1" />
-            <entity name="Msc00" meshFile="wall-cylinder.mesh" castShadows="false" />
         </node>
         <node name="Wal00" id="743736064">
             <position x="500" y="0" z="0" />
@@ -167,11 +65,53 @@
             <scale x="1" y="1" z="1" />
             <entity name="Wal00" meshFile="wall-brick-length.mesh" castShadows="false" />
         </node>
+        <node name="Wal15" id="61006500">
+            <position x="350" y="875" z="-425" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal15" meshFile="wall-small-2.mesh" castShadows="false" />
+        </node>
+        <node name="Msc09" id="839442112">
+            <position x="223.258" y="0" z="383.466" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="50" y="50" z="50" />
+            <entity name="Msc09" meshFile="crate-hollow01.mesh" castShadows="true" />
+        </node>
+        <node name="Clg00" id="517105632">
+            <position x="0" y="300" z="450" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Clg00" meshFile="ceiling_2.mesh" castShadows="false" />
+        </node>
         <node name="Wal08" id="802880960">
             <position x="-100" y="0" z="350" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
             <entity name="Wal08" meshFile="wall-brick-width.mesh" castShadows="false" />
+        </node>
+        <node name="Wal21" id="726493120">
+            <position x="-150" y="175" z="275" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal21" meshFile="wall-small-2.mesh" castShadows="false" />
+        </node>
+        <node name="Msc06" id="744438016">
+            <position x="0" y="0" z="122.388" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Msc06" meshFile="fence-rotate.mesh" castShadows="true" />
+        </node>
+        <node name="Wal03" id="303048800">
+            <position x="0" y="0" z="-500" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal03" meshFile="wall-brick-width.mesh" castShadows="false" />
+        </node>
+        <node name="Msc03" id="949156160">
+            <position x="490" y="0" z="-490" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Msc03" meshFile="wall-cylinder.mesh" castShadows="false" />
         </node>
         <node name="Wal17" id="608966336">
             <position x="150" y="0" z="-175" />
@@ -179,17 +119,23 @@
             <scale x="1" y="1" z="1" />
             <entity name="Wal17" meshFile="wall-wood-width.mesh" castShadows="false" />
         </node>
-        <node name="Clg01" id="205359056">
-            <position x="0" y="1000" z="0" />
+        <node name="Wal06" id="484939136">
+            <position x="0" y="300" z="-500" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
-            <entity name="Clg01" meshFile="ceiling-1.mesh" castShadows="false" />
+            <entity name="Wal06" meshFile="wall-1000.mesh" castShadows="false" />
         </node>
-        <node name="Msc07" id="966612736">
-            <position x="-490" y="0" z="360" />
+        <node name="Wal23" id="657307712">
+            <position x="300" y="-25" z="-112" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="0.8" y="0.8" z="0.8" />
+            <entity name="Wal23" meshFile="wall-small-2.mesh" castShadows="false" />
+        </node>
+        <node name="Msc00" id="468459136">
+            <position x="490" y="0" z="490" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
-            <entity name="Msc07" meshFile="wall-cylinder.mesh" castShadows="false" />
+            <entity name="Msc00" meshFile="wall-cylinder.mesh" castShadows="false" />
         </node>
         <node name="Wal01" id="168980992">
             <position x="-500" y="0" z="0" />
@@ -197,11 +143,65 @@
             <scale x="1" y="1" z="1" />
             <entity name="Wal01" meshFile="wall-brick-length.mesh" castShadows="false" />
         </node>
+        <node name="Wal14" id="336313952">
+            <position x="420" y="580" z="-400" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1.7" y="1" z="1" />
+            <entity name="Wal14" meshFile="wall-small.mesh" castShadows="false" />
+        </node>
+        <node name="Wal11" id="385235136">
+            <position x="-100" y="0" z="-50" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal11" meshFile="wall-brick-width.mesh" castShadows="false" />
+        </node>
+        <node name="Grd01" id="151554912">
+            <position x="0" y="0" z="-550" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Grd01" meshFile="ground-stone-2.mesh" castShadows="false" />
+        </node>
+        <node name="Msc08" id="314065984">
+            <position x="350" y="0" z="320" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="50" y="50" z="50" />
+            <entity name="Msc08" meshFile="barrel1.mesh" castShadows="true" />
+        </node>
+        <node name="Clg01" id="205359056">
+            <position x="0" y="1000" z="0" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Clg01" meshFile="ceiling-1.mesh" castShadows="false" />
+        </node>
+        <node name="Msc10" id="454512160">
+            <position x="-38.3152" y="0" z="-150" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="50" y="50" z="50" />
+            <entity name="Msc10" meshFile="crate-hollow02.mesh" castShadows="true" />
+        </node>
         <node name="Wal09" id="989989952">
             <position x="100" y="0" z="200" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
             <entity name="Wal09" meshFile="wall-brick-width.mesh" castShadows="false" />
+        </node>
+        <node name="Msc05" id="374980928">
+            <position x="490" y="0" z="-420" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="0.05" y="0.05" z="0.05" />
+            <entity name="Msc05" meshFile="door-rotate.mesh" castShadows="false" />
+        </node>
+        <node name="Wal04" id="225104528">
+            <position x="500" y="300" z="-250" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal04" meshFile="wall-500.mesh" castShadows="false" />
+        </node>
+        <node name="Msc02" id="457960768">
+            <position x="-490" y="0" z="-490" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Msc02" meshFile="wall-cylinder.mesh" castShadows="false" />
         </node>
         <node name="Wal16" id="108279672">
             <position x="425" y="875" z="-350" />
@@ -209,11 +209,35 @@
             <scale x="1" y="1" z="1" />
             <entity name="Wal16" meshFile="wall-small-2-rotate.mesh" castShadows="false" />
         </node>
-        <node name="Wal21" id="726493120">
-            <position x="-150" y="175" z="275" />
+        <node name="Wal13" id="503921632">
+            <position x="-400" y="550" z="-400" />
             <rotation qw="1" qx="0" qy="0" qz="0" />
             <scale x="1" y="1" z="1" />
-            <entity name="Wal21" meshFile="wall-small-2.mesh" castShadows="false" />
+            <entity name="Wal13" meshFile="wall-small.mesh" castShadows="false" />
+        </node>
+        <node name="Wal07" id="599047808">
+            <position x="0" y="300" z="-50" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal07" meshFile="wall-1000.mesh" castShadows="false" />
+        </node>
+        <node name="Msc07" id="966612736">
+            <position x="-490" y="0" z="360" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Msc07" meshFile="wall-cylinder.mesh" castShadows="false" />
+        </node>
+        <node name="Wal02" id="692892224">
+            <position x="0" y="0" z="500" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Wal02" meshFile="wall-brick-width.mesh" castShadows="false" />
+        </node>
+        <node name="Grd00" id="837611008">
+            <position x="0" y="0" z="450" />
+            <rotation qw="1" qx="0" qy="0" qz="0" />
+            <scale x="1" y="1" z="1" />
+            <entity name="Grd00" meshFile="ground-stone-1.mesh" castShadows="false" />
         </node>
     </nodes>
 </scene>
