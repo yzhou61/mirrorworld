@@ -36,6 +36,7 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pEntity = m_pSceneMgr->createEntity("Player", "robot.mesh");
     m_pSceneNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode");
     m_pSceneNode->setPosition(-400, 0.5, 425);
+    m_pSceneNode->setDirection(1, 0, 0);
     m_pBodyNode = m_pSceneNode->createChildSceneNode("BodyNode", Vector3::ZERO, Vector3::UNIT_X.getRotationTo(Vector3::NEGATIVE_UNIT_Z));
     m_pBodyNode->attachObject(m_pEntity);
 
