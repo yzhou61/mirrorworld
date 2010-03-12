@@ -52,7 +52,7 @@ public:
     LogicManager();
     ~LogicManager();
 	void init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow *window, 
-		int maxMirror = 3, Ogre::Camera* camera = NULL);
+		int maxMirror = 3, Ogre::Camera* camera = NULL, int numTrigger = 3);
     void update(double timeElapsed);
     void triggerLaser();
     void shootMirrorBall();
@@ -65,7 +65,7 @@ public:
     void postUpdateMirrors(double timeElapsed);
 
     void showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection);
-
+    void finishedTrigger() { m_nTrigger--; if (m_nTrigger == 0) return; }
 private:
 
     void calcLaserPath();
@@ -93,6 +93,7 @@ private:
     Ogre::RenderWindow*         m_Window;
 
     Ogre::Camera*               m_MirrorCheckCam;
+    int                         m_nTrigger;
 };
 
 }
