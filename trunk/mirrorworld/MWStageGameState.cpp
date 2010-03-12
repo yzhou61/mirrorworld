@@ -6,6 +6,7 @@
 
 #include "MWStageGameState.h"
 #include "Objects/MWObjectFactory.h"
+#include "Objects/MWTrigger.h"
 
 float MirrorWorld::StageGameState::m_WorldSize = 1e6;
 
@@ -138,17 +139,67 @@ void StageGameState::createScene()
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
     m_pLogicMgr = new LogicManager();
-    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 3, m_pCamera);
-    Ogre::Real lightPositions[][3] = { { 60, 80, -150 }, { 0, 100, 200 } };
+    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 4, m_pCamera);
+    Ogre::Real lightPositions[][3] = { { -450, 250, -450 }, { -450, 250, 450 }, { 450, 250, -450 }, { 450, 250, 450 },
+                                    { -450, 10, -450 }, { -450, 10, 450 }, { 450, 10, -450 }, { 450, 10, 450 } };
 
-    for (int i = 0; i < 1; ++i) {
-	    Ogre::Light *light = m_pSceneMgr->createLight("Light" + i);
+    for (int i = 0; i < 0; ++i) {
+        Ogre::Light *light = m_pSceneMgr->createLight("Light" + Ogre::StringConverter::toString(i));
         light->setType(Ogre::Light::LT_POINT);
 	    light->setPosition(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2]);
 //        light->setDirection(Vector3::)
-	    light->setDiffuseColour(1.0, 1.0, 1.0);
+	    light->setDiffuseColour(0.4, 0.4, 0.4);
 	    light->setSpecularColour(0.5, 0.5, 0.5);
-        light->setAttenuation(3250, 1.0, 0.0014, 0.000007);
+        light->setAttenuation(15000, 1.0, 0.00014, 0.0000007);
+//        light->setAttenuation(4000, 1.0, 0.0, 0.0);
+        light->setCastShadows(false);
+    }
+
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
+
+    Vector3 triggerPos[5];
+    triggerPos[0] = Vector3(490, 100, 425);
+    triggerPos[1] = Vector3(-490, 100, 275);
+    triggerPos[2] = Vector3(10, 100, 25);
+    triggerPos[3] = Vector3(-450, 100, -375);
+    triggerPos[4] = Vector3(400, 995, -400);
+
+    Vector3 triggerNor[5];
+    triggerNor[0] = Vector3::NEGATIVE_UNIT_X;
+    triggerNor[1] = Vector3::UNIT_X;
+    triggerNor[2] = Vector3::UNIT_X;
+    triggerNor[3] = Vector3::UNIT_X;
+    triggerNor[4] = Vector3::NEGATIVE_UNIT_Y;
+    
+    Vector3 triggerUp[5];
+    triggerUp[0] = Vector3::UNIT_Y;
+    triggerUp[1] = Vector3::UNIT_Y;
+    triggerUp[2] = Vector3::UNIT_Y;
+    triggerUp[3] = Vector3::UNIT_Y;
+    triggerUp[4] = Vector3::UNIT_Z;
+
+    Object *obj[5];
+    obj[0] = NULL;
+    obj[1] = ObjectFactory::getSingleton().getObjectByName("Wal21");
+    obj[2] = ObjectFactory::getSingleton().getObjectByName("Msc06");
+    obj[3] = ObjectFactory::getSingleton().getObjectByName("Wal23");
+    obj[4] = NULL;
+
+    Vector3 dir[5];
+    dir[0] = 100 * Vector3::NEGATIVE_UNIT_Y;
+    dir[1] = -200 * Vector3::NEGATIVE_UNIT_Y;
+    dir[2] = 100 * Vector3::NEGATIVE_UNIT_Y;
+    dir[3] = 100 * Vector3::NEGATIVE_UNIT_Y;
+    dir[4] = 100 * Vector3::NEGATIVE_UNIT_Y;
+
+    Trigger *trigger;
+    for (int i = 0; i < 5; ++i) {
+        trigger = new Trigger(i);
+        trigger->setEntity(m_pSceneMgr, m_pPhyWorld);
+        GameFramework::getSingleton().m_pLog->stream() << triggerPos[i];
+        trigger->initTrigger(triggerPos[i], triggerNor[i], triggerUp[i]);
+        trigger->setTarget(obj[i], dir[i], 1000);
+        m_pLogicMgr->addTrigger(trigger);
     }
 }
 
@@ -194,7 +245,7 @@ void StageGameState::update(double timeSinceLastFrame)
         m_pPhyWorldDebugger->stopRaycastRecording();
         m_pPhyWorldDebugger->hideDebugInformation();
     }
-    GameFramework::getSingleton().m_pLog->stream() << "+++++++++++++++++++++";
+    GameFramework::getSingleton().setDebugInfo(Ogre::StringConverter::toString(m_pCamera->getRealPosition()), 0);
 }
 
 //////////////////////////////////////////////////////////////////////////

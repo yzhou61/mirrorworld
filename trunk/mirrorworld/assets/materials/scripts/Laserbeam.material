@@ -10,7 +10,7 @@ material Laserbeam
 
 			texture_unit
 			{
-				texture Laserbeam2.png
+				texture Laserbeam.png
 			}
 		}
 

@@ -45,11 +45,6 @@ bool MirrorBallNode::update(double timeElasped)
             dir.normalise();
             sp = hitPoint + dir * (1.0f - result.mDistance) * travelDistance;
         }
-        else if (hitobj->isTrigger())
-        {
-            hitobj->trigger();
-            m_pLogicEngine->finishedTrigger();
-        }
         // Attach 
         else if (hitobj->isAttachable())
         {
@@ -169,6 +164,9 @@ void LogicManager::update(double timeElapsed)
     updateMirrors(m_pCamera->getRealPosition(), m_pCamera->getRealDirection(), m_pCamera->getRealUp(),
         fLeft, fRight, fTop, fBottom, -1);
     postUpdateMirrors(timeElapsed);
+
+    for (int i = 0; i < m_Triggers.size(); ++i)
+        m_Triggers.at(i)->update(timeElapsed);
 }
 
 void LogicManager::triggerLaser()
@@ -214,9 +212,19 @@ void LogicManager::calcLaserPath()
             try
             {
                 Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
+                GameFramework::getSingleton().m_pLog->stream() << "1";
+                if (hitobj->isTrigger())
+                {
+                    GameFramework::getSingleton().m_pLog->stream() << "2";
+                    hitobj->trigger();
+//                    m_pLogicEngine->finishedTrigger();
+                }
+                GameFramework::getSingleton().m_pLog->stream() << "3";
                 Vector3 ep = sp + dir * (result.mDistance * m_RaycastDistance - 0.01f);
                 /*                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
                 Ogre::LogManager::getSingleton().stream()<<"Laser ep normal"<<ep<<result.mNormal;*/
+
+                GameFramework::getSingleton().m_pLog->stream() << "4";
                 if (hitobj->isReflective())
                 {
                     sp = ep;
@@ -228,6 +236,7 @@ void LogicManager::calcLaserPath()
                     m_pLaser->contactPoints().push_back(ep);
                     break;
                 }
+                GameFramework::getSingleton().m_pLog->stream() << "5";
             }
             catch(Ogre::Exception)
             {

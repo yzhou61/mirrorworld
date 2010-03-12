@@ -66,6 +66,8 @@ public:
 
     void showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection);
     void finishedTrigger() { m_nTrigger--; if (m_nTrigger == 0) return; }
+
+    void addTrigger(Trigger *trigger) { m_Triggers.push_back(trigger); }
 private:
 
     void calcLaserPath();
@@ -94,6 +96,7 @@ private:
 
     Ogre::Camera*               m_MirrorCheckCam;
     int                         m_nTrigger;
+    std::vector<Trigger*>       m_Triggers;
 };
 
 }
