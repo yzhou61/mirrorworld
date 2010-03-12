@@ -7,6 +7,7 @@
 #include "MWStageGameState.h"
 #include "Objects/MWObjectFactory.h"
 #include "Objects/MWTrigger.h"
+#include <vector>
 
 float MirrorWorld::StageGameState::m_WorldSize = 1e6;
 const float OverlookHeight = 900;
@@ -150,7 +151,7 @@ void StageGameState::createScene()
     Ogre::Real lightPositions[][3] = { { -450, 250, -450 }, { -450, 250, 450 }, { 450, 250, -450 }, { 450, 250, 450 },
                                     { -450, 10, -450 }, { -450, 10, 450 }, { 450, 10, -450 }, { 450, 10, 450 } };
 
-    for (int i = 0; i < 0; ++i) {
+    for (int i = 0; i < 4; ++i) {
         Ogre::Light *light = m_pSceneMgr->createLight("Light" + Ogre::StringConverter::toString(i));
         light->setType(Ogre::Light::LT_POINT);
 	    light->setPosition(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2]);
@@ -162,7 +163,7 @@ void StageGameState::createScene()
         light->setCastShadows(false);
     }
 
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
 
     Vector3 triggerPos[5];
     triggerPos[0] = Vector3(490, 100, 425);
@@ -199,15 +200,26 @@ void StageGameState::createScene()
     dir[3] = 100 * Vector3::NEGATIVE_UNIT_Y;
     dir[4] = 100 * Vector3::NEGATIVE_UNIT_Y;
 
-    Trigger *trigger;
+    Trigger *trigger[5];
     for (int i = 0; i < 5; ++i) {
-        trigger = new Trigger(i);
-        trigger->setEntity(m_pSceneMgr, m_pPhyWorld);
+        trigger[i] = new Trigger(i);
+        trigger[i]->setEntity(m_pSceneMgr, m_pPhyWorld);
         GameFramework::getSingleton().m_pLog->stream() << triggerPos[i];
-        trigger->initTrigger(triggerPos[i], triggerNor[i], triggerUp[i]);
-        trigger->setTarget(obj[i], dir[i], 1000);
-        m_pLogicMgr->addTrigger(trigger);
+        trigger[i]->initTrigger(triggerPos[i], triggerNor[i], triggerUp[i]);
+        trigger[i]->setTarget(obj[i], dir[i], 1000);
+        m_pLogicMgr->addTrigger(trigger[i]);
     }
+
+    trigger[1]->path.push_back(Vector3(-140, 40, 300));
+
+    trigger[2]->path.push_back(Vector3(0, 180, 140));
+    trigger[2]->path.push_back(Vector3(20, 175, 20));
+
+    trigger[3]->path.push_back(Vector3(250, 450, -160));
+    trigger[3]->path.push_back(Vector3(205, 375, -390));
+
+    trigger[4]->path.push_back(Vector3(-350, 570, -450));
+    trigger[4]->path.push_back(Vector3(410, 748, -420));
 }
 
 //////////////////////////////////////////////////////////////////////////

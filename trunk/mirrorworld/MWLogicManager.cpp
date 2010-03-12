@@ -108,14 +108,14 @@ LogicManager::~LogicManager() {
 }
 
 void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow* window,
-	int maxMirror, Ogre::Camera* camera, int numTrigger)
+	int maxMirror, Ogre::Camera* camera)
 {
     Ogre::LogManager::getSingleton().logMessage("Initializing LogicManager...");
     m_pSceneMgr = sceneMgr;
     m_pWorld = world;
     m_pCamera = camera;
 	m_Window = window;
-    m_nTrigger = numTrigger;
+    m_curTrigger = 0;
 
     m_MirrorCheckCam = m_pSceneMgr->createCamera("MirrorCheck");
     m_MirrorCheckCam->setAspectRatio(m_pCamera->getAspectRatio());
@@ -212,19 +212,15 @@ void LogicManager::calcLaserPath()
             try
             {
                 Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
-                GameFramework::getSingleton().m_pLog->stream() << "1";
                 if (hitobj->isTrigger())
                 {
-                    GameFramework::getSingleton().m_pLog->stream() << "2";
                     hitobj->trigger();
-//                    m_pLogicEngine->finishedTrigger();
+                    finishedTrigger();
                 }
-                GameFramework::getSingleton().m_pLog->stream() << "3";
                 Vector3 ep = sp + dir * (result.mDistance * m_RaycastDistance - 0.01f);
                 /*                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
                 Ogre::LogManager::getSingleton().stream()<<"Laser ep normal"<<ep<<result.mNormal;*/
 
-                GameFramework::getSingleton().m_pLog->stream() << "4";
                 if (hitobj->isReflective())
                 {
                     sp = ep;

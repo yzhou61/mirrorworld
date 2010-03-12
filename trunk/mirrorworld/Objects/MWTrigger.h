@@ -5,6 +5,7 @@
 #define _MW_TRIGGER_H_
 
 #include "MWObject.h"
+#include <vector>
 
 namespace MirrorWorld
 {
@@ -20,6 +21,8 @@ public:
     void trigger();
 
     void update(double timeElasped);
+
+    std::vector<Vector3> path;
 private:
     Object* m_pObject;
     Ogre::AnimationState* m_pState;
