@@ -61,25 +61,21 @@ bool Trigger::trigger()
 
     m_pEntity->setMaterialName("Trigger/Smiley");
     m_Acctime = 0;
-    if (m_pObject != NULL)
-        activated = true;
+    activated = true;
     return true;
 }
 
 void Trigger::update(double timeElasped) {
-    if (activated)
-    {
-        m_Acctime += timeElasped;
-        if (m_Acctime > m_TimeLength)
-        {
-            activated = false;
-            return;
-        }
-        Ogre::Vector3 pos;
-        Ogre::Quaternion ori;
-        m_pObject->getBody()->getPositionOrientation(pos, ori);
-        m_pObject->getBody()->setPositionOrientation(pos+m_Translate*timeElasped/m_TimeLength, ori);
-    }
+    if (m_pObject == NULL)
+        return;
+    if (m_Acctime > m_TimeLength)
+        return;
+    m_Acctime += timeElasped;
+
+    Ogre::Vector3 pos;
+    Ogre::Quaternion ori;
+    m_pObject->getBody()->getPositionOrientation(pos, ori);
+    m_pObject->getBody()->setPositionOrientation(pos+m_Translate*timeElasped/m_TimeLength, ori);
 }
 
 }
