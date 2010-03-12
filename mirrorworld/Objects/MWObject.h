@@ -16,29 +16,36 @@ namespace MirrorWorld{
 class Object
 {
 public:
-    Object(unsigned int id, bool attachable = true, bool reflective = false, bool removable = false):
+    Object(unsigned int id, bool attachable = true, bool reflective = false, bool removable = false, bool isTrigger = false):
         m_Identity(id), m_bAttachable(attachable), m_bReflective(reflective), 
-            m_bRemovable(removable), m_pEntity(NULL),m_pPhyBody(NULL){}
+            m_bRemovable(removable), m_bTrigger(isTrigger), m_pEntity(NULL),m_pPhyBody(NULL){}
     virtual ~Object(){}
     virtual Ogre::String name() const = 0;
     Ogre::String nameID() const { return name()+"_id"+Ogre::StringConverter::toString(m_Identity); }
     virtual void setEntity(Ogre::SceneManager* sceneMgr, OgreNewt::World* world = NULL, 
         Ogre::SceneNode* node = NULL, Ogre::Entity* entity = NULL) 
-    { m_pSceneMgr = sceneMgr; m_pWorld = world; m_pEntity = entity; attachUserData(); }
+    { m_pSceneMgr = sceneMgr; m_pWorld = world; m_pNode = node; m_pEntity = entity; attachUserData(); }
     bool isAttachable() { return m_bAttachable; }
     bool isReflective() { return m_bReflective; }
     bool isRemovable() { return m_bRemovable; }
     unsigned int getID() { return m_Identity; }
+    Ogre::SceneNode* getSceneNode() { return m_pNode; }
+    virtual void trigger() {}
+    void setUniName(const Ogre::String& name) { m_UniName = name; }
+    Ogre::String& getUniName() { return m_UniName; }
 protected:
     void attachUserData();
 protected:
+    Ogre::String        m_UniName;
     unsigned int        m_Identity;
     // Can attach a mirror?
     bool                m_bAttachable;
     // Can reflect light?
     bool                m_bReflective;
     bool                m_bRemovable;
+    bool                m_bTrigger;
     Ogre::SceneManager* m_pSceneMgr;
+    Ogre::SceneNode*    m_pNode;
     Ogre::Entity*       m_pEntity;
     OgreNewt::World*    m_pWorld;
     OgreNewt::Body*     m_pPhyBody;
