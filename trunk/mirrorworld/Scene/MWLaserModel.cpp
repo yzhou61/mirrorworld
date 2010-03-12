@@ -5,6 +5,7 @@
 
 int MirrorWorld::LaserModel::m_nPlanes = 6;
 Ogre::Real MirrorWorld::LaserModel::m_Radius = 0.4f;
+const float laserRad = 0.01f;
 
 namespace MirrorWorld {
 void LaserBeam::init(Ogre::SceneManager* sceneMgr, Ogre::MaterialPtr material, int i)
@@ -35,17 +36,17 @@ void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
     rot.FromAngleAxis(Ogre::Degree(180.0f/LaserModel::m_nPlanes), Ogre::Vector3::UNIT_Z);
     if (!m_bCreated)
     {
-        m_pModel->begin(m_pMaterial->getName(), Ogre::RenderOperation::OT_TRIANGLE_LIST);
+        m_pModel->begin(m_pMaterial->getName(), Ogre::RenderOperation::OT_LINE_LIST);
         m_bCreated = true;
     }
     else
         m_pModel->beginUpdate(0);
-    for (int i = 0;i < LaserModel::m_nPlanes; i++)
+/*    for (int i = 0;i < LaserModel::m_nPlanes; i++)
     {
         m_pModel->position(-radVec.x, -radVec.y, 1.0);
-        m_pModel->textureCoord(0.0, 0.0);
+        m_pModel->textureCoord(0.0, 0.2);
         m_pModel->position(radVec.x, radVec.y, 1.0);
-        m_pModel->textureCoord(1.0, 0.0);
+        m_pModel->textureCoord(1.0, 0.2);
         m_pModel->position(-radVec.x, -radVec.y, 0.0);
         m_pModel->textureCoord(0.0, 1.0);
         m_pModel->position(radVec.x, radVec.y, 0.0);
@@ -55,6 +56,38 @@ void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
         m_pModel->triangle(4*i+1, 4*i+3, 4*i+2);
         m_pModel->triangle(4*i, 4*i+1, 4*i+2);
         radVec = rot*radVec;
+    }
+    m_pModel->position(-LaserModel::m_Radius/2, -LaserModel::m_Radius/2, 0);
+    m_pModel->textureCoord(0.0, 0.0);
+    m_pModel->position(LaserModel::m_Radius/2, -LaserModel::m_Radius/2, 0);
+    m_pModel->textureCoord(0.2, 0.0);
+    m_pModel->position(LaserModel::m_Radius/2, LaserModel::m_Radius/2, 0);
+    m_pModel->textureCoord(0.2, 0.2);
+    m_pModel->position(-LaserModel::m_Radius/2, LaserModel::m_Radius/2, 0);
+    m_pModel->textureCoord(0.2, 0.0);
+    m_pModel->triangle(24, 25, 26);
+    m_pModel->triangle(26, 27, 24);
+    m_pModel->position(-LaserModel::m_Radius/2, -LaserModel::m_Radius/2, 1);
+    m_pModel->textureCoord(0.0, 0.0);
+    m_pModel->position(LaserModel::m_Radius/2, -LaserModel::m_Radius/2, 1);
+    m_pModel->textureCoord(0.2, 0.0);
+    m_pModel->position(LaserModel::m_Radius/2, LaserModel::m_Radius/2, 1);
+    m_pModel->textureCoord(0.2, 0.2);
+    m_pModel->position(-LaserModel::m_Radius/2, LaserModel::m_Radius/2, 1);
+    m_pModel->textureCoord(0.2, 0.0);
+    m_pModel->triangle(28, 29, 30);
+    m_pModel->triangle(30, 31, 28);*/
+    for (int j = 0;j < 5; j++)
+    {
+        Ogre::Real rad = Ogre::Math::UnitRandom()*laserRad;
+        for (int i = 0;i < 24; i++)
+        {
+            Ogre::Real val = Ogre::Math::UnitRandom()*360.0f;
+            Ogre::Real x = Ogre::Math::Cos(val)*rad;
+            Ogre::Real y = Ogre::Math::Sin(val)*rad;
+            m_pModel->position(x, y, 0);
+            m_pModel->position(x*10.0f, y*10.0f, 1);
+        }
     }
     m_pModel->end();
 
