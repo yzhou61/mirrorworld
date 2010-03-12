@@ -32,8 +32,7 @@ void MirrorWorldMain::start()
     ObjectFactory::getSingleton().registerObjType(new WallMaker(), "Wal");
     ObjectFactory::getSingleton().registerObjType(new WallMaker(), "Clg");
     ObjectFactory::getSingleton().registerObjType(new WallMaker(), "Grd");
-    ObjectFactory::getSingleton().registerObjType(new BarrelMaker(), "Brl");
-    ObjectFactory::getSingleton().registerObjType(new CrateMaker(), "Crt");
+    ObjectFactory::getSingleton().registerObjType(new MiscMaker(), "Msc");
     ObjectFactory::getSingleton().registerObjType(new LaserMaker(), "Laser");
     ObjectFactory::getSingleton().registerObjType(new MirrorMgr(), "Mirror");
     ObjectFactory::getSingleton().registerObjType(new MirrorBallMaker(), "MirrorBall");

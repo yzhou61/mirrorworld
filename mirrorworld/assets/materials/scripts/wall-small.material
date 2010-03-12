@@ -1,5 +1,5 @@
 
-material Wall-white-width
+material Wall-small
 {
 	technique
 	{
@@ -11,7 +11,7 @@ material Wall-white-width
 
 			texture_unit
 			{
-				texture wall_write.jpg
+				texture wall_brick_1.jpg
 			}
 		}
 

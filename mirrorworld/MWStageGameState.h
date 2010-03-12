@@ -33,7 +33,7 @@ public:
 
     void handleInput();
 private:
-    StageGameState() : GameState(), m_SceneFile("TestStage.xml"), m_bShowphyDebugger(false) {}
+    StageGameState() : GameState(), m_SceneFile("Stage1.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
 private:
     void                createScene();

@@ -1,5 +1,5 @@
 
-material Wall-white-length
+material Wall-brick-length
 {
 	technique
 	{
@@ -11,7 +11,7 @@ material Wall-white-length
 
 			texture_unit
 			{
-				texture wall_write.jpg
+				texture brickwall.bmp
 			}
 		}
 
