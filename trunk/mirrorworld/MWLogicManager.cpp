@@ -45,6 +45,11 @@ bool MirrorBallNode::update(double timeElasped)
             dir.normalise();
             sp = hitPoint + dir * (1.0f - result.mDistance) * travelDistance;
         }
+        else if (hitobj->isTrigger())
+        {
+            hitobj->trigger();
+            m_pLogicEngine->finishedTrigger();
+        }
         // Attach 
         else if (hitobj->isAttachable())
         {
@@ -108,13 +113,14 @@ LogicManager::~LogicManager() {
 }
 
 void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow* window,
-	int maxMirror, Ogre::Camera* camera)
+	int maxMirror, Ogre::Camera* camera, int numTrigger)
 {
     Ogre::LogManager::getSingleton().logMessage("Initializing LogicManager...");
     m_pSceneMgr = sceneMgr;
     m_pWorld = world;
     m_pCamera = camera;
 	m_Window = window;
+    m_nTrigger = numTrigger;
 
     m_MirrorCheckCam = m_pSceneMgr->createCamera("MirrorCheck");
     m_MirrorCheckCam->setAspectRatio(m_pCamera->getAspectRatio());

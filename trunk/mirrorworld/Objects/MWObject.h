@@ -28,6 +28,7 @@ public:
     bool isAttachable() { return m_bAttachable; }
     bool isReflective() { return m_bReflective; }
     bool isRemovable() { return m_bRemovable; }
+    bool isTrigger() { return m_bTrigger; }
     unsigned int getID() { return m_Identity; }
     Ogre::SceneNode* getSceneNode() { return m_pNode; }
     virtual void trigger() {}

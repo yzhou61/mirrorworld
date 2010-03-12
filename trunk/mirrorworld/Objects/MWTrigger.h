@@ -19,4 +19,14 @@ private:
     Object* m_pObject;
     Ogre::AnimationState* m_pState;
 };
+
+class TriggerMaker : public ObjectMaker
+{
+public:
+    TriggerMaker(){}
+    ~TriggerMaker(){}
+    Trigger* create(unsigned int id) const 
+    { Trigger* trigger = new Trigger(id); return trigger; }
+}; // End of WallMaker
+
 }
