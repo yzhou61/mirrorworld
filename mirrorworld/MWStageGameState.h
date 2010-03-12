@@ -32,6 +32,8 @@ public:
     bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
     void handleInput();
+    void updateCamera(double timeElasped);
+    void computeOverlookCamera();
 private:
     StageGameState() : GameState(), m_SceneFile("Stage1.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
@@ -56,6 +58,11 @@ private:
 
     Ogre::Vector3       m_CameraPos;
     Ogre::Quaternion    m_CameraOri;
+    Ogre::Vector3       m_TarCameraPos;
+    Ogre::Quaternion    m_TarCameraQuaternion;
+    Ogre::Camera*       m_OverlookCamera;
+    float               m_AccTime;
+    int                 m_CameraState;
 }; // End of StageGameState
 
 } // End of namespace
