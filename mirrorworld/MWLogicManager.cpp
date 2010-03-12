@@ -165,7 +165,7 @@ void LogicManager::update(double timeElapsed)
         fLeft, fRight, fTop, fBottom, -1);
     postUpdateMirrors(timeElapsed);
 
-    for (int i = 0; i < m_Triggers.size(); ++i)
+    for (int i = 0; i < (int)m_Triggers.size(); ++i)
         m_Triggers.at(i)->update(timeElapsed);
 }
 
