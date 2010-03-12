@@ -54,12 +54,16 @@ void Trigger::setTarget(Object* obj, const Ogre::Vector3& translate, Ogre::Real 
     m_TimeLength = timeLength;
 }
 
-void Trigger::trigger()
+bool Trigger::trigger()
 {
+    if (activated)
+        return false;
+
     m_pEntity->setMaterialName("Trigger/Smiley");
     m_Acctime = 0;
     if (m_pObject != NULL)
         activated = true;
+    return true;
 }
 
 void Trigger::update(double timeElasped) {

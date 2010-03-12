@@ -32,7 +32,7 @@ public:
     unsigned int getID() { return m_Identity; }
     Ogre::SceneNode* getSceneNode() { return m_pNode; }
     OgreNewt::Body* getBody() { return m_pPhyBody; }
-    virtual void trigger() {}
+    virtual bool trigger() {}
     void setUniName(const Ogre::String& name) { m_UniName = name; }
     Ogre::String& getUniName() { return m_UniName; }
 protected:
