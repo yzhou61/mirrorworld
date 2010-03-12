@@ -16,6 +16,7 @@
 #include "MWMirror.h"
 #include "MWMirrorBall.h"
 #include "MWMisc.h"
+#include "MWTrigger.h"
 
 namespace MirrorWorld{
 //////////////////////////////////////////////////////////////////////////
@@ -29,6 +30,7 @@ public:
     Object* createObj(Ogre::String type);
     void registerObjType(ObjectMaker* objMaker, Ogre::String type);
     void setupEngineAll(Ogre::SceneManager* sceneMgr, OgreNewt::World* world = NULL);
+    Object* getObjectByName(const Ogre::String& name);
     OgreNewt::MaterialID* getPhyMaterial(Ogre::String type);
 private:
     ObjectFactory();

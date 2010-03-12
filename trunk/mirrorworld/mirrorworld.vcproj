@@ -261,6 +261,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Objects\MWTrigger.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Objects\MWWall.cpp"
 					>
 				</File>
@@ -356,6 +360,10 @@
 				</File>
 				<File
 					RelativePath=".\Objects\MWStaticObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWTrigger.h"
 					>
 				</File>
 				<File

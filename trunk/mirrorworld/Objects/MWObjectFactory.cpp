@@ -50,4 +50,14 @@ OgreNewt::MaterialID* ObjectFactory::getPhyMaterial(Ogre::String type)
         return objMaker->getPhyMaterial();
     return NULL;
 }
+
+Object* ObjectFactory::getObjectByName(const Ogre::String& name)
+{
+    for (std::vector<Object*>::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); it++)
+    {
+        if ((*it)->getUniName() == name)
+            return (*it);
+    }
+    return NULL;
+}
 }
