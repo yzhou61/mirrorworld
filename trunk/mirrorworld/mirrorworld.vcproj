@@ -229,14 +229,6 @@
 				Name="Objects"
 				>
 				<File
-					RelativePath=".\Objects\MWBarrel.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Objects\MWCrate.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\Objects\MWLaser.cpp"
 					>
 				</File>
@@ -246,6 +238,10 @@
 				</File>
 				<File
 					RelativePath=".\Objects\MWMirrorBall.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWMisc.cpp"
 					>
 				</File>
 				<File
@@ -331,14 +327,6 @@
 				Name="Objects"
 				>
 				<File
-					RelativePath=".\Objects\MWBarrel.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Objects\MWCrate.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Objects\MWLaser.h"
 					>
 				</File>
@@ -348,6 +336,10 @@
 				</File>
 				<File
 					RelativePath=".\Objects\MWMirrorBall.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Objects\MWMisc.h"
 					>
 				</File>
 				<File
