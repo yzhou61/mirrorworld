@@ -1,0 +1,27 @@
+material Trigger/Smiley
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture smiley.png
+			}
+		}
+	}
+}
+
+material Trigger/Frowny
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture frowny.png
+			}
+		}
+	}
+}
