@@ -36,8 +36,8 @@ void Player::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::Ca
     m_pEntity = m_pSceneMgr->createEntity("Player", "robot.mesh");
     m_pSceneNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode");
     m_pSceneNode->setPosition(200, 0.5, 0);
-    Ogre::SceneNode* bodyNode = m_pSceneNode->createChildSceneNode("BodyNode", Vector3::ZERO, Vector3::UNIT_X.getRotationTo(Vector3::NEGATIVE_UNIT_Z));
-    bodyNode->attachObject(m_pEntity);
+    m_pBodyNode = m_pSceneNode->createChildSceneNode("BodyNode", Vector3::ZERO, Vector3::UNIT_X.getRotationTo(Vector3::NEGATIVE_UNIT_Z));
+    m_pBodyNode->attachObject(m_pEntity);
 
     Ogre::Technique* t = m_pEntity->getSubEntity(0)->getMaterial()->getBestTechnique();
     Ogre::Pass* p = t->getPass(0);
@@ -200,9 +200,9 @@ void Player::update(double timeElasped)
     m_pPhyBody->getVisualPositionOrientation(pos, orient);
     orient = orient * pitch;
     pos += Vector3(0, m_pPlayerControl->getPlayerHeight() * 0.75f, 0);
-    pos += orient * Vector3::NEGATIVE_UNIT_Z * 7;
+    Vector3 bonePos = orient * Vector3::UNIT_Y * 2 + orient * Vector3::NEGATIVE_UNIT_Z * 5 + pos;
     
-    m_pCamera->setPosition(pos);
+    m_pCamera->setPosition(bonePos);
     m_pCamera->setOrientation(orient);
     m_pPlayerControl->setVelocity(m_Velocity, m_SideVel, m_Heading);
     updateAnimation(timeElasped);

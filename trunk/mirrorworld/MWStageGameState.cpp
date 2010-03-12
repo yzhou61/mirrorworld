@@ -30,14 +30,17 @@ void StageGameState::enter()
     Ogre::AxisAlignedBox worldBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize);
     m_pSceneMgr->setOption("Size", &worldBox);
     m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
-    m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-    m_pSceneMgr->setShadowTextureSettings(512, 2);
+    m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
+    m_pSceneMgr->setShadowTextureSettings(512, 1);
     m_pSceneMgr->setShadowCasterRenderBackFaces(false);
     m_pSceneMgr->setShadowColour(Ogre::ColourValue(0.6, 0.6, 0.6));
     m_pSceneMgr->setShadowFarDistance(1000);
     Ogre::LiSPSMShadowCameraSetup* shadowCameraSetup = new Ogre::LiSPSMShadowCameraSetup();
-    shadowCameraSetup->setOptimalAdjustFactor(15);
+//    shadowCameraSetup->setOptimalAdjustFactor(15);
     m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowCameraSetup));
+//    m_pSceneMgr->setShadowTextureCasterMaterial("ShadowCaster");
+//    m_pSceneMgr->setShadowTextureReceiverMaterial("ShadowReceiver");
+//    m_pSceneMgr->setShadowTextureSelfShadow(true);
     
     m_pCamera = m_pSceneMgr->createCamera("GameCam");
 //    m_pCamera->setPosition(Vector3(5, 60, 60));
