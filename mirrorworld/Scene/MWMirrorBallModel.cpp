@@ -24,8 +24,11 @@ MirrorBallModel::MirrorBallModel(Ogre::SceneManager* sceneMgr)
     m_pRibbonTrail->addNode(m_pBallNode);
     
     m_pLight = m_pSceneMgr->createLight("MirrorLight"+id);
+    m_pLight->setType(Ogre::Light::LT_POINT);
     m_pLight->setDiffuseColour(m_pRibbonTrail->getInitialColour(0));
-    m_pLight->setAttenuation(1000, 0.8, 0.1, 0.01);
+    m_pLight->setSpecularColour(m_pRibbonTrail->getInitialColour(0));
+    m_pLight->setAttenuation(1000, 1.0, 0.01, 0.001);
+    m_pLight->setVisible(false);
 
     m_pBillboard = m_pSceneMgr->createBillboardSet("RibbonTrailBillboard"+id, 1);
     m_pBillboard->createBillboard(Ogre::Vector3::ZERO, m_pRibbonTrail->getInitialColour(0));
@@ -37,6 +40,7 @@ void MirrorBallModel::active(const Ogre::Vector3& pos)
     m_pRibbonTrail->removeNode(m_pBallNode);
     m_pBallNode->setPosition(pos);
     m_pRibbonTrail->addNode(m_pBallNode);
+    m_pLight->setVisible(true);
     m_pBallNode->attachObject(m_pLight);
     m_pBallNode->attachObject(m_pBillboard);
     m_pTrailNode->attachObject(m_pRibbonTrail);
@@ -44,6 +48,7 @@ void MirrorBallModel::active(const Ogre::Vector3& pos)
 
 void MirrorBallModel::deactive()
 {
+    m_pLight->setVisible(false);
     m_pBallNode->detachAllObjects();
     m_pTrailNode->detachAllObjects();
 }
