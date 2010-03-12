@@ -56,10 +56,17 @@ void StageGameState::enter()
 
     GameFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
+    m_OverlookCameraNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
     m_OverlookCamera = m_pSceneMgr->createCamera("OverlookCam");
     m_OverlookCamera->setFarClipDistance(m_WorldSize);
     m_OverlookCamera->setAspectRatio(Real(GameFramework::getSingletonPtr()->m_pViewport->getActualWidth()) / 
         Real(GameFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
+    m_OverlookCameraNode->attachObject(m_OverlookCamera);
+
+    m_CamAnimation = m_pSceneMgr->createAnimation("CameraTrack", 10);
+    m_CamAnimation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
+    m_CamAnimationState = m_pSceneMgr->createAnimationState("CameraTrack");
+    m_CamAnimationState->setLoop(false);
 
     GameFramework::getSingletonPtr()->m_pKeyboard->setEventCallback(this);
     GameFramework::getSingletonPtr()->m_pMouse->setEventCallback(this);
@@ -268,20 +275,22 @@ void StageGameState::update(double timeSinceLastFrame)
     GameFramework::getSingleton().setDebugInfo(Ogre::StringConverter::toString(m_pCamera->getRealPosition()), 0);
 }
 
-void StageGameState::computeOverlookCamera()
+bool StageGameState::computeOverlookCamera()
 {
-    m_CameraPos = m_pCamera->getRealPosition();
-    m_CameraOri = m_pCamera->getRealOrientation();
-    m_OverlookCamera->setPosition(m_CameraPos);
-    m_OverlookCamera->setOrientation(m_CameraOri);
-    m_TarCameraPos = m_CameraPos+Vector3(0, OverlookHeight, 0);
-    Ogre::Vector3 tarDir = m_pCamera->getRealDirection();
-    tarDir = Ogre::Vector3(tarDir[0], 0, tarDir[2]);
-    if (tarDir.length() < 0.001)
-        tarDir = Vector3(0, 0, 1);
-    else
-        tarDir.normalise();
-    m_TarCameraQuaternion = m_pCamera->getRealDirection().getRotationTo(tarDir);
+    Trigger* trigger = m_pLogicMgr->getNextTrigger();
+    if (trigger->path.size() == 0)
+        return false;
+    Ogre::LogManager::getSingleton().stream()<<"asdfdsa"<<trigger->path.size();
+    m_CamAnimation->setLength(trigger->path.size()*2.0f);
+    m_OverlookCameraNode->setAutoTracking(true, trigger->getSceneNode());
+    Ogre::NodeAnimationTrack* track = m_CamAnimation->createNodeTrack(0, m_OverlookCameraNode);
+
+    track->createNodeKeyFrame(0)->setTranslate(m_pCamera->getRealPosition());
+    
+    Ogre::LogManager::getSingleton().stream()<<"asdfdsa"<<trigger->path.size();
+    for (int i = 0;i < (int)trigger->path.size(); i++)
+        track->createNodeKeyFrame(trigger->path.size()*2.0f*(i+1)/(float)trigger->path.size())->setTranslate(trigger->path[i]);
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -317,9 +326,13 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
             m_bShowphyDebugger = !m_bShowphyDebugger;
         break;
     case OIS::KC_SPACE:
-        m_CameraState = 1;
-        computeOverlookCamera();
-        GameFramework::getSingleton().m_pViewport->setCamera(m_OverlookCamera);
+        if (computeOverlookCamera())
+        {
+            m_CameraState = 1;
+            m_CamAnimationState->setTimePosition(0);
+            m_CamAnimationState->setEnabled(true);
+            GameFramework::getSingleton().m_pViewport->setCamera(m_OverlookCamera);
+        }
         break;
     default:
         GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
@@ -349,7 +362,8 @@ bool StageGameState::keyReleased(const OIS::KeyEvent &keyEventRef)
         m_pPlayer->rightRelease();
         break;
     case OIS::KC_SPACE:
-        m_CameraState = -1;
+        if (m_CameraState == 1)
+            m_CameraState = -1;
         break;
     default:
         GameFramework::getSingletonPtr()->keyReleased(keyEventRef);
@@ -427,17 +441,13 @@ void StageGameState::updateCamera(double timeElasped)
         return;
     else if (m_CameraState == 1)
     {
-        Ogre::Vector3 pos = m_OverlookCamera->getRealPosition();
-        pos += (m_TarCameraPos - m_pCamera->getRealPosition())/timeLengthForOverlook*timeElasped;
-        m_OverlookCamera->setPosition(pos);
+        m_CamAnimationState->addTime(static_cast<Ogre::Real>(timeElasped));
     }
     else
     {
-    /*    if ((m_OverlookCamera->getRealPosition() - m_pCamera->getRealPosition()).length() < 5)
-        {*/
-            m_CameraState = 0;
-            GameFramework::getSingleton().m_pViewport->setCamera(m_pCamera);
-     //   }
+        m_CameraState = 0;
+        m_CamAnimationState->setEnabled(false);
+        GameFramework::getSingleton().m_pViewport->setCamera(m_pCamera);
     }
 }
 }

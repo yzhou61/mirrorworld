@@ -33,7 +33,7 @@ public:
 
     void handleInput();
     void updateCamera(double timeElasped);
-    void computeOverlookCamera();
+    bool computeOverlookCamera();
 private:
     StageGameState() : GameState(), m_SceneFile("Stage1.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
@@ -60,7 +60,10 @@ private:
     Ogre::Quaternion    m_CameraOri;
     Ogre::Vector3       m_TarCameraPos;
     Ogre::Quaternion    m_TarCameraQuaternion;
+    Ogre::SceneNode*    m_OverlookCameraNode;
     Ogre::Camera*       m_OverlookCamera;
+    Ogre::Animation*    m_CamAnimation;
+    Ogre::AnimationState*   m_CamAnimationState;
     float               m_AccTime;
     int                 m_CameraState;
 }; // End of StageGameState
