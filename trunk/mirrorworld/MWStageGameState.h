@@ -66,6 +66,7 @@ private:
     Ogre::AnimationState*   m_CamAnimationState;
     float               m_AccTime;
     int                 m_CameraState;
+    Ogre::Real          m_AnimeLength;
 }; // End of StageGameState
 
 } // End of namespace
