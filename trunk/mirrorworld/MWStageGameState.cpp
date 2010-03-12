@@ -40,7 +40,7 @@ void StageGameState::enter()
     m_pSceneMgr->setShadowColour(Ogre::ColourValue(0.6, 0.6, 0.6));
     m_pSceneMgr->setShadowFarDistance(1000);
     Ogre::LiSPSMShadowCameraSetup* shadowCameraSetup = new Ogre::LiSPSMShadowCameraSetup();
-//    shadowCameraSetup->setOptimalAdjustFactor(15);
+    shadowCameraSetup->setOptimalAdjustFactor(15);
     m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowCameraSetup));
 //    m_pSceneMgr->setShadowTextureCasterMaterial("ShadowCaster");
 //    m_pSceneMgr->setShadowTextureReceiverMaterial("ShadowReceiver");
@@ -159,7 +159,7 @@ void StageGameState::createScene()
     Ogre::Real lightPositions[][3] = { { -450, 250, -450 }, { -450, 250, 450 }, { 450, 250, -450 }, { 450, 250, 450 },
                                     { -450, 10, -450 }, { -450, 10, 450 }, { 450, 10, -450 }, { 450, 10, 450 } };
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 0; ++i) {
         Ogre::Light *light = m_pSceneMgr->createLight("Light" + Ogre::StringConverter::toString(i));
         light->setType(Ogre::Light::LT_POINT);
 	    light->setPosition(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2]);
@@ -171,7 +171,7 @@ void StageGameState::createScene()
         light->setCastShadows(false);
     }
 
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
     Vector3 triggerPos[5];
     triggerPos[0] = Vector3(490, 100, 425);
@@ -221,7 +221,7 @@ void StageGameState::createScene()
     trigger[1]->path.push_back(Vector3(-140, 40, 300));
 
     trigger[2]->path.push_back(Vector3(0, 180, 140));
-    trigger[2]->path.push_back(Vector3(20, 175, 20));
+    trigger[2]->path.push_back(Vector3(260, 180, 20));
 
     trigger[3]->path.push_back(Vector3(250, 450, -160));
     trigger[3]->path.push_back(Vector3(205, 375, -390));
@@ -279,7 +279,7 @@ void StageGameState::update(double timeSinceLastFrame)
 bool StageGameState::computeOverlookCamera()
 {
     Trigger* trigger = m_pLogicMgr->getNextTrigger();
-    if (trigger->path.size() == 0 || trigger == NULL)
+    if (trigger == NULL || trigger->path.size() == 0 )
         return false;
     m_AnimeLength = trigger->path.size()*2.0f;
     m_CamAnimation->setLength(m_AnimeLength);
