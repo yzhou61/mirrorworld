@@ -46,38 +46,23 @@ void Trigger::initTrigger(const Vector3 &pos, const Vector3 &nor, const Vector3 
 
 void Trigger::setTarget(Object* obj, const Ogre::Vector3& translate, Ogre::Real timeLength)
 {
+    m_pObject = NULL;
     if (obj == NULL)
         return;
     m_pObject = obj;
-/*    Ogre::Animation* animation = m_pSceneMgr->createAnimation(nameID()+"Animation", timeLength);
-    animation->setInterpolationMode(Ogre::Animation::IM_LINEAR);
-
-    Ogre::NodeAnimationTrack* track = animation->createNodeTrack(0, obj->getSceneNode());
-    track->createNodeKeyFrame(0)->setTranslate(Ogre::Vector3(0, 0, 0));
-    track->createNodeKeyFrame(timeLength)->setTranslate(translate);
-
-    m_pState = m_pSceneMgr->createAnimationState(nameID()+"Animation");
-    m_pState->setLoop(false);*/
     m_Translate = translate;
     m_TimeLength = timeLength;
 }
 
 void Trigger::trigger()
 {
-//    GameFramework::getSingleton().m_pLog->stream() << "3 " << nameID();
-  //  if (m_pState->getEnabled())
-    //    return;
-//    GameFramework::getSingleton().m_pLog->stream() << "3 ";
-  //  m_pState->setEnabled(true);
-
-//    GameFramework::getSingleton().m_pLog->stream() << "3 ";
-    activated = true;
     m_pEntity->setMaterialName("Trigger/Smiley");
     m_Acctime = 0;
+    if (m_pObject != NULL)
+        activated = true;
 }
 
 void Trigger::update(double timeElasped) {
-    Ogre::LogManager::getSingleton().stream()<<activated<<m_pObject;
     if (activated)
     {
         m_Acctime += timeElasped;

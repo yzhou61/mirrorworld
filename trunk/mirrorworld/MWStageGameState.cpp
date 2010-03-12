@@ -9,6 +9,8 @@
 #include "Objects/MWTrigger.h"
 
 float MirrorWorld::StageGameState::m_WorldSize = 1e6;
+const float OverlookHeight = 900;
+const float timeLengthForOverlook = 4000;
 
 namespace MirrorWorld{
 //////////////////////////////////////////////////////////////////////////
@@ -48,11 +50,15 @@ void StageGameState::enter()
 //    m_pCamera->lookAt(Vector3(0, 0, 0));
     m_pCamera->setNearClipDistance(1);
     m_pCamera->setFarClipDistance(m_WorldSize);
-
     m_pCamera->setAspectRatio(Real(GameFramework::getSingletonPtr()->m_pViewport->getActualWidth()) / 
         Real(GameFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
 
     GameFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
+
+    m_OverlookCamera = m_pSceneMgr->createCamera("OverlookCam");
+    m_OverlookCamera->setFarClipDistance(m_WorldSize);
+    m_OverlookCamera->setAspectRatio(Real(GameFramework::getSingletonPtr()->m_pViewport->getActualWidth()) / 
+        Real(GameFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
 
     GameFramework::getSingletonPtr()->m_pKeyboard->setEventCallback(this);
     GameFramework::getSingletonPtr()->m_pMouse->setEventCallback(this);
@@ -79,6 +85,7 @@ void StageGameState::enter()
     m_CrossHair = Ogre::OverlayManager::getSingleton().getByName("Game/CrossHair");
     m_CrossHair->setScale(0.6, 0.6);
     m_CrossHair->show();
+    m_CameraState = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -232,6 +239,7 @@ void StageGameState::update(double timeSinceLastFrame)
     m_pPhyWorld->update(static_cast<Real>(timeSinceLastFrame/1000.0));
     m_pPlayer->update(timeSinceLastFrame);
     m_pLogicMgr->update(timeSinceLastFrame);
+    updateCamera(timeSinceLastFrame);
     m_CrossHair->rotate(Ogre::Radian(static_cast<Real>(timeSinceLastFrame / 500.0)));
     if (m_bShowphyDebugger)
     {
@@ -248,11 +256,29 @@ void StageGameState::update(double timeSinceLastFrame)
     GameFramework::getSingleton().setDebugInfo(Ogre::StringConverter::toString(m_pCamera->getRealPosition()), 0);
 }
 
+void StageGameState::computeOverlookCamera()
+{
+    m_CameraPos = m_pCamera->getRealPosition();
+    m_CameraOri = m_pCamera->getRealOrientation();
+    m_OverlookCamera->setPosition(m_CameraPos);
+    m_OverlookCamera->setOrientation(m_CameraOri);
+    m_TarCameraPos = m_CameraPos+Vector3(0, OverlookHeight, 0);
+    Ogre::Vector3 tarDir = m_pCamera->getRealDirection();
+    tarDir = Ogre::Vector3(tarDir[0], 0, tarDir[2]);
+    if (tarDir.length() < 0.001)
+        tarDir = Vector3(0, 0, 1);
+    else
+        tarDir.normalise();
+    m_TarCameraQuaternion = m_pCamera->getRealDirection().getRotationTo(tarDir);
+}
+
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
 bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
+    if (m_CameraState != 0)
+        return true;
     static int pos = -200;
     if (GameFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
     {
@@ -274,29 +300,15 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
     case OIS::KC_D:
         m_pPlayer->right();
         break;
-    case OIS::KC_SPACE:
-        m_pPlayer->jump();
-        break;
     case OIS::KC_F3:
         if (m_pPhyWorldDebugger)
             m_bShowphyDebugger = !m_bShowphyDebugger;
         break;
-    case OIS::KC_L:
-        m_pPlayer->test();
+    case OIS::KC_SPACE:
+        m_CameraState = 1;
+        computeOverlookCamera();
+        GameFramework::getSingleton().m_pViewport->setCamera(m_OverlookCamera);
         break;
-    case OIS::KC_M:
-        m_pPlayer->test2();
-    case OIS::KC_N:
-//        m_pLogicMgr->getMirror(1)->suspend();
-//        m_pLogicMgr->getMirror(0)->activate(Vector3(1, 0, 0), Vector3(-100, 100, 0), Vector3(0, 1, 1));
-//        m_pLogicMgr->getMirror(0)->reactivate();
-//        m_pLogicMgr->getMirror(1)->reactivate();
-//        pos += 100;
-//        m_pLogicMgr->showMirror(Vector3(pos, 100, 0), Vector3(-1, 0, 0), Vector3(0.3, 0.4, 0.5));
-        break;
-    case OIS::KC_B:
-//        m_pLogicMgr->getMirror(0)->suspend();
-//        m_pLogicMgr->getMirror(1)->activate(Vector3(-1, 0, 0), Vector3(100, 100, 0), Vector3(0, 1, 1));
     default:
         GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
         break;
@@ -323,6 +335,9 @@ bool StageGameState::keyReleased(const OIS::KeyEvent &keyEventRef)
         break;
     case OIS::KC_D:
         m_pPlayer->rightRelease();
+        break;
+    case OIS::KC_SPACE:
+        m_CameraState = -1;
         break;
     default:
         GameFramework::getSingletonPtr()->keyReleased(keyEventRef);
@@ -362,7 +377,7 @@ bool StageGameState::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
     {
         m_bRMouseDown = true;
         m_pLogicMgr->shootMirrorBall();
-    } 
+    }
 
     return true;
 }
@@ -392,5 +407,25 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
 void StageGameState::handleInput()
 {
     
+}
+
+void StageGameState::updateCamera(double timeElasped)
+{
+    if (m_CameraState == 0)
+        return;
+    else if (m_CameraState == 1)
+    {
+        Ogre::Vector3 pos = m_OverlookCamera->getRealPosition();
+        pos += (m_TarCameraPos - m_pCamera->getRealPosition())/timeLengthForOverlook*timeElasped;
+        m_OverlookCamera->setPosition(pos);
+    }
+    else
+    {
+    /*    if ((m_OverlookCamera->getRealPosition() - m_pCamera->getRealPosition()).length() < 5)
+        {*/
+            m_CameraState = 0;
+            GameFramework::getSingleton().m_pViewport->setCamera(m_pCamera);
+     //   }
+    }
 }
 }
