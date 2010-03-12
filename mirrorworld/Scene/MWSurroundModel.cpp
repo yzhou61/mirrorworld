@@ -48,4 +48,8 @@ void SurroundModel::destroy()
 {
 
 }
+
+Ogre::SceneNode *SurroundModel::getNode() {
+    return m_pSceneNode;
+}
 }

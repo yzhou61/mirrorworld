@@ -18,6 +18,8 @@ public:
     bool update(double timeElasped);
     void destroy();
     static void resetCounter() { m_nUniqueID = 0; }
+
+    Ogre::SceneNode *getNode();
 private:
     bool                    m_bLive;
     static int              m_nUniqueID;

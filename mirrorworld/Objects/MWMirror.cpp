@@ -19,6 +19,7 @@ Mirror::~Mirror()
             delete texturePools[i].top();
             texturePools[i].pop();
         }
+    delete m_pSurroundModel;
 }
 
 void Mirror::init(SceneManager *mgr, Camera *refCam, OgreNewt::World* world) {
@@ -98,12 +99,15 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
     unfolding = 1;
     activated = true;
     m_Node->setScale(1, 0, 1);
+    m_pSurroundModel->getNode()->setScale(1, 1, 1);
     m_pEntity->setVisible(true);
+    m_pSurroundModel->active(m_Position, m_Normal, m_Up);
 }
 
 void Mirror::suspendResource() {
 
     m_pEntity->setVisible(false);
+    m_pSurroundModel->deactive();
 
     m_Node->detachAllObjects();
     m_Node->resetToInitialState();
@@ -112,7 +116,6 @@ void Mirror::suspendResource() {
     if (m_pEntity != NULL)
         m_pSceneMgr->destroyEntity(m_pEntity);
 
-    m_pSurroundModel->deactive();
     delete m_pPhyBody;
     activated = false;
 }
@@ -154,9 +157,17 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
         return false;
     }
 
-    int level = 6 - (int)((dis + 200.0) / 200.0);
-    if (level < 0)
-        level = 0;
+    int level;
+    if (dis < 200.0)
+        level = 5;
+    else {
+        level = 5 - (int)(log(dis / 200.0) / log(2.0));
+        if (level < 0)
+            level = 0;
+    }
+
+    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(level), 0);
+    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(dis), 1);
 
     RenderUnit *unit = getNewRenderUnit(level);
 
@@ -191,8 +202,6 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
     unit->eyeDirection.normalise();
     unit->eyeUp = up - 2 * m_Normal.dotProduct(up) / m_Normal.length() * m_Normal;
     unit->eyeUp.normalise();
-
-	GameFramework::getSingleton().setDebugInfo(StringConverter::toString(level), 1);
 	
 	Real omLeft, omRight, omTop, omBottom;
 	omLeft = 1.0f;
@@ -263,13 +272,13 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
             recyclePool.push(unit);
 			return false;
 	}
-/*
+
 	Real mWidth = (omRight - omLeft) / 2;
 	Real mHeight = (omTop - omBottom) / 2;
 
+    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(mWidth * 800) + " " + StringConverter::toString(mHeight * 600), 3);
+/*
     GameFramework::getSingleton().m_pLog->stream() << mWidth << " " << mHeight;
-	
-    GameFramework::getSingleton.setDebugInfo(StringConverter::toString(mWidth) + " " + StringConverter::toString(mHeight), 3);
 
 	GameFramework::getSingletonPtr()->setDebugInfo(Ogre::StringConverter::toString(omLeft) + " "
 		+ Ogre::StringConverter::toString(omRight) + " "
@@ -296,7 +305,6 @@ Ogre::Vector3 Mirror::getPosition() {
 
 Ogre::Vector3 Mirror::getDirection() {
     RenderUnit *unit = renderUnits.top();
-    GameFramework::getSingleton().m_pLog->stream() << unit->eyeDirection;
     return unit->eyeDirection;
 }
 
@@ -376,7 +384,6 @@ Ogre::AxisAlignedBox Mirror::getBound() {
 }
 
 void Mirror::reflectReal() {
-    GameFramework::getSingleton().setDebugInfo(StringConverter::toString(maxResource), 0);
 
     RenderUnit *unit = realUnitStack.top();
     realUnitStack.pop();
@@ -409,12 +416,14 @@ void Mirror::preUpdate() {
 void Mirror::postUpdate(double timeElapsed)
 {
     if (unfolding > 0) {
-        m_pSurroundModel->active(m_Position, m_Normal, m_Up);
         unfolding += timeElapsed;
-        if (unfolding < 320)
+        if (unfolding < 320) {
             m_Node->setScale(1, (Ogre::Real)unfolding / 300, 1);
-        else
+//            m_pSurroundModel->getNode()->setScale(1, (Ogre::Real)unfolding / 300, 1);
+        } else {
             m_Node->setScale(1, 1, 1);
+//            m_pSurroundModel->getNode()->setScale(1, 1, 1);
+        }
     }
     if (unfolding < 0) {
         unfolding -= timeElapsed;
@@ -425,7 +434,9 @@ void Mirror::postUpdate(double timeElapsed)
         }
         Ogre::Real scale = static_cast<Ogre::Real>(unfolding + 400) / 400.0f;
         m_Node->setScale(scale, scale, 1);
+        m_pSurroundModel->getNode()->setScale(scale, scale, 1);
         m_Node->rotate(m_Normal, Degree(20), Ogre::Node::TS_WORLD);
+        m_pSurroundModel->getNode()->rotate(m_Normal, Degree(20), Ogre::Node::TS_WORLD);
 
 //        std::stringstream ss;
 //        ss << m_Identity << "-" << last;

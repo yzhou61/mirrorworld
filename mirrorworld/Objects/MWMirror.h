@@ -59,8 +59,8 @@ namespace MirrorWorld {
         static const int MIRROR_WIDTH = 80;
         static const int MIRROR_HEIGHT = 120;
         static const unsigned int LEVEL_0_TEXTURE_SIZE = 16;
-        static const int MAXIMUM_MIRROR_DISTANCE = 5000;
-        static const int TEXTURE_LEVELS = 7;
+        static const int MAXIMUM_MIRROR_DISTANCE = 3200;
+        static const int TEXTURE_LEVELS = 6;
 
 		Ogre::MovablePlane *m_Plane;
 		Ogre::Camera *ptr_RefCamera;
