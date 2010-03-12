@@ -4,6 +4,8 @@ material Trigger/Smiley
 	{
 		pass
 		{
+            scene_blend alpha_blend
+            depth_write off
 			texture_unit
 			{
 				texture smiley.png
@@ -18,6 +20,8 @@ material Trigger/Frowny
 	{
 		pass
 		{
+            scene_blend alpha_blend
+            depth_write off
 			texture_unit
 			{
 				texture frowny.png
