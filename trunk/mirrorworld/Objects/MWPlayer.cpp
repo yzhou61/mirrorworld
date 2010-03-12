@@ -7,7 +7,7 @@
 #define M_PI_DEGREE 0.017453f
 
 namespace MirrorWorld {
-Player::Player(unsigned int id):Object(id, false, false), m_AnimationSpeed(0.001), testnum(0)
+Player::Player(unsigned int id):Object(id, false, false), m_AnimationSpeed(0.01), testnum(0)
 {
 }
 Player::~Player()
@@ -168,7 +168,7 @@ void Player::stop()
     if (abs(m_Velocity) < 1.0f && abs(m_SideVel) < 1.0f)
     {
         m_bWalking = false;
-        m_AnimationSpeed *= 5;
+        m_AnimationSpeed *= 2;
     }
 }
 

@@ -48,7 +48,6 @@ bool MirrorBallNode::update(double timeElasped)
         // Attach 
         else if (hitobj->isAttachable())
         {
-            
             m_pLogicEngine->showMirror(hitPoint, result.mNormal, dir);
             return false;
         }

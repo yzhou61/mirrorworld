@@ -29,15 +29,21 @@ void StageGameState::enter()
     m_pSceneMgr = GameFramework::getSingletonPtr()->m_pRoot->createSceneManager(Ogre::ST_GENERIC, "GameSceneMgr");
     Ogre::AxisAlignedBox worldBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize);
     m_pSceneMgr->setOption("Size", &worldBox);
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.0, 0.0, 0.0));
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.7, 0.7, 0.7));
     m_pSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-    m_pSceneMgr->setShadowTextureSize(512);
+    m_pSceneMgr->setShadowTextureSettings(512, 2);
+    m_pSceneMgr->setShadowCasterRenderBackFaces(false);
     m_pSceneMgr->setShadowColour(Ogre::ColourValue(0.6, 0.6, 0.6));
-
+    m_pSceneMgr->setShadowFarDistance(1000);
+    Ogre::LiSPSMShadowCameraSetup* shadowCameraSetup = new Ogre::LiSPSMShadowCameraSetup();
+    shadowCameraSetup->setOptimalAdjustFactor(15);
+    m_pSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowCameraSetup));
+    
     m_pCamera = m_pSceneMgr->createCamera("GameCam");
 //    m_pCamera->setPosition(Vector3(5, 60, 60));
 //    m_pCamera->lookAt(Vector3(0, 0, 0));
-    m_pCamera->setNearClipDistance(5);
+    m_pCamera->setNearClipDistance(1);
+    m_pCamera->setFarClipDistance(m_WorldSize);
 
     m_pCamera->setAspectRatio(Real(GameFramework::getSingletonPtr()->m_pViewport->getActualWidth()) / 
         Real(GameFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
@@ -117,6 +123,7 @@ void StageGameState::resume()
 void StageGameState::createScene()
 {
     m_pSceneLoader = new DotSceneLoader();
+
     m_pPhyWorld = new OgreNewt::World(100.0, 1);
     m_pPhyWorld->setThreadCount(2);
     m_pPhyWorld->setWorldSize(Ogre::AxisAlignedBox(-m_WorldSize, -m_WorldSize, -m_WorldSize, m_WorldSize, m_WorldSize, m_WorldSize));
@@ -128,8 +135,7 @@ void StageGameState::createScene()
     m_pPhyWorldDebugger = &m_pPhyWorld->getDebugger();
     m_pPhyWorldDebugger->init(m_pSceneMgr);
     m_pLogicMgr = new LogicManager();
-    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 4, m_pCamera);
-
+    m_pLogicMgr->init(m_pSceneMgr, m_pPhyWorld, GameFramework::getSingletonPtr()->m_pRenderWnd, 3, m_pCamera);
     Ogre::Real lightPositions[][3] = { { 60, 80, -150 }, { 0, 100, 200 } };
 
     for (int i = 0; i < 1; ++i) {

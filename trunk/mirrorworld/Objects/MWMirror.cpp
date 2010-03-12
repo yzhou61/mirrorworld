@@ -66,6 +66,7 @@ void Mirror::activate(Ogre::Vector3 normal, Ogre::Vector3 position, Ogre::Vector
     m_Node->translate(position);
 
     m_pEntity = m_pSceneMgr->createEntity("mEnt" + indexStr, "mirror" + indexStr);
+    m_pEntity->setCastShadows(false);
     Ogre::Vector3 size((Ogre::Real)MIRROR_WIDTH, (Ogre::Real)MIRROR_HEIGHT, 0.1);
     OgreNewt::ConvexCollisionPtr colPtr(
         new OgreNewt::CollisionPrimitives::Box(m_pWorld, size, 0));
@@ -133,7 +134,7 @@ void Mirror::update() {
     unit->eyeCamera->disableCustomNearClipPlane();
 	m_pEntity->setMaterial(unit->material);
 
-	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << unit->texture->getName();
+//	GameFramework::getSingletonPtr()->m_pLog->stream() << "updated " << unit->texture->getName();
 }
 
 bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vector3 up, Ogre::Real fLeft,
@@ -164,7 +165,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
     unit->eyeCamera->detachFromParent();
     m_CamMoving->attachObject(unit->eyeCamera);
 
-    GameFramework::getSingleton().m_pLog->stream() << "set eye" << unit->texture->getName();
+//    GameFramework::getSingleton().m_pLog->stream() << "set eye" << unit->texture->getName();
 
     Real ofLeft, ofRight, ofTop, ofBottom;
     ptr_RefCamera->getFrustumExtents(ofLeft, ofRight, ofTop, ofBottom);
@@ -172,7 +173,7 @@ bool Mirror::setEye(Ogre::Vector3 position, Ogre::Vector3 direction, Ogre::Vecto
 
     direction.normalise();
     up.normalise();
-    GameFramework::getSingleton().m_pLog->stream() << "eye dir " << unit->eyeCamera->getRealDirection();
+//    GameFramework::getSingleton().m_pLog->stream() << "eye dir " << unit->eyeCamera->getRealDirection();
     Quaternion q = unit->eyeCamera->getRealDirection().getRotationTo(direction);
     Vector3 newUp = q * unit->eyeCamera->getRealUp();
 /*
@@ -384,7 +385,7 @@ void Mirror::reflectReal() {
 		m_pEntity->setMaterial(unit->material);
         m_pEntity->setVisible(true);
         recyclePool.push(unit);
-		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << unit->texture->getName();
+//		GameFramework::getSingletonPtr()->m_pLog->stream() << "real" << unit->texture->getName();
 	} else {
 //		GameFramework::getSingletonPtr()->m_pLog->stream() << "real wall";
         m_pEntity->setVisible(false);
