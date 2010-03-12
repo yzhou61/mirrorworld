@@ -65,7 +65,6 @@ public:
     void postUpdateMirrors(double timeElapsed);
 
     void showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection);
-    void finishedTrigger() { ++m_curTrigger; }
 
     Trigger *getNextTrigger() { return m_Triggers.at(m_curTrigger); }
 

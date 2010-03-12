@@ -18,7 +18,7 @@ public:
     void initTrigger(const Vector3& pos, const Vector3& nor, const Vector3& up);
     void setTarget(Object* obj, const Ogre::Vector3& translate, Ogre::Real timeLength);
     Ogre::String name() const { return "Trigger"; }
-    void trigger();
+    bool trigger();
 
     void update(double timeElasped);
 

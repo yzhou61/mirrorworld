@@ -214,8 +214,8 @@ void LogicManager::calcLaserPath()
                 Object* hitobj = Ogre::any_cast<Object*>(result.mBody->getUserData());
                 if (hitobj->isTrigger())
                 {
-                    hitobj->trigger();
-                    finishedTrigger();
+                    if (hitobj->trigger())
+                        ++m_curTrigger;
                 }
                 Vector3 ep = sp + dir * (result.mDistance * m_RaycastDistance - 0.01f);
                 /*                Ogre::LogManager::getSingleton().logMessage(hitobj->nameID());
