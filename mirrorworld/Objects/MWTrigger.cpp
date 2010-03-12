@@ -66,9 +66,7 @@ bool Trigger::trigger()
 }
 
 void Trigger::update(double timeElasped) {
-    if (m_pObject == NULL)
-        return;
-    if (m_Acctime > m_TimeLength)
+    if (m_pObject == NULL || !activated || m_Acctime > m_TimeLength)
         return;
     m_Acctime += timeElasped;
 

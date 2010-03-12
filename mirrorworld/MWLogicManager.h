@@ -66,7 +66,7 @@ public:
 
     void showMirror(Ogre::Vector3 position, Ogre::Vector3 normal, Ogre::Vector3 hitDirection);
 
-    Trigger *getNextTrigger() { Ogre::LogManager::getSingleton().stream()<<m_curTrigger; return m_Triggers.at(m_curTrigger); }
+    Trigger *getNextTrigger() { if (m_curTrigger < (int)m_Triggers.size()) return m_Triggers.at(m_curTrigger); return NULL; }
 
     void addTrigger(Trigger *trigger) { m_Triggers.push_back(trigger); }
 private:
