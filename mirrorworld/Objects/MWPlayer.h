@@ -40,6 +40,7 @@ private:
     void updateAnimation(double timeElasped);
     int testnum;
     Ogre::SceneNode*        m_pSceneNode;
+    Ogre::SceneNode*        m_pBodyNode;
     OgreNewt::MaterialID*   m_PhyMatID;
     OgreNewt::PlayerController* m_pPlayerControl;
 

@@ -18,7 +18,7 @@ MirrorBallModel::MirrorBallModel(Ogre::SceneManager* sceneMgr)
     m_pRibbonTrail->setTrailLength(400);
     m_pRibbonTrail->setInitialColour(0, 0.0, 0.1, 0.8);
     m_pRibbonTrail->setColourChange(0, 0.5, 0.5, 0.5, 0.5);
-    m_pRibbonTrail->setInitialWidth(0, 5);
+    m_pRibbonTrail->setInitialWidth(0, 10);
     m_pRibbonTrail->setMaxChainElements(80);
     m_pRibbonTrail->setNumberOfChains(2);
     m_pRibbonTrail->addNode(m_pBallNode);

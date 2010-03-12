@@ -238,10 +238,7 @@ void LogicManager::calcLaserPath()
         }
     }
     if (m_pLaser->contactPoints().size() > 1)
-    {
-        m_pLaser->contactPoints()[0] -= Vector3(0, 10, 0);
         m_pLaserModel->update(m_pLaser->contactPoints());
-    }
 }
 
 void LogicManager::preUpdateMirrors() {
