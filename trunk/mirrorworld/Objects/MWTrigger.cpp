@@ -73,7 +73,7 @@ void Trigger::update(double timeElasped) {
     Ogre::Vector3 pos;
     Ogre::Quaternion ori;
     m_pObject->getBody()->getPositionOrientation(pos, ori);
-    m_pObject->getBody()->setPositionOrientation(pos+m_Translate*timeElasped/m_TimeLength, ori);
+    m_pObject->getBody()->setPositionOrientation(pos+m_Translate*static_cast<Ogre::Real>(timeElasped/m_TimeLength), ori);
 }
 
 }

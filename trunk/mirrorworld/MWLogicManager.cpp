@@ -105,6 +105,8 @@ LogicManager::LogicManager():m_bLaserOn(false), m_pLaser(NULL),m_pLaserModel(NUL
 
 LogicManager::~LogicManager() {
     delete[] m_MirrorList;
+    delete m_pMirrorBallPool;
+    delete m_pUnattachPool;
 }
 
 void LogicManager::init(Ogre::SceneManager* sceneMgr, OgreNewt::World* world, Ogre::RenderWindow* window,

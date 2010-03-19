@@ -19,10 +19,7 @@ public:
     void setTarget(Object* obj, const Ogre::Vector3& translate, Ogre::Real timeLength);
     Ogre::String name() const { return "Trigger"; }
     bool trigger();
-
     void update(double timeElasped);
-
-    std::vector<Vector3> path;
 private:
     Object* m_pObject;
     Ogre::AnimationState* m_pState;

@@ -14,7 +14,7 @@ namespace MirrorWorld {
 //////////////////////////////////////////////////////////////////////////
 GameFramework::GameFramework()
 {
-    m_iNumScreenShots	= 0;
+    m_iNumScreenShots   = 0;
 
     m_pRoot = NULL;
     m_pRenderWnd = NULL;
@@ -125,7 +125,7 @@ bool GameFramework::init(Ogre::String wndTitle, OIS::KeyListener *pKeyListener, 
 
     // Included in OgreCore.zip
     m_pDebugOverlay = Ogre::OverlayManager::getSingleton().getByName("Core/DebugOverlay");
-    m_pDebugOverlay->show();
+    m_pDebugOverlay->hide();
 
     m_pRenderWnd->setActive(true);
     return true;
@@ -195,7 +195,7 @@ bool GameFramework::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID
 //////////////////////////////////////////////////////////////////////////
 void GameFramework::updateOgre(double timeSinceLastFrame)
 {
-    updateStats();
+//    updateStats();
 }
 
 //////////////////////////////////////////////////////////////////////////

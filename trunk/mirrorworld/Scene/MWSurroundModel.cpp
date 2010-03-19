@@ -46,7 +46,9 @@ bool SurroundModel::update(double timeElasped)
 
 void SurroundModel::destroy()
 {
-
+    Ogre::LogManager::getSingleton().logMessage("Destroy SurroundModel");
+    m_pSceneMgr->destroyParticleSystem(m_pParticleSys);
+    m_pSceneMgr->destroySceneNode(m_pSceneNode);
 }
 
 Ogre::SceneNode *SurroundModel::getNode() {

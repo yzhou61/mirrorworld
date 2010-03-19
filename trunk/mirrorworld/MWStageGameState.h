@@ -31,9 +31,6 @@ public:
     bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id); 
     bool mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
 
-    void handleInput();
-    void updateCamera(double timeElasped);
-    bool computeOverlookCamera();
 private:
     StageGameState() : GameState(), m_SceneFile("Stage1.xml"), m_bShowphyDebugger(false) {}
     ~StageGameState() { delete m_pSceneLoader; }
@@ -55,18 +52,6 @@ private:
 //    FPSCamera*          m_pFPSCamera;
     LogicManager*       m_pLogicMgr;
     Ogre::Overlay*      m_CrossHair;
-
-    Ogre::Vector3       m_CameraPos;
-    Ogre::Quaternion    m_CameraOri;
-    Ogre::Vector3       m_TarCameraPos;
-    Ogre::Quaternion    m_TarCameraQuaternion;
-    Ogre::SceneNode*    m_OverlookCameraNode;
-    Ogre::Camera*       m_OverlookCamera;
-    Ogre::Animation*    m_CamAnimation;
-    Ogre::AnimationState*   m_CamAnimationState;
-    float               m_AccTime;
-    int                 m_CameraState;
-    Ogre::Real          m_AnimeLength;
 }; // End of StageGameState
 
 } // End of namespace

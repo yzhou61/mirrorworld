@@ -24,6 +24,7 @@ void LaserBeam::destroy(Ogre::SceneManager* sceneMgr)
     if (m_pModel)
         m_pSceneNode->detachObject(m_pModel);
     sceneMgr->destroyManualObject(m_pModel);
+    sceneMgr->destroySceneNode(m_pSceneNode);
 }
 
 void LaserBeam::update(const Ogre::Vector3& sp, const Ogre::Vector3& ep)
@@ -135,6 +136,12 @@ void LaserModel::update(const std::vector<Ogre::Vector3> &contactPointList)
     for (int i = 0;i < m_nUseLaser; i++)
         m_LaserBeamList[i].update(contactPointList[i], contactPointList[i+1]);
     active();
+}
+
+void LaserModel::destroy()
+{
+    for (int i = 0;i < MAX_LASERBEAM; i++)
+        m_LaserBeamList[i].destroy(m_pSceneMgr);
 }
 
 }

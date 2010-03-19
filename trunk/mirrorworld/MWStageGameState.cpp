@@ -56,19 +56,6 @@ void StageGameState::enter()
 
     GameFramework::getSingletonPtr()->m_pViewport->setCamera(m_pCamera);
 
-    m_OverlookCameraNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-    m_OverlookCamera = m_pSceneMgr->createCamera("OverlookCam");
-    m_OverlookCamera->setFarClipDistance(m_WorldSize);
-    m_OverlookCamera->setNearClipDistance(0.1);
-    m_OverlookCamera->setAspectRatio(Real(GameFramework::getSingletonPtr()->m_pViewport->getActualWidth()) / 
-        Real(GameFramework::getSingletonPtr()->m_pViewport->getActualHeight()));
-    m_OverlookCameraNode->attachObject(m_OverlookCamera);
-
-    m_CamAnimation = m_pSceneMgr->createAnimation("CameraTrack", 10);
-    m_CamAnimation->setInterpolationMode(Ogre::Animation::IM_SPLINE);
-    m_CamAnimationState = m_pSceneMgr->createAnimationState("CameraTrack");
-    m_CamAnimationState->setLoop(false);
-
     GameFramework::getSingletonPtr()->m_pKeyboard->setEventCallback(this);
     GameFramework::getSingletonPtr()->m_pMouse->setEventCallback(this);
 
@@ -94,7 +81,6 @@ void StageGameState::enter()
     m_CrossHair = Ogre::OverlayManager::getSingleton().getByName("Game/CrossHair");
     m_CrossHair->setScale(0.6, 0.6);
     m_CrossHair->show();
-    m_CameraState = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,6 +96,7 @@ void StageGameState::exit()
     if(m_pSceneMgr)
         GameFramework::getSingletonPtr()->m_pRoot->destroySceneManager(m_pSceneMgr);
 
+    delete m_pLogicMgr;
     m_CrossHair->hide();
     CEGUI::MouseCursor::getSingleton().show();
 }
@@ -159,7 +146,7 @@ void StageGameState::createScene()
     Ogre::Real lightPositions[][3] = { { -450, 250, -450 }, { -450, 250, 450 }, { 450, 250, -450 }, { 450, 250, 450 },
                                     { -450, 10, -450 }, { -450, 10, 450 }, { 450, 10, -450 }, { 450, 10, 450 } };
 
-    for (int i = 0; i < 0; ++i) {
+    for (int i = 0; i < 1; ++i) {
         Ogre::Light *light = m_pSceneMgr->createLight("Light" + Ogre::StringConverter::toString(i));
         light->setType(Ogre::Light::LT_POINT);
 	    light->setPosition(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2]);
@@ -168,10 +155,10 @@ void StageGameState::createScene()
 	    light->setSpecularColour(0.5, 0.5, 0.5);
         light->setAttenuation(15000, 1.0, 0.00014, 0.0000007);
 //        light->setAttenuation(4000, 1.0, 0.0, 0.0);
-        light->setCastShadows(false);
+        light->setCastShadows(true);
     }
 
-    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
+    m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.75, 0.75, 0.75));
 
     Vector3 triggerPos[5];
     triggerPos[0] = Vector3(490, 100, 425);
@@ -217,17 +204,6 @@ void StageGameState::createScene()
         trigger[i]->setTarget(obj[i], dir[i], 1000);
         m_pLogicMgr->addTrigger(trigger[i]);
     }
-
-    trigger[1]->path.push_back(Vector3(-140, 40, 300));
-
-    trigger[2]->path.push_back(Vector3(0, 180, 140));
-    trigger[2]->path.push_back(Vector3(260, 180, 20));
-
-    trigger[3]->path.push_back(Vector3(250, 450, -160));
-    trigger[3]->path.push_back(Vector3(205, 375, -390));
-
-    trigger[4]->path.push_back(Vector3(-350, 570, -450));
-    trigger[4]->path.push_back(Vector3(410, 748, -420));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -254,12 +230,9 @@ void StageGameState::update(double timeSinceLastFrame)
         return;
     }
 
-    handleInput();
-    
     m_pPhyWorld->update(static_cast<Real>(timeSinceLastFrame/1000.0));
     m_pPlayer->update(timeSinceLastFrame);
     m_pLogicMgr->update(timeSinceLastFrame);
-    updateCamera(timeSinceLastFrame);
     m_CrossHair->rotate(Ogre::Radian(static_cast<Real>(timeSinceLastFrame / 500.0)));
     if (m_bShowphyDebugger)
     {
@@ -276,30 +249,11 @@ void StageGameState::update(double timeSinceLastFrame)
     GameFramework::getSingleton().setDebugInfo(Ogre::StringConverter::toString(m_pCamera->getRealPosition()), 0);
 }
 
-bool StageGameState::computeOverlookCamera()
-{
-    Trigger* trigger = m_pLogicMgr->getNextTrigger();
-    if (trigger == NULL || trigger->path.size() == 0 )
-        return false;
-    m_AnimeLength = trigger->path.size()*2.0f;
-    m_CamAnimation->setLength(m_AnimeLength);
-    m_OverlookCameraNode->setAutoTracking(true, trigger->getSceneNode());
-    Ogre::NodeAnimationTrack* track = m_CamAnimation->createNodeTrack(0, m_OverlookCameraNode);
-
-    track->createNodeKeyFrame(0)->setTranslate(m_pCamera->getRealPosition());
-    
-    for (int i = 0;i < (int)trigger->path.size(); i++)
-        track->createNodeKeyFrame(m_AnimeLength*(i+1)/(float)trigger->path.size())->setTranslate(trigger->path[i]);
-    return true;
-}
-
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
 bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
 {
-    if (m_CameraState != 0)
-        return true;
     static int pos = -200;
     if (GameFramework::getSingletonPtr()->m_pKeyboard->isKeyDown(OIS::KC_ESCAPE))
     {
@@ -326,14 +280,6 @@ bool StageGameState::keyPressed(const OIS::KeyEvent &keyEventRef)
             m_bShowphyDebugger = !m_bShowphyDebugger;
         break;
     case OIS::KC_SPACE:
-        if (computeOverlookCamera())
-        {
-            m_CameraState = 1;
-            m_CamAnimationState->setTimePosition(0);
-            m_CamAnimationState->setEnabled(true);
-            m_CamAnimationState->setLoop(false);
-            GameFramework::getSingleton().m_pViewport->setCamera(m_OverlookCamera);
-        }
         break;
     default:
         GameFramework::getSingletonPtr()->keyPressed(keyEventRef);
@@ -363,8 +309,6 @@ bool StageGameState::keyReleased(const OIS::KeyEvent &keyEventRef)
         m_pPlayer->rightRelease();
         break;
     case OIS::KC_SPACE:
-        if (m_CameraState == 1)
-            m_CameraState = -1;
         break;
     default:
         GameFramework::getSingletonPtr()->keyReleased(keyEventRef);
@@ -431,27 +375,4 @@ bool StageGameState::mouseReleased(const OIS::MouseEvent &evt, OIS::MouseButtonI
 //////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////
-void StageGameState::handleInput()
-{
-    
-}
-
-void StageGameState::updateCamera(double timeElasped)
-{
-    if (m_CameraState == 0)
-        return;
-    else if (m_CameraState == 1 && m_CamAnimationState->getEnabled())
-    {
-        m_CamAnimationState->addTime(static_cast<Ogre::Real>(timeElasped/1000.0f));
-        if (m_CamAnimationState->getTimePosition() > m_AnimeLength*0.99)
-            m_CamAnimationState->setTimePosition(m_AnimeLength);
-    }
-    else
-    {
-        m_CameraState = 0;
-        m_CamAnimation->destroyAllNodeTracks();
-        m_CamAnimationState->setEnabled(false);
-        GameFramework::getSingleton().m_pViewport->setCamera(m_pCamera);
-    }
-}
 }
