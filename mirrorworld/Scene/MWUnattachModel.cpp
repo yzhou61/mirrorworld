@@ -57,6 +57,8 @@ bool UnattachModel::update(double timeElasped)
 
 void UnattachModel::destroy()
 {
-    
+    Ogre::LogManager::getSingleton().logMessage("Destroy UnattachModel");
+    m_pSceneMgr->destroyParticleSystem(m_pParticleSys);
+    m_pSceneMgr->destroySceneNode(m_pSceneNode);
 }
 }

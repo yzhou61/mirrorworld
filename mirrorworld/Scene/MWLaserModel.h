@@ -31,10 +31,11 @@ class LaserModel
 {
 public:
     LaserModel(Ogre::SceneManager* sceneMgr);
-    ~LaserModel();
+    ~LaserModel() { destroy(); }
     void active();
     void deactive();
     void update(const std::vector<Ogre::Vector3>& contactPointList);
+    void destroy();
     static const int            MAX_LASERBEAM = 15;
     static int                  m_nPlanes;
     static Ogre::Real           m_Radius;

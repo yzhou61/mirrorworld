@@ -155,6 +155,8 @@
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(CEGUI_HOME)\lib&quot;;&quot;$(OGRE_HOME)\lib\release&quot;;&quot;$(NEWTON_HOME)\OgreNewt\lib&quot;;&quot;$(NEWTON_HOME)\lib\x32&quot;;&quot;$(NEWTON_HOME)\lib\x32\dll_vs9&quot;"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"

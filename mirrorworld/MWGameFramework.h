@@ -66,7 +66,6 @@ private:
 private:
     Ogre::Overlay*			    m_pDebugOverlay;
     int				            m_iNumScreenShots;
-
     Ogre::String				m_DebugInfo[5];
 }; // End of GameFramework
 
